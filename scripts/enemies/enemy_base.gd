@@ -46,6 +46,7 @@ func do_movement(_delta: float) -> void:
 func take_damage(amount: int) -> void:
 	current_hp -= amount
 	flash_white()
+	AudioManager.play_sfx("enemy_hit")
 	if current_hp <= 0:
 		die()
 
@@ -55,6 +56,7 @@ func flash_white() -> void:
 	tween.tween_property(self, "modulate", Color.WHITE, 0.1)
 
 func die() -> void:
+	AudioManager.play_sfx("enemy_kill")
 	enemy_killed.emit(global_position, enemy_type)
 	# Give score to player
 	if player and player.has_method("add_score"):

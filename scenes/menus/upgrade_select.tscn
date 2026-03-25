@@ -1,0 +1,156 @@
+[gd_scene load_steps=2 format=3 uid="uid://beff53ikalm77"]
+
+[ext_resource type="Script" path="res://scripts/menus/upgrade_select.gd" id="1_upgrade"]
+
+[node name="UpgradeSelect" type="CanvasLayer"]
+layer = 9
+process_mode = 3
+script = ExtResource("1_upgrade")
+
+[node name="Overlay" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0.06, 0.8)
+
+[node name="Panel" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 80
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 80
+theme_override_constants/margin_bottom = 60
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "CHOOSE UPGRADE"
+horizontal_alignment = 1
+
+[node name="CardContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="Card1" type="PanelContainer" parent="Panel/VBoxContainer/CardContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(220, 260)
+
+[node name="VBox" type="VBoxContainer" parent="Panel/VBoxContainer/CardContainer/Card1"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ColorBar" type="ColorRect" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 4)
+
+[node name="Spacer" type="Control" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 10)
+
+[node name="Category" type="Label" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Desc" type="Label" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 60)
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer2" type="Control" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChooseButton" type="Button" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(180, 36)
+text = "CHOOSE"
+
+[node name="Card2" type="PanelContainer" parent="Panel/VBoxContainer/CardContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(220, 260)
+
+[node name="VBox" type="VBoxContainer" parent="Panel/VBoxContainer/CardContainer/Card2"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ColorBar" type="ColorRect" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 4)
+
+[node name="Spacer" type="Control" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 10)
+
+[node name="Category" type="Label" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Desc" type="Label" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 60)
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer2" type="Control" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChooseButton" type="Button" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(180, 36)
+text = "CHOOSE"
+
+[node name="Card3" type="PanelContainer" parent="Panel/VBoxContainer/CardContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(220, 260)
+
+[node name="VBox" type="VBoxContainer" parent="Panel/VBoxContainer/CardContainer/Card3"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ColorBar" type="ColorRect" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 4)
+
+[node name="Spacer" type="Control" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 10)
+
+[node name="Category" type="Label" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Name" type="Label" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Desc" type="Label" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 60)
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer2" type="Control" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChooseButton" type="Button" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(180, 36)
+text = "CHOOSE"

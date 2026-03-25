@@ -1,0 +1,168 @@
+[gd_scene format=3 uid="uid://dom7chcv6feqq"]
+
+[ext_resource type="Script" path="res://scripts/menus/pause_menu.gd" id="1_pausemenu"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+layer = 10
+process_mode = 3
+script = ExtResource("1_pausemenu")
+
+[node name="Overlay" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0.08, 0.75)
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -160.0
+offset_right = 160.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Panel/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 10)
+
+[node name="ResumeButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 36)
+text = "RESUME"
+
+[node name="SettingsButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 36)
+text = "SETTINGS"
+
+[node name="RestartButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 36)
+text = "RESTART"
+
+[node name="MainMenuButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 36)
+text = "MAIN MENU"
+
+[node name="SettingsPanel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -200.0
+offset_right = 220.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="SettingsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SettingsTitle" type="Label" parent="SettingsPanel/VBox"]
+layout_mode = 2
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="Sep0" type="HSeparator" parent="SettingsPanel/VBox"]
+layout_mode = 2
+
+[node name="MasterRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+layout_mode = 2
+
+[node name="MasterLabel" type="Label" parent="SettingsPanel/VBox/MasterRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Master"
+
+[node name="MasterSlider" type="HSlider" parent="SettingsPanel/VBox/MasterRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+step = 1.0
+value = 100.0
+
+[node name="MasterValue" type="Label" parent="SettingsPanel/VBox/MasterRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(50, 0)
+text = "100%"
+horizontal_alignment = 2
+
+[node name="MusicRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+layout_mode = 2
+
+[node name="MusicLabel" type="Label" parent="SettingsPanel/VBox/MusicRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Music"
+
+[node name="MusicSlider" type="HSlider" parent="SettingsPanel/VBox/MusicRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+step = 1.0
+value = 80.0
+
+[node name="MusicValue" type="Label" parent="SettingsPanel/VBox/MusicRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(50, 0)
+text = "80%"
+horizontal_alignment = 2
+
+[node name="SFXRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+layout_mode = 2
+
+[node name="SFXLabel" type="Label" parent="SettingsPanel/VBox/SFXRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "SFX"
+
+[node name="SFXSlider" type="HSlider" parent="SettingsPanel/VBox/SFXRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+step = 1.0
+value = 80.0
+
+[node name="SFXValue" type="Label" parent="SettingsPanel/VBox/SFXRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(50, 0)
+text = "80%"
+horizontal_alignment = 2
+
+[node name="MuteRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+layout_mode = 2
+
+[node name="MuteLabel" type="Label" parent="SettingsPanel/VBox/MuteRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Mute All"
+
+[node name="MuteCheck" type="CheckButton" parent="SettingsPanel/VBox/MuteRow"]
+layout_mode = 2
+
+[node name="Sep1" type="HSeparator" parent="SettingsPanel/VBox"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="SettingsPanel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 36)
+text = "< BACK"
