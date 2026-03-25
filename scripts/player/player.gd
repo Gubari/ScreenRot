@@ -109,6 +109,7 @@ func shoot() -> void:
 	bullet.speed = bullet_speed
 	bullet.damage = bullet_damage
 	get_tree().current_scene.add_child(bullet)
+	AudioManager.play_sfx("shoot")
 
 func handle_defrag(delta: float) -> void:
 	if not can_defrag:
@@ -125,6 +126,7 @@ func activate_defrag() -> void:
 	multiplier = 1
 	score_changed.emit(score, multiplier)
 	defrag_activated.emit()
+	AudioManager.play_sfx("defrag")
 
 func handle_dash(delta: float) -> void:
 	# Cooldown
@@ -159,6 +161,7 @@ func handle_dash(delta: float) -> void:
 		dash_cooldown_timer = dash_cooldown
 		# Dash trail effect
 		_spawn_dash_ghost()
+		AudioManager.play_sfx("dash")
 
 func _spawn_dash_ghost() -> void:
 	var ghost = Sprite2D.new()
@@ -188,7 +191,9 @@ func take_damage(amount: int = 1) -> void:
 	player_damaged.emit(current_hp)
 	if current_hp <= 0:
 		die()
+		AudioManager.play_sfx("player_death")
 	else:
+		AudioManager.play_sfx("player_damage")
 		invincible = true
 		invincible_timer = invincible_duration
 

@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://bl0halj2ofrse" path="res://scripts/effects/arena_grid.gd" id="3_arena_grid"]
 [ext_resource type="Script" uid="uid://b6j74amxi5d1y" path="res://scripts/managers/enemy_spawner.gd" id="4_spawner"]
 [ext_resource type="PackedScene" uid="uid://ce78ft6jgs5aa" path="res://scenes/menus/game_over.tscn" id="5_gameover"]
+[ext_resource type="PackedScene" uid="uid://dom7chcv6feqq" path="res://scenes/menus/pause_menu.tscn" id="6_pausemenu"]
+[ext_resource type="PackedScene" uid="uid://upgr4d3s3l001" path="res://scenes/menus/upgrade_select.tscn" id="7_upgrade"]
 
 [node name="Game" type="Node2D" unique_id=1244125603]
 script = ExtResource("2_game_manager")
@@ -84,18 +86,26 @@ offset_bottom = 64.0
 text = "x1"
 horizontal_alignment = 2
 
+[node name="CreditsLabel" type="Label" parent="HUD"]
+offset_left = 1080.0
+offset_top = 64.0
+offset_right = 1264.0
+offset_bottom = 84.0
+text = "Credits: 0"
+horizontal_alignment = 2
+
 [node name="DebrisBar" type="ProgressBar" parent="HUD" unique_id=743095431]
 offset_left = 1080.0
-offset_top = 68.0
+offset_top = 88.0
 offset_right = 1264.0
-offset_bottom = 82.0
+offset_bottom = 102.0
 show_percentage = false
 
 [node name="DebrisLabel" type="Label" parent="HUD" unique_id=1244837134]
 offset_left = 1080.0
-offset_top = 84.0
+offset_top = 104.0
 offset_right = 1264.0
-offset_bottom = 104.0
+offset_bottom = 124.0
 text = "CLEAN"
 horizontal_alignment = 2
 
@@ -109,3 +119,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="GameOver" parent="." unique_id=1562961081 instance=ExtResource("5_gameover")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("6_pausemenu")]
+
+[node name="UpgradeSelect" parent="." instance=ExtResource("7_upgrade")]
