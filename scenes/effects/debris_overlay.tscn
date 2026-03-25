@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://debr1s0verl4y"]
+
+[ext_resource type="Script" path="res://scripts/effects/debris_overlay.gd" id="1_debris_script"]
+
+[node name="DebrisOverlay" type="CanvasLayer"]
+layer = 5
+script = ExtResource("1_debris_script")
+
+[node name="DebrisRoot" type="Node2D" parent="."]
+

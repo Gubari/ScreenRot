@@ -1,31 +1,73 @@
-[gd_scene load_steps=4 format=3 uid="uid://en3my_grunt01"]
+[gd_scene load_steps=9 format=3 uid="uid://en3my_grunt01"]
 
 [ext_resource type="Script" path="res://scripts/enemies/pixel_grunt.gd" id="1_grunt"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/enemies_x3.png" id="2_grunt_atlas"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
-radius = 10.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(21, 41)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
-radius = 12.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(25, 45)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_grunt_0"]
+atlas = ExtResource("2_grunt_atlas")
+region = Rect2(0, 1248, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_grunt_1"]
+atlas = ExtResource("2_grunt_atlas")
+region = Rect2(96, 1248, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_grunt_2"]
+atlas = ExtResource("2_grunt_atlas")
+region = Rect2(192, 1248, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_grunt_3"]
+atlas = ExtResource("2_grunt_atlas")
+region = Rect2(288, 1248, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_grunt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_grunt_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_grunt_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_grunt_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_grunt_3")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
 
 [node name="PixelGrunt" type="CharacterBody2D"]
 collision_layer = 2
-collision_mask = 5
+collision_mask = 2
 script = ExtResource("1_grunt")
 
-[node name="Sprite" type="Polygon2D" parent="."]
-color = Color(0.2, 1.0, 0.2, 1)
-polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_grunt")
+animation = &"walk"
+playing = true
+autoplay = "walk"
+scale = Vector2(0.52, 0.52)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_body")
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_body")
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 2
 collision_mask = 1
 
 [node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
-shape = SubResource("CircleShape2D_hitbox")
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_hitbox")
 
 [connection signal="body_entered" from="Hitbox" to="." method="_on_hit_player"]
 [connection signal="body_exited" from="Hitbox" to="." method="_on_hit_player_exited"]
