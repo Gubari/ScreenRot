@@ -13,6 +13,8 @@ signal wave_completed(wave_number: int)
 @export var fire_rate: float = 0.15
 @export var bullet_speed: float = 600.0
 @export var bullet_damage: int = 1
+# In sprite pixels (96×96 frame); scaled by Sprite2D.scale in handle_rotation.
+@export var muzzle_offset: Vector2 = Vector2(24, 22)
 
 # HP
 @export var max_hp: int = 5
@@ -87,10 +89,14 @@ func handle_rotation() -> void:
 	var mouse_pos := get_global_mouse_position()
 	# Flip sprite based on mouse direction
 	sprite.flip_h = mouse_pos.x < global_position.x
-	# Rotate only the muzzle marker, not the whole body
-	var aim_dir = (mouse_pos - global_position).angle()
-	muzzle.rotation = aim_dir
-	muzzle.position = Vector2.RIGHT.rotated(aim_dir) * 24.0
+	var aim_angle := (mouse_pos - global_position).angle()
+	# Gun stays on the sprite; do not rotate offset with aim or the spawn slides toward the head when aiming up.
+	var local_off := Vector2(
+		muzzle_offset.x * (-1.0 if sprite.flip_h else 1.0),
+		muzzle_offset.y
+	) * sprite.scale.x
+	muzzle.position = local_off
+	muzzle.rotation = aim_angle
 
 func handle_shooting(delta: float) -> void:
 	fire_timer -= delta
@@ -103,7 +109,8 @@ func handle_shooting(delta: float) -> void:
 func shoot() -> void:
 	var bullet = bullet_scene.instantiate()
 	bullet.global_position = muzzle.global_position
-	var aim_dir = (get_global_mouse_position() - global_position).normalized()
+	# Aim from muzzle toward cursor; center→mouse would miss the crosshair when spawn is offset.
+	var aim_dir: Vector2 = (get_global_mouse_position() - bullet.global_position).normalized()
 	bullet.rotation = aim_dir.angle()
 	bullet.direction = aim_dir
 	bullet.speed = bullet_speed

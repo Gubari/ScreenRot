@@ -19,6 +19,9 @@ func _ready() -> void:
 	current_hp = max_hp
 	add_to_group("enemies")
 	await get_tree().process_frame
+	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
+	if spr:
+		spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var players = get_tree().get_nodes_in_group("player")
 	if players.size() > 0:
 		player = players[0]

@@ -14,12 +14,11 @@ extends Node2D
 @onready var credits_label: Label = $HUD/CreditsLabel
 @onready var game_over_screen: CanvasLayer = $GameOver
 @onready var upgrade_select: CanvasLayer = $UpgradeSelect
+@onready var debris_overlay: CanvasLayer = $DebrisOverlay
 
 var current_wave: int = 0
 var wave_active: bool = false
 
-# Debris tracking (placeholder until real debris system)
-var debris_percent: float = 0.0
 var kills_this_wave: int = 0
 var run_credits: int = 0
 
@@ -31,6 +30,8 @@ func _ready() -> void:
 	enemy_spawner.all_enemies_dead.connect(_on_all_enemies_dead)
 	enemy_spawner.enemy_killed_global.connect(_on_enemy_killed)
 	upgrade_select.upgrade_chosen.connect(_on_upgrade_chosen)
+	if debris_overlay and debris_overlay.has_signal("debris_changed"):
+		debris_overlay.debris_changed.connect(_on_debris_changed)
 	update_hud()
 	AudioManager.play_music("gameplay")
 	await get_tree().create_timer(1.0).timeout
@@ -79,18 +80,17 @@ func get_wave_data(wave: int) -> Array:
 				{"type": "bit_bug", "count": 5, "delay": 3.0},
 			]
 
-func _on_enemy_killed(_pos: Vector2, type: String) -> void:
+func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	kills_this_wave += 1
 	run_credits += 1
-	var debris_per_kill := 2.5
-	if type == "static_walker":
-		debris_per_kill = 4.0
-	debris_percent = min(debris_percent + debris_per_kill, 100.0)
+	if debris_overlay and debris_overlay.has_method("add_debris"):
+		debris_overlay.add_debris(pos, type)
 	update_debris_display()
 	update_multiplier()
 	_update_credits_display()
 
 func update_multiplier() -> void:
+	var debris_percent := _get_debris_percent()
 	var new_mult: int
 	if debris_percent < 25.0:
 		new_mult = 1
@@ -103,6 +103,7 @@ func update_multiplier() -> void:
 	player.set_multiplier(new_mult)
 
 func update_debris_display() -> void:
+	var debris_percent := _get_debris_percent()
 	debris_bar.value = debris_percent
 	var color: Color
 	if debris_percent < 25.0:
@@ -119,6 +120,15 @@ func update_debris_display() -> void:
 		debris_label.text = "CRITICAL"
 	debris_bar.modulate = color
 	debris_label.modulate = color
+
+func _get_debris_percent() -> float:
+	if debris_overlay and debris_overlay.has_method("get_debris_percent"):
+		return debris_overlay.get_debris_percent()
+	return 0.0
+
+func _on_debris_changed(_percent: float) -> void:
+	update_debris_display()
+	update_multiplier()
 
 func _on_all_enemies_dead() -> void:
 	if not wave_active:
@@ -164,7 +174,8 @@ func _update_credits_display() -> void:
 	credits_label.text = "Credits: " + str(run_credits)
 
 func _on_defrag_activated() -> void:
-	debris_percent = 0.0
+	if debris_overlay and debris_overlay.has_method("defrag_clear"):
+		debris_overlay.defrag_clear()
 	update_debris_display()
 	update_multiplier()
 
