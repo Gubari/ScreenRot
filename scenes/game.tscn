@@ -2,25 +2,31 @@
 
 [ext_resource type="PackedScene" uid="uid://p1ay3r000001" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://2v0e4m3ml5ea" path="res://scripts/managers/game_manager.gd" id="2_game_manager"]
-[ext_resource type="Script" uid="uid://bl0halj2ofrse" path="res://scripts/effects/arena_grid.gd" id="3_arena_grid"]
+[ext_resource type="Script" uid="uid://50sjermldtxq" path="res://scripts/effects/map_background.gd" id="4_map_bg"]
 [ext_resource type="Script" uid="uid://b6j74amxi5d1y" path="res://scripts/managers/enemy_spawner.gd" id="4_spawner"]
 [ext_resource type="PackedScene" uid="uid://ce78ft6jgs5aa" path="res://scenes/menus/game_over.tscn" id="5_gameover"]
+[ext_resource type="PackedScene" uid="uid://debr1s0verl4y" path="res://scenes/effects/debris_overlay.tscn" id="6_debris_overlay"]
 
 [node name="Game" type="Node2D" unique_id=1244125603]
 script = ExtResource("2_game_manager")
 
+[node name="MapBackground" type="Sprite2D" parent="." unique_id=1324153713]
+z_index = -10
+position = Vector2(640, 360)
+script = ExtResource("4_map_bg")
+
 [node name="Arena" type="ColorRect" parent="." unique_id=1711593085]
 offset_right = 1280.0
 offset_bottom = 720.0
-color = Color(0.05, 0.05, 0.08, 1)
+color = Color(0.05, 0.05, 0.08, 0)
 
-[node name="ArenaGrid" type="Node2D" parent="." unique_id=239185460]
-script = ExtResource("3_arena_grid")
+[node name="DebrisOverlay" parent="." unique_id=421083988 instance=ExtResource("6_debris_overlay")]
 
 [node name="Player" parent="." unique_id=1878449167 instance=ExtResource("1_player")]
 position = Vector2(640, 360)
 fire_rate = 0.4
 bullet_speed = 800.0
+muzzle_offset = Vector2(18, 31)
 
 [node name="Enemies" type="Node2D" parent="." unique_id=1453406249]
 

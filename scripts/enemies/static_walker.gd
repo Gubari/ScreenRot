@@ -21,3 +21,6 @@ func do_movement(delta: float) -> void:
 	var perpendicular = Vector2(-to_player.y, to_player.x)
 	var dir = (to_player + perpendicular * zig_zag_dir * 0.6).normalized()
 	velocity = dir * move_speed
+	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
+	if spr:
+		spr.flip_h = dir.x < 0.0

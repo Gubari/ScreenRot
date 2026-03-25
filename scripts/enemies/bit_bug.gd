@@ -15,3 +15,6 @@ func do_movement(_delta: float) -> void:
 	var to_player = (player.global_position - global_position).normalized()
 	var dir = (to_player + jitter_offset).normalized()
 	velocity = dir * move_speed
+	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
+	if spr:
+		spr.flip_h = dir.x < 0.0
