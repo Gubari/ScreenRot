@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://en3my_grunt01"]
+
+[ext_resource type="Script" path="res://scripts/enemies/pixel_grunt.gd" id="1_grunt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 10.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 12.0
+
+[node name="PixelGrunt" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_grunt")
+
+[node name="Sprite" type="Polygon2D" parent="."]
+color = Color(0.2, 1.0, 0.2, 1)
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 1
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_hitbox")
+
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hit_player"]
+[connection signal="body_exited" from="Hitbox" to="." method="_on_hit_player_exited"]

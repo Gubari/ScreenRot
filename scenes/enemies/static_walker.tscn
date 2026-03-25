@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://en3my_walkr01"]
+
+[ext_resource type="Script" path="res://scripts/enemies/static_walker.gd" id="1_walker"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 14.0
+
+[node name="StaticWalker" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_walker")
+
+[node name="Sprite" type="Polygon2D" parent="."]
+color = Color(0.6, 0.6, 0.7, 1)
+polygon = PackedVector2Array(12, 0, 6, 10, -6, 10, -12, 0, -6, -10, 6, -10)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 1
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_hitbox")
+
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hit_player"]
+[connection signal="body_exited" from="Hitbox" to="." method="_on_hit_player_exited"]
