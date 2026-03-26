@@ -1,26 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://boss_bullet001"]
+[gd_scene format=3 uid="uid://cpb6jrhsaryte"]
 
-[ext_resource type="Script" path="res://scripts/enemies/boss_bullet.gd" id="1_bullet"]
+[ext_resource type="Script" uid="uid://dl547r82ghjwl" path="res://scripts/enemies/boss_bullet.gd" id="1_bullet"]
 [ext_resource type="Texture2D" uid="uid://c0l3fmsrrt5qo" path="res://assets/sprites/enemies/BloatwareBoss/projectiles_x3.png" id="2_proj_atlas"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_bullet"]
-radius = 10.0
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_proj_0"]
-atlas = ExtResource("2_proj_atlas")
-region = Rect2(0, 672, 96, 96)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_proj_1"]
-atlas = ExtResource("2_proj_atlas")
-region = Rect2(96, 672, 96, 96)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_proj_2"]
-atlas = ExtResource("2_proj_atlas")
-region = Rect2(192, 672, 96, 96)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_proj_3"]
-atlas = ExtResource("2_proj_atlas")
-region = Rect2(288, 672, 96, 96)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_exp_0"]
 atlas = ExtResource("2_proj_atlas")
@@ -42,25 +23,24 @@ region = Rect2(288, 768, 96, 96)
 atlas = ExtResource("2_proj_atlas")
 region = Rect2(384, 768, 96, 96)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_proj_0"]
+atlas = ExtResource("2_proj_atlas")
+region = Rect2(0, 672, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_proj_1"]
+atlas = ExtResource("2_proj_atlas")
+region = Rect2(96, 672, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_proj_2"]
+atlas = ExtResource("2_proj_atlas")
+region = Rect2(192, 672, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_proj_3"]
+atlas = ExtResource("2_proj_atlas")
+region = Rect2(288, 672, 96, 96)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_proj"]
 animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_proj_0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_proj_1")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_proj_2")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_proj_3")
-}],
-"loop": true,
-"name": &"fly",
-"speed": 8.0
-}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_exp_0")
@@ -80,21 +60,38 @@ animations = [{
 "loop": false,
 "name": &"explode",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_proj_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_proj_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_proj_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_proj_3")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 8.0
 }]
 
-[node name="BossBullet" type="Area2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_bullet"]
+
+[node name="BossBullet" type="Area2D" unique_id=1357723390]
 collision_layer = 8
-collision_mask = 1
 script = ExtResource("1_bullet")
 
-[node name="Sprite" type="AnimatedSprite2D" parent="."]
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=979839821]
+scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_proj")
 animation = &"fly"
-playing = true
 autoplay = "fly"
-scale = Vector2(0.5, 0.5)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=76757245]
 shape = SubResource("CircleShape2D_bullet")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

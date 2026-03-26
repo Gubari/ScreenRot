@@ -43,8 +43,14 @@ func _on_item_unhover(item: Dictionary) -> void:
 func _on_item_input(event: InputEvent, item: Dictionary) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		item.action.call()
-
-func show_game_over(score: int, credits_earned: int) -> void:
+    
+func show_game_over(score: int, credits_earned: int, title: String = "GAME OVER", subtitle: String = "") -> void:
+	title_label.text = title
+	if subtitle != "":
+		subtitle_label.text = subtitle
+		subtitle_label.visible = true
+	else:
+		subtitle_label.visible = false
 	score_value.text = str(score)
 	credits_value.text = "+" + str(credits_earned)
 	high_score_value.text = str(SaveManager.get_high_score())

@@ -5,15 +5,16 @@
 [ext_resource type="Script" uid="uid://b6j74amxi5d1y" path="res://scripts/managers/enemy_spawner.gd" id="4_spawner"]
 [ext_resource type="PackedScene" uid="uid://ce78ft6jgs5aa" path="res://scenes/menus/game_over.tscn" id="5_gameover"]
 [ext_resource type="PackedScene" uid="uid://debr1s0verl4y" path="res://scenes/effects/debris_overlay.tscn" id="6_debris_overlay"]
-[ext_resource type="PackedScene" uid="uid://dung30nm4p0001" path="res://scenes/map/dungeon_map.tscn" id="8_dungeon_map"]
 [ext_resource type="PackedScene" uid="uid://dom7chcv6feqq" path="res://scenes/menus/pause_menu.tscn" id="6_pausemenu"]
 [ext_resource type="Script" uid="uid://cfdwc1asb32m2" path="res://scripts/managers/wave_data.gd" id="7_kvuet"]
 [ext_resource type="PackedScene" uid="uid://beff53ikalm77" path="res://scenes/menus/upgrade_select.tscn" id="7_upgrade"]
+[ext_resource type="PackedScene" uid="uid://dwp4bu4c432oh" path="res://scenes/map/dungeon_map.tscn" id="8_dungeon_map"]
 [ext_resource type="Script" uid="uid://rqs6ujqgf1ee" path="res://scripts/managers/wave_manager.gd" id="8_wave_manager"]
 [ext_resource type="Resource" uid="uid://cdxps804a0b46" path="res://resources/waves/wave_1.tres" id="9_wave1"]
 [ext_resource type="Resource" uid="uid://blt1gfqwbic3u" path="res://resources/waves/wave_2.tres" id="10_wave2"]
-[ext_resource type="Script" uid="uid://bilot01blr3po" path="res://scripts/managers/spawn_group.gd" id="11_trtic"]
+[ext_resource type="Script" path="res://scripts/managers/spawn_group.gd" id="11_trtic"]
 [ext_resource type="Resource" uid="uid://chg67tvjqipj3" path="res://resources/waves/wave_3.tres" id="11_wave3"]
+[ext_resource type="PackedScene" path="res://scenes/effects/screen_closing.tscn" id="12_screen_closing"]
 
 [sub_resource type="Resource" id="Resource_ir15t"]
 script = ExtResource("11_trtic")
@@ -22,14 +23,15 @@ metadata/_custom_type_script = "uid://bilot01blr3po"
 
 [sub_resource type="Resource" id="Resource_ca42v"]
 script = ExtResource("7_kvuet")
-wave_name = "Wave 4"
+wave_name = "Boss Fight"
 spawn_groups = Array[ExtResource("11_trtic")]([SubResource("Resource_ir15t")])
+spawn_radius = 200.0
 metadata/_custom_type_script = "uid://cfdwc1asb32m2"
 
 [node name="Game" type="Node2D" unique_id=1244125603]
 script = ExtResource("2_game_manager")
 
-[node name="DungeonMap" parent="." instance=ExtResource("8_dungeon_map")]
+[node name="DungeonMap" parent="." unique_id=1555452792 instance=ExtResource("8_dungeon_map")]
 
 [node name="DebrisOverlay" parent="." unique_id=421083988 instance=ExtResource("6_debris_overlay")]
 
@@ -37,7 +39,6 @@ script = ExtResource("2_game_manager")
 position = Vector2(640, 360)
 fire_rate = 0.4
 bullet_speed = 800.0
-muzzle_offset = Vector2(18, 31)
 
 [node name="Enemies" type="Node2D" parent="." unique_id=1453406249]
 
@@ -49,7 +50,6 @@ script = ExtResource("4_spawner")
 [node name="WaveManager" type="Node" parent="." unique_id=1519002294]
 script = ExtResource("8_wave_manager")
 waves = Array[ExtResource("7_kvuet")]([ExtResource("9_wave1"), ExtResource("10_wave2"), ExtResource("11_wave3"), SubResource("Resource_ca42v")])
-is_endless_mode = true
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1007073227]
 
@@ -60,33 +60,18 @@ offset_right = 200.0
 offset_bottom = 40.0
 text = "HP: 5/5"
 
-[node name="DefragLabel" type="Label" parent="HUD" unique_id=1086321773]
+[node name="DashLabel" type="Label" parent="HUD" unique_id=765826155]
 offset_left = 16.0
 offset_top = 40.0
 offset_right = 160.0
 offset_bottom = 56.0
-text = "DEFRAG"
-
-[node name="DefragBar" type="ProgressBar" parent="HUD" unique_id=26854529]
-offset_left = 16.0
-offset_top = 56.0
-offset_right = 160.0
-offset_bottom = 68.0
-value = 100.0
-show_percentage = false
-
-[node name="DashLabel" type="Label" parent="HUD" unique_id=765826155]
-offset_left = 16.0
-offset_top = 72.0
-offset_right = 160.0
-offset_bottom = 88.0
 text = "DASH"
 
 [node name="DashBar" type="ProgressBar" parent="HUD" unique_id=1720269616]
 offset_left = 16.0
-offset_top = 88.0
+offset_top = 56.0
 offset_right = 160.0
-offset_bottom = 100.0
+offset_bottom = 68.0
 value = 100.0
 show_percentage = false
 
@@ -129,6 +114,28 @@ offset_bottom = 124.0
 text = "CLEAN"
 horizontal_alignment = 2
 
+[node name="BossBarContainer" type="VBoxContainer" parent="HUD" unique_id=1198356650]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 12.0
+offset_right = 200.0
+offset_bottom = 52.0
+grow_horizontal = 2
+
+[node name="BossNameLabel" type="Label" parent="HUD/BossBarContainer" unique_id=585165214]
+layout_mode = 2
+text = "BOSS"
+horizontal_alignment = 1
+
+[node name="BossHealthBar" type="ProgressBar" parent="HUD/BossBarContainer" unique_id=661850877]
+custom_minimum_size = Vector2(400, 20)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
 [node name="WaveLabel" type="Label" parent="HUD" unique_id=692091030]
 offset_left = 490.0
 offset_top = 300.0
@@ -143,3 +150,5 @@ vertical_alignment = 1
 [node name="PauseMenu" parent="." unique_id=875356330 instance=ExtResource("6_pausemenu")]
 
 [node name="UpgradeSelect" parent="." unique_id=1051217664 instance=ExtResource("7_upgrade")]
+
+[node name="ScreenClosing" parent="." unique_id=543179393 instance=ExtResource("12_screen_closing")]
