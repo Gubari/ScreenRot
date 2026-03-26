@@ -8,6 +8,7 @@ const TILE_SIZE := 96  # 32px base × 3
 
 @onready var floor_layer: TileMapLayer = $TileMapLayer
 @onready var wall_layer: TileMapLayer = $WallLayer
+@onready var props_collision_layer: TileMapLayer = $PropsCollisionLayer
 
 var _map_rect: Rect2
 
@@ -30,7 +31,8 @@ func _calc_map_rect() -> Rect2:
 	# Determine bounds from whichever layer has tiles placed
 	var used := floor_layer.get_used_rect()
 	var used_w := wall_layer.get_used_rect()
-	var merged := used.merge(used_w)
+	var used_p := props_collision_layer.get_used_rect()
+	var merged := used.merge(used_w).merge(used_p)
 	return Rect2(
 		Vector2(merged.position.x * TILE_SIZE, merged.position.y * TILE_SIZE),
 		Vector2(merged.size.x * TILE_SIZE, merged.size.y * TILE_SIZE)
@@ -44,7 +46,7 @@ func _build_collision() -> void:
 	body.collision_mask = 0
 	add_child(body)
 
-	for cell in wall_layer.get_used_cells():
+	for cell in wall_layer.get_used_cells() + props_collision_layer.get_used_cells():
 		var shape := CollisionShape2D.new()
 		var rect := RectangleShape2D.new()
 		rect.size = Vector2(TILE_SIZE, TILE_SIZE)

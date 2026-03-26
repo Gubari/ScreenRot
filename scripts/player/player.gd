@@ -62,8 +62,7 @@ func _ready() -> void:
 	current_hp = max_hp
 	bullet_scene = preload("res://scenes/player/bullet.tscn")
 	add_to_group("player")
-	var crosshair = load("res://assets/sprites/crosshair/tile_0035.png")
-	Input.set_custom_mouse_cursor(crosshair, Input.CURSOR_ARROW, crosshair.get_size() / 2.0)
+	CursorManager.set_crosshair()
 
 func _physics_process(delta: float) -> void:
 	handle_dash(delta)
