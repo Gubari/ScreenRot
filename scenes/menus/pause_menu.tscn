@@ -11,158 +11,177 @@ script = ExtResource("1_pausemenu")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0, 0, 0.08, 0.75)
+color = Color(0, 0, 0.06, 0.8)
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="MainPanel" type="VBoxContainer" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -160.0
-offset_top = -160.0
-offset_right = 160.0
-offset_bottom = 160.0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 14
+alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="Title" type="Label" parent="MainPanel"]
 layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Title" type="Label" parent="Panel/VBoxContainer"]
-layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+theme_override_font_sizes/font_size = 67
 text = "PAUSED"
 horizontal_alignment = 1
 
-[node name="Spacer" type="Control" parent="Panel/VBoxContainer"]
+[node name="Spacer" type="Control" parent="MainPanel"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 10)
+custom_minimum_size = Vector2(0, 20)
 
-[node name="ResumeButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="ResumeLabel" type="Label" parent="MainPanel"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 36)
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 45
 text = "RESUME"
+horizontal_alignment = 1
 
-[node name="SettingsButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="SettingsLabel" type="Label" parent="MainPanel"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 36)
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 45
 text = "SETTINGS"
+horizontal_alignment = 1
 
-[node name="RestartButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="RestartLabel" type="Label" parent="MainPanel"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 36)
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 45
 text = "RESTART"
+horizontal_alignment = 1
 
-[node name="MainMenuButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="MainMenuLabel" type="Label" parent="MainPanel"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 36)
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 45
 text = "MAIN MENU"
+horizontal_alignment = 1
 
-[node name="SettingsPanel" type="PanelContainer" parent="."]
+[node name="SettingsPanel" type="VBoxContainer" parent="."]
 visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -220.0
-offset_top = -200.0
-offset_right = 220.0
-offset_bottom = 200.0
+offset_left = -300.0
+offset_top = -220.0
+offset_right = 300.0
+offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 17
+alignment = 1
 
-[node name="VBox" type="VBoxContainer" parent="SettingsPanel"]
+[node name="SettingsTitle" type="Label" parent="SettingsPanel"]
 layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="SettingsTitle" type="Label" parent="SettingsPanel/VBox"]
-layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+theme_override_font_sizes/font_size = 50
 text = "SETTINGS"
 horizontal_alignment = 1
 
-[node name="Sep0" type="HSeparator" parent="SettingsPanel/VBox"]
+[node name="Spacer0" type="Control" parent="SettingsPanel"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 11)
+
+[node name="MasterRow" type="HBoxContainer" parent="SettingsPanel"]
 layout_mode = 2
 
-[node name="MasterRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+[node name="MasterLabel" type="Label" parent="SettingsPanel/MasterRow"]
 layout_mode = 2
-
-[node name="MasterLabel" type="Label" parent="SettingsPanel/VBox/MasterRow"]
-layout_mode = 2
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(196, 0)
+theme_override_font_sizes/font_size = 31
 text = "Master"
 
-[node name="MasterSlider" type="HSlider" parent="SettingsPanel/VBox/MasterRow"]
+[node name="MasterSlider" type="HSlider" parent="SettingsPanel/MasterRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 100.0
 step = 1.0
 value = 100.0
 
-[node name="MasterValue" type="Label" parent="SettingsPanel/VBox/MasterRow"]
+[node name="MasterValue" type="Label" parent="SettingsPanel/MasterRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(84, 0)
+theme_override_font_sizes/font_size = 31
 text = "100%"
 horizontal_alignment = 2
 
-[node name="MusicRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+[node name="MusicRow" type="HBoxContainer" parent="SettingsPanel"]
 layout_mode = 2
 
-[node name="MusicLabel" type="Label" parent="SettingsPanel/VBox/MusicRow"]
+[node name="MusicLabel" type="Label" parent="SettingsPanel/MusicRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(196, 0)
+theme_override_font_sizes/font_size = 31
 text = "Music"
 
-[node name="MusicSlider" type="HSlider" parent="SettingsPanel/VBox/MusicRow"]
+[node name="MusicSlider" type="HSlider" parent="SettingsPanel/MusicRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 100.0
 step = 1.0
 value = 80.0
 
-[node name="MusicValue" type="Label" parent="SettingsPanel/VBox/MusicRow"]
+[node name="MusicValue" type="Label" parent="SettingsPanel/MusicRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(84, 0)
+theme_override_font_sizes/font_size = 31
 text = "80%"
 horizontal_alignment = 2
 
-[node name="SFXRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+[node name="SFXRow" type="HBoxContainer" parent="SettingsPanel"]
 layout_mode = 2
 
-[node name="SFXLabel" type="Label" parent="SettingsPanel/VBox/SFXRow"]
+[node name="SFXLabel" type="Label" parent="SettingsPanel/SFXRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(196, 0)
+theme_override_font_sizes/font_size = 31
 text = "SFX"
 
-[node name="SFXSlider" type="HSlider" parent="SettingsPanel/VBox/SFXRow"]
+[node name="SFXSlider" type="HSlider" parent="SettingsPanel/SFXRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 100.0
 step = 1.0
 value = 80.0
 
-[node name="SFXValue" type="Label" parent="SettingsPanel/VBox/SFXRow"]
+[node name="SFXValue" type="Label" parent="SettingsPanel/SFXRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(84, 0)
+theme_override_font_sizes/font_size = 31
 text = "80%"
 horizontal_alignment = 2
 
-[node name="MuteRow" type="HBoxContainer" parent="SettingsPanel/VBox"]
+[node name="MuteRow" type="HBoxContainer" parent="SettingsPanel"]
 layout_mode = 2
 
-[node name="MuteLabel" type="Label" parent="SettingsPanel/VBox/MuteRow"]
+[node name="MuteLabel" type="Label" parent="SettingsPanel/MuteRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(196, 0)
+theme_override_font_sizes/font_size = 31
 text = "Mute All"
 
-[node name="MuteCheck" type="CheckButton" parent="SettingsPanel/VBox/MuteRow"]
+[node name="MuteCheck" type="CheckButton" parent="SettingsPanel/MuteRow"]
 layout_mode = 2
 
-[node name="Sep1" type="HSeparator" parent="SettingsPanel/VBox"]
+[node name="Spacer1" type="Control" parent="SettingsPanel"]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 11)
 
-[node name="BackButton" type="Button" parent="SettingsPanel/VBox"]
+[node name="BackLabel" type="Label" parent="SettingsPanel"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 36)
-text = "< BACK"
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 39
+text = "BACK"
+horizontal_alignment = 1
