@@ -11,6 +11,8 @@ var spawning: bool = false
 
 # Map bounds (set by game_manager after map generation)
 var map_rect: Rect2 = Rect2()
+# How far outside camera to spawn (set by game_manager from WaveManager)
+var spawn_margin: float = 96.0
 
 func _ready() -> void:
 	enemy_scenes = {
@@ -60,33 +62,26 @@ func _get_spawn_position() -> Vector2:
 			3: return Vector2(vp.x + margin, randf_range(margin, vp.y - margin))
 		return Vector2(-margin, -margin)
 
-	# Spawn off-camera but within map bounds
+	# Spawn at spawn_margin distance from camera center, within map bounds
 	var camera := get_viewport().get_camera_2d()
 	if not camera:
 		return map_rect.get_center()
 
-	var vp_size := get_viewport_rect().size
-	var cam_rect := Rect2(camera.global_position - vp_size / 2.0, vp_size)
-	var margin := 96.0  # One tile outside camera
+	var center := camera.global_position
+	var map_margin := 16.0
 
-	# Try to find a position inside map but outside camera view
 	for _attempt in 20:
-		var pos := Vector2(
-			randf_range(map_rect.position.x + margin, map_rect.end.x - margin),
-			randf_range(map_rect.position.y + margin, map_rect.end.y - margin)
-		)
-		if not cam_rect.has_point(pos):
+		var angle := randf() * TAU
+		var pos := center + Vector2(cos(angle), sin(angle)) * spawn_margin
+		if map_rect.grow(-map_margin).has_point(pos):
 			return pos
 
-	# Fallback: spawn at edge of camera view
-	var side := randi() % 4
-	var expanded := cam_rect.grow(margin)
-	match side:
-		0: return Vector2(randf_range(expanded.position.x, expanded.end.x), expanded.position.y)
-		1: return Vector2(randf_range(expanded.position.x, expanded.end.x), expanded.end.y)
-		2: return Vector2(expanded.position.x, randf_range(expanded.position.y, expanded.end.y))
-		3: return Vector2(expanded.end.x, randf_range(expanded.position.y, expanded.end.y))
-	return expanded.position
+	# Fallback: clamp to map bounds
+	var angle := randf() * TAU
+	var pos := center + Vector2(cos(angle), sin(angle)) * spawn_margin
+	pos.x = clampf(pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
+	pos.y = clampf(pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
+	return pos
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	enemy_killed_global.emit(pos, type)

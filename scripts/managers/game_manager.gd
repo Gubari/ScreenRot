@@ -74,6 +74,7 @@ func start_next_wave() -> void:
 	tween.tween_property(wave_label, "modulate:a", 0.0, 1.5).set_delay(1.0)
 
 	var queue: Array = get_wave_data(current_wave)
+	enemy_spawner.spawn_margin = wave_manager.get_spawn_radius(current_wave)
 	enemy_spawner.start_spawning(queue)
 
 func get_wave_data(wave: int) -> Array:
