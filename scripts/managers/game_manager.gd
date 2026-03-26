@@ -15,6 +15,7 @@ extends Node2D
 @onready var game_over_screen: CanvasLayer = $GameOver
 @onready var upgrade_select: CanvasLayer = $UpgradeSelect
 @onready var debris_overlay: CanvasLayer = $DebrisOverlay
+@onready var dungeon_map: Node2D = $DungeonMap
 
 var current_wave: int = 0
 var wave_active: bool = false
@@ -23,6 +24,23 @@ var kills_this_wave: int = 0
 var run_credits: int = 0
 
 func _ready() -> void:
+	# Generate dungeon map first
+	if dungeon_map and dungeon_map.has_method("generate"):
+		dungeon_map.generate()
+		var map_rect: Rect2 = dungeon_map.get_map_rect()
+
+		# Pass map bounds to player
+		player.map_rect = map_rect
+		player.setup_camera_limits(map_rect)
+		player.global_position = dungeon_map.get_player_spawn()
+
+		# Pass map bounds to enemy spawner
+		enemy_spawner.map_rect = map_rect
+
+		# Pass map size to debris overlay
+		if debris_overlay and debris_overlay.has_method("setup_map_size"):
+			debris_overlay.setup_map_size(map_rect.size)
+
 	player.player_damaged.connect(_on_player_damaged)
 	player.score_changed.connect(_on_score_changed)
 	player.player_died.connect(_on_player_died)
