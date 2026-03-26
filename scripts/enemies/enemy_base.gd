@@ -134,8 +134,6 @@ func do_movement(delta: float) -> void:
 
 	var dir := get_nav_direction()
 	var desired_velocity := dir * move_speed
-	if OS.is_debug_build():
-		queue_redraw()
 	if nav_agent and nav_agent.avoidance_enabled:
 		nav_agent.set_velocity(desired_velocity)
 	else:
@@ -144,14 +142,6 @@ func do_movement(delta: float) -> void:
 func _on_velocity_computed(safe_velocity: Vector2) -> void:
 	velocity = safe_velocity
 
-func _draw() -> void:
-	if not nav_agent or not OS.is_debug_build():
-		return
-	# Draw path
-	var path := nav_agent.get_current_navigation_path()
-	var current_idx := nav_agent.get_current_navigation_path_index()
-	for i in range(current_idx, path.size() - 1):
-		draw_line(path[i] - global_position, path[i + 1] - global_position, Color.YELLOW, 2.0)
 
 func take_damage(amount: int) -> void:
 	current_hp -= amount

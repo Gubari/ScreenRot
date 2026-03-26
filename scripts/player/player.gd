@@ -75,7 +75,6 @@ func _physics_process(delta: float) -> void:
 	handle_rotation()
 	handle_shooting(delta)
 	update_animation_state()
-	handle_defrag(delta)
 	handle_invincibility(delta)
 	move_and_slide()
 	clamp_to_arena()

@@ -36,7 +36,6 @@ var _game_won_sfx_player: AudioStreamPlayer = null
 # Boss tracking
 var _active_boss: BossBase = null
 var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
-var _defrag_pickup_scene: PackedScene = preload("res://scenes/effects/defrag_pickup.tscn")
 
 func _ready() -> void:
 	# Generate dungeon map first

@@ -41,6 +41,7 @@ func _append_neighbors4(q: Array[Vector2i], p: Vector2i, mw: int, mh: int) -> vo
 		q.append(Vector2i(x, y + 1))
 
 func _ready() -> void:
+	add_to_group("debris_overlay")
 	_init_coverage_tracker()
 	# Load at runtime so missing imports don't prevent scene loading.
 	var tex := load(glitch_anim_texture_path)
