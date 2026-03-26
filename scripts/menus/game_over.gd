@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+@onready var title_label: Label = $Panel/Title
+@onready var subtitle_label: Label = $Panel/Subtitle
 @onready var score_value: Label = $Panel/ScoreValue
 @onready var credits_value: Label = $Panel/CreditsValue
 @onready var high_score_value: Label = $Panel/HighScoreValue
@@ -14,7 +16,13 @@ func _ready() -> void:
 	quit_button.pressed.connect(_on_quit)
 	visible = false
 
-func show_game_over(score: int, credits_earned: int) -> void:
+func show_game_over(score: int, credits_earned: int, title: String = "GAME OVER", subtitle: String = "") -> void:
+	title_label.text = title
+	if subtitle != "":
+		subtitle_label.text = subtitle
+		subtitle_label.visible = true
+	else:
+		subtitle_label.visible = false
 	score_value.text = str(score)
 	credits_value.text = "+" + str(credits_earned)
 	high_score_value.text = str(SaveManager.get_high_score())

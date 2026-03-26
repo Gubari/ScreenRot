@@ -17,12 +17,20 @@ extends Node2D
 @onready var upgrade_select: CanvasLayer = $UpgradeSelect
 @onready var debris_overlay: CanvasLayer = $DebrisOverlay
 @onready var dungeon_map: Node2D = $DungeonMap
+@onready var screen_closing: CanvasLayer = $ScreenClosing
+@onready var boss_bar_container: VBoxContainer = $HUD/BossBarContainer
+@onready var boss_name_label: Label = $HUD/BossBarContainer/BossNameLabel
+@onready var boss_health_bar: ProgressBar = $HUD/BossBarContainer/BossHealthBar
 
 var current_wave: int = 0
 var wave_active: bool = false
 
 var kills_this_wave: int = 0
 var run_credits: int = 0
+
+# Boss tracking
+var _active_boss: BossBase = null
+var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
 
 func _ready() -> void:
 	# Generate dungeon map first
@@ -51,7 +59,12 @@ func _ready() -> void:
 	upgrade_select.upgrade_chosen.connect(_on_upgrade_chosen)
 	if debris_overlay and debris_overlay.has_signal("debris_changed"):
 		debris_overlay.debris_changed.connect(_on_debris_changed)
+	if screen_closing and screen_closing.has_signal("screen_percent_changed"):
+		screen_closing.screen_percent_changed.connect(_on_screen_percent_changed)
+	if screen_closing and screen_closing.has_signal("screen_fully_closed"):
+		screen_closing.screen_fully_closed.connect(_on_screen_fully_closed)
 	update_hud()
+	boss_bar_container.visible = false
 	wave_label.visible = false
 	AudioManager.play_music("gameplay")
 	await get_tree().create_timer(1.0).timeout
@@ -60,6 +73,13 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	defrag_bar.value = player.get_defrag_percent() * 100.0
 	dash_bar.value = player.get_dash_percent() * 100.0
+	# Auto-detect boss if not connected yet
+	if not _active_boss or not is_instance_valid(_active_boss):
+		_try_connect_boss()
+	# Update boss health bar
+	if _active_boss and is_instance_valid(_active_boss):
+		boss_health_bar.value = (float(_active_boss.current_hp) / float(_active_boss.max_hp)) * 100.0
+		_update_boss_bar_color()
 	if OS.is_debug_build() and Input.is_key_pressed(KEY_U):
 		_debug_skip_wave()
 
@@ -81,6 +101,115 @@ func start_next_wave() -> void:
 
 func get_wave_data(wave: int) -> Array:
 	return wave_manager.get_wave_data(wave)
+
+# ── Boss connection ───────────────────────────────────────────
+
+func _try_connect_boss() -> void:
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if enemy is BossBase:
+			_connect_boss(enemy as BossBase)
+			return
+
+func _connect_boss(boss: BossBase) -> void:
+	_active_boss = boss
+	boss.phase_changed.connect(_on_boss_phase_changed)
+	boss.request_screen_shrink.connect(_on_boss_screen_shrink)
+	boss.request_screen_restore.connect(_on_boss_screen_restore)
+	boss.request_zoom.connect(_on_boss_zoom)
+	boss.fragment_spawn_requested.connect(_on_boss_fragment_spawn)
+	boss.boss_defeated.connect(_on_boss_defeated)
+	# Show boss health bar
+	boss_name_label.text = boss.boss_id.to_upper()
+	boss_health_bar.value = 100.0
+	boss_bar_container.visible = true
+	# Start screen shrink for whatever phase boss is already in
+	match boss.current_phase:
+		1: _on_boss_screen_shrink(boss.p1_shrink_rate)
+		2: _on_boss_screen_shrink(boss.p2_shrink_rate)
+		3: _on_boss_screen_shrink(boss.p3_shrink_rate)
+
+func _on_boss_phase_changed(_phase: int) -> void:
+	_update_boss_bar_color()
+
+func _on_boss_screen_shrink(rate: float) -> void:
+	if screen_closing:
+		if rate > 0.0:
+			screen_closing.shrink_rate = rate
+			screen_closing.start(rate)
+		else:
+			screen_closing.stop()
+
+func _on_boss_screen_restore(amount: float) -> void:
+	if screen_closing:
+		screen_closing.restore(amount)
+
+func _on_boss_zoom(target_zoom: float) -> void:
+	var cam := player.get_node_or_null("Camera2D") as Camera2D
+	if cam:
+		var tw := create_tween()
+		tw.tween_property(cam, "zoom", Vector2(target_zoom, target_zoom), 0.5).set_trans(Tween.TRANS_QUAD)
+
+func _on_boss_fragment_spawn(world_pos: Vector2, value: float) -> void:
+	var frag = _fragment_scene.instantiate()
+	frag.global_position = world_pos
+	frag.restore_value = value
+	frag.collected.connect(_on_fragment_collected)
+	get_tree().current_scene.add_child(frag)
+
+func _on_fragment_collected(value: float) -> void:
+	if screen_closing:
+		screen_closing.restore(value)
+
+func _on_screen_percent_changed(percent: float) -> void:
+	if _active_boss and is_instance_valid(_active_boss):
+		_active_boss.set_screen_percent(percent)
+
+func _on_screen_fully_closed() -> void:
+	# Screen went fully black — game over
+	if not player or not is_instance_valid(player) or not player.visible:
+		return
+	wave_active = false
+	player.set_physics_process(false)
+	player.visible = false
+	# Clean up boss
+	if _active_boss and is_instance_valid(_active_boss):
+		_active_boss = null
+	if screen_closing:
+		screen_closing.stop()
+	boss_bar_container.visible = false
+	for frag in get_tree().get_nodes_in_group("screen_fragments"):
+		frag.queue_free()
+	SaveManager.add_credits(run_credits)
+	SaveManager.update_high_score(player.score)
+	game_over_screen.show_game_over(player.score, run_credits, "YOU DIED!", "There was not enough screen.")
+
+func _on_boss_defeated(_boss_id: String, _score: int) -> void:
+	_active_boss = null
+	boss_bar_container.visible = false
+	# Reset screen effects
+	if screen_closing:
+		screen_closing.reset_to_full()
+	# Reset camera zoom
+	var cam := player.get_node_or_null("Camera2D") as Camera2D
+	if cam:
+		var tw := create_tween()
+		tw.tween_property(cam, "zoom", Vector2(1.0, 1.0), 0.8).set_trans(Tween.TRANS_QUAD)
+	# Clean up remaining fragments
+	for frag in get_tree().get_nodes_in_group("screen_fragments"):
+		frag.queue_free()
+
+func _update_boss_bar_color() -> void:
+	if not _active_boss or not is_instance_valid(_active_boss):
+		return
+	var hp_pct := float(_active_boss.current_hp) / float(_active_boss.max_hp)
+	if hp_pct > 0.6:
+		boss_health_bar.modulate = Color.GREEN
+	elif hp_pct > 0.3:
+		boss_health_bar.modulate = Color.ORANGE
+	else:
+		boss_health_bar.modulate = Color.RED
+
+# ── Standard wave/enemy handling ──────────────────────────────
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	kills_this_wave += 1
@@ -180,6 +309,18 @@ func _on_score_changed(score: int, multiplier: int) -> void:
 
 func _on_player_died(final_score: int, _credits: int) -> void:
 	wave_active = false
+	# Clean up boss effects on death
+	if _active_boss and is_instance_valid(_active_boss):
+		_active_boss = null
+	if screen_closing:
+		screen_closing.reset_to_full()
+	var cam := player.get_node_or_null("Camera2D") as Camera2D
+	if cam:
+		var tw := create_tween()
+		tw.tween_property(cam, "zoom", Vector2(1.0, 1.0), 0.5)
+	boss_bar_container.visible = false
+	for frag in get_tree().get_nodes_in_group("screen_fragments"):
+		frag.queue_free()
 	SaveManager.add_credits(run_credits)
 	SaveManager.update_high_score(final_score)
 	game_over_screen.show_game_over(final_score, run_credits)
@@ -202,6 +343,17 @@ func _debug_skip_wave() -> void:
 	wave_active = false
 	enemy_spawner.spawning = false
 	enemy_spawner.spawn_queue.clear()
+	# Clean boss effects before killing enemies
+	if _active_boss and is_instance_valid(_active_boss):
+		_active_boss = null
+	if screen_closing:
+		screen_closing.reset_to_full()
+	var cam := player.get_node_or_null("Camera2D") as Camera2D
+	if cam:
+		cam.zoom = Vector2(1.0, 1.0)
+	boss_bar_container.visible = false
+	for frag in get_tree().get_nodes_in_group("screen_fragments"):
+		frag.queue_free()
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		enemy.queue_free()
 	enemy_spawner.enemies_alive = 0

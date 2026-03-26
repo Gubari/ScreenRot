@@ -18,7 +18,7 @@ signal wave_completed(wave_number: int)
 
 # HP
 @export var max_hp: int = 5
-var current_hp: int
+var current_hp: int = max_hp
 
 # Score
 var score: int = 0

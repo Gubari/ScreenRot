@@ -77,8 +77,8 @@ func _get_spawn_position() -> Vector2:
 			return pos
 
 	# Fallback: clamp to map bounds
-	var angle := randf() * TAU
-	var pos := center + Vector2(cos(angle), sin(angle)) * spawn_margin
+	var fb_angle := randf() * TAU
+	var pos := center + Vector2(cos(fb_angle), sin(fb_angle)) * spawn_margin
 	pos.x = clampf(pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
 	pos.y = clampf(pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
 	return pos
