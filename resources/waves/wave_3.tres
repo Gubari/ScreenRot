@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://chg67tvjqipj3"]
+
+[ext_resource type="Script" uid="uid://cfdwc1asb32m2" path="res://scripts/managers/wave_data.gd" id="1_wave"]
+[ext_resource type="Script" uid="uid://bilot01blr3po" path="res://scripts/managers/spawn_group.gd" id="2_group"]
+
+[sub_resource type="Resource" id="sg1"]
+script = ExtResource("2_group")
+count = 5
+
+[sub_resource type="Resource" id="sg2"]
+script = ExtResource("2_group")
+enemy_type = "static_walker"
+count = 3
+delay_before_spawn = 3.0
+
+[sub_resource type="Resource" id="sg3"]
+script = ExtResource("2_group")
+enemy_type = "bit_bug"
+count = 5
+delay_before_spawn = 3.0
+
+[resource]
+script = ExtResource("1_wave")
+wave_name = "Wave 3"
+spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1"), SubResource("sg2"), SubResource("sg3")])

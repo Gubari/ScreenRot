@@ -1,9 +1,6 @@
 extends EnemyBase
 
 func _ready() -> void:
-	max_hp = 1
-	move_speed = 80.0
-	score_value = 10
 	enemy_type = "pixel_grunt"
 	super._ready()
 

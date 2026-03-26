@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://blt1gfqwbic3u"]
+
+[ext_resource type="Script" uid="uid://cfdwc1asb32m2" path="res://scripts/managers/wave_data.gd" id="1_wave"]
+[ext_resource type="Script" uid="uid://bilot01blr3po" path="res://scripts/managers/spawn_group.gd" id="2_group"]
+
+[sub_resource type="Resource" id="sg1"]
+script = ExtResource("2_group")
+
+[resource]
+script = ExtResource("1_wave")
+wave_name = "Wave 2"
+spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1")])

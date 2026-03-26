@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://cdxps804a0b46"]
+
+[ext_resource type="Script" uid="uid://cfdwc1asb32m2" path="res://scripts/managers/wave_data.gd" id="1_wave"]
+[ext_resource type="Script" uid="uid://bilot01blr3po" path="res://scripts/managers/spawn_group.gd" id="2_group"]
+
+[sub_resource type="Resource" id="sg1"]
+script = ExtResource("2_group")
+count = 10
+
+[sub_resource type="Resource" id="sg11"]
+script = ExtResource("2_group")
+enemy_type = "static_walker"
+
+[sub_resource type="Resource" id="Resource_jvv86"]
+script = ExtResource("2_group")
+enemy_type = "bit_bug"
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_oslit"]
+script = ExtResource("2_group")
+delay_before_spawn = 4.0
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_dcgi8"]
+script = ExtResource("2_group")
+enemy_type = "static_walker"
+delay_before_spawn = 3.5
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_6q32f"]
+script = ExtResource("2_group")
+enemy_type = "bit_bug"
+delay_before_spawn = 4.5
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[resource]
+script = ExtResource("1_wave")
+wave_name = "Wave 1"
+spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1"), SubResource("sg11"), SubResource("Resource_jvv86"), SubResource("Resource_oslit"), SubResource("Resource_dcgi8"), SubResource("Resource_6q32f")])
