@@ -35,5 +35,5 @@ metadata/_custom_type_script = "uid://bilot01blr3po"
 
 [resource]
 script = ExtResource("1_wave")
-wave_name = "Wave 1"
+wave_name = ""
 spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1"), SubResource("sg11"), SubResource("Resource_jvv86"), SubResource("Resource_oslit"), SubResource("Resource_dcgi8"), SubResource("Resource_6q32f")])

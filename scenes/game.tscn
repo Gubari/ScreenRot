@@ -18,17 +18,12 @@
 [sub_resource type="Resource" id="Resource_ir15t"]
 script = ExtResource("11_trtic")
 enemy_type = "bloatware_boss"
-count = 3
-metadata/_custom_type_script = "uid://bilot01blr3po"
-
-[sub_resource type="Resource" id="Resource_trtic"]
-script = ExtResource("11_trtic")
 metadata/_custom_type_script = "uid://bilot01blr3po"
 
 [sub_resource type="Resource" id="Resource_ca42v"]
 script = ExtResource("7_kvuet")
-wave_name = "Wave 4"
-spawn_groups = Array[ExtResource("11_trtic")]([SubResource("Resource_ir15t"), SubResource("Resource_trtic")])
+wave_name = "Boss Fight"
+spawn_groups = Array[ExtResource("11_trtic")]([SubResource("Resource_ir15t")])
 spawn_radius = 200.0
 metadata/_custom_type_script = "uid://cfdwc1asb32m2"
 

@@ -52,6 +52,7 @@ func _ready() -> void:
 	if debris_overlay and debris_overlay.has_signal("debris_changed"):
 		debris_overlay.debris_changed.connect(_on_debris_changed)
 	update_hud()
+	wave_label.visible = false
 	AudioManager.play_music("gameplay")
 	await get_tree().create_timer(1.0).timeout
 	start_next_wave()
@@ -66,7 +67,8 @@ func start_next_wave() -> void:
 	current_wave += 1
 	wave_active = true
 	kills_this_wave = 0
-	wave_label.text = "WAVE " + str(current_wave)
+	var wave_name := wave_manager.get_wave_name(current_wave)
+	wave_label.text = wave_name
 	wave_label.visible = true
 	wave_label.modulate.a = 1.0
 
@@ -134,7 +136,7 @@ func _on_all_enemies_dead() -> void:
 	if not wave_active:
 		return
 	wave_active = false
-	wave_label.text = "WAVE " + str(current_wave) + " CLEARED!"
+	wave_label.text = wave_manager.get_wave_name(current_wave) + " CLEARED!"
 	wave_label.modulate.a = 1.0
 	wave_label.visible = true
 	run_credits += 10
@@ -203,7 +205,7 @@ func _debug_skip_wave() -> void:
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		enemy.queue_free()
 	enemy_spawner.enemies_alive = 0
-	wave_label.text = "WAVE " + str(current_wave) + " SKIPPED"
+	wave_label.text = wave_manager.get_wave_name(current_wave) + " SKIPPED"
 	wave_label.modulate.a = 1.0
 	wave_label.visible = true
 	await get_tree().create_timer(0.5).timeout

@@ -42,6 +42,12 @@ func get_wave_data(wave_number: int) -> Array:
 
 	return queue
 
+func get_wave_name(wave_number: int) -> String:
+	var index := clampi(wave_number - 1, 0, waves.size() - 1)
+	if not waves.is_empty() and waves[index].wave_name != "":
+		return waves[index].wave_name
+	return "Wave " + str(wave_number)
+
 func get_spawn_radius(wave_number: int) -> float:
 	if waves.is_empty():
 		return default_spawn_radius

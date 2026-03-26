@@ -8,5 +8,5 @@ script = ExtResource("2_group")
 
 [resource]
 script = ExtResource("1_wave")
-wave_name = "Wave 2"
+wave_name = ""
 spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1")])
