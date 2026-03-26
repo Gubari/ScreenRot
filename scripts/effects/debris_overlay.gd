@@ -12,11 +12,22 @@ signal debris_changed(percent: float)
 @export var glitch_brightness_threshold: float = 0.08
 @export var glitch_downsample: int = 4
 
+@export var glitch_sheet_paths: Array[String] = [
+	"res://scenes/effects/glitch_frames/horizontal_glitch_sheet.png",
+	"res://scenes/effects/glitch_frames/vertical_tear_sheet.png",
+	"res://scenes/effects/glitch_frames/vortex_circular_sheet.png",
+	"res://scenes/effects/glitch_frames/diagonal_slash_sheet.png",
+	"res://scenes/effects/glitch_frames/checkerboard_corruption_sheet.png",
+]
+@export var glitch_anim_frames_count: int = 4
+@export var glitch_anim_fps: float = 6.0
+
 @export var clear_anim_duration: float = 0.25
 
 var debris_percent: float = 0.0
 var _glitch_anim_texture: Texture2D = null
 var _glitch_choices: Array[Texture2D] = []
+var _sprite_frames_choices: Array[SpriteFrames] = []
 
 var _grid_cols: int = 0
 var _grid_rows: int = 0
@@ -43,11 +54,13 @@ func _append_neighbors4(q: Array[Vector2i], p: Vector2i, mw: int, mh: int) -> vo
 func _ready() -> void:
 	add_to_group("debris_overlay")
 	_init_coverage_tracker()
-	# Load at runtime so missing imports don't prevent scene loading.
-	var tex := load(glitch_anim_texture_path)
-	if tex is Texture2D:
-		_glitch_anim_texture = tex
-		_glitch_choices = _build_glitch_choices(tex)
+	# Try animated sprite sheets first, fall back to static BFS extraction.
+	_sprite_frames_choices = _build_sprite_frames()
+	if _sprite_frames_choices.is_empty():
+		var tex := load(glitch_anim_texture_path)
+		if tex is Texture2D:
+			_glitch_anim_texture = tex
+			_glitch_choices = _build_glitch_choices(tex)
 
 
 func setup_map_size(_size: Vector2) -> void:
@@ -118,9 +131,59 @@ func defrag_clear(percent_to_clear: float = 35.0) -> void:
 	# Recalculate coverage after removal
 	_recalculate_coverage(to_remove)
 
+func _build_sprite_frames() -> Array[SpriteFrames]:
+	var out: Array[SpriteFrames] = []
+	for path in glitch_sheet_paths:
+		var tex := load(path)
+		if not (tex is Texture2D):
+			continue
+		var sheet_img := (tex as Texture2D).get_image()
+		if sheet_img == null:
+			continue
+		var frame_w: int = sheet_img.get_width() / glitch_anim_frames_count
+		var frame_h: int = sheet_img.get_height()
+		if frame_w < 1 or frame_h < 1:
+			continue
+		var sf := SpriteFrames.new()
+		# Remove default animation, add ours
+		if sf.has_animation(&"default"):
+			sf.remove_animation(&"default")
+		sf.add_animation(&"glitch")
+		sf.set_animation_speed(&"glitch", glitch_anim_fps)
+		sf.set_animation_loop(&"glitch", true)
+		for i in range(glitch_anim_frames_count):
+			var region := Rect2i(i * frame_w, 0, frame_w, frame_h)
+			var frame_img := Image.create(frame_w, frame_h, true, Image.FORMAT_RGBA8)
+			frame_img.blit_rect(sheet_img, region, Vector2i.ZERO)
+			var frame_tex := ImageTexture.create_from_image(frame_img)
+			sf.add_frame(&"glitch", frame_tex)
+		out.append(sf)
+	return out
+
 func _spawn_glitch_block(pos: Vector2) -> void:
-	# Pick 1 of N extracted glitch sprites (static).
-	if not _glitch_choices.is_empty():
+	# Prefer animated sprites from sheets.
+	if not _sprite_frames_choices.is_empty():
+		var sf: SpriteFrames = _sprite_frames_choices[randi() % _sprite_frames_choices.size()]
+		var anim_sprite := AnimatedSprite2D.new()
+		anim_sprite.sprite_frames = sf
+		anim_sprite.animation = &"glitch"
+		anim_sprite.centered = true
+		anim_sprite.position = pos
+		anim_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		anim_sprite.z_index = 200
+		# Scale to block_size based on first frame
+		var frame_tex := sf.get_frame_texture(&"glitch", 0)
+		if frame_tex:
+			var ts := frame_tex.get_size()
+			if ts.x > 0.0 and ts.y > 0.0:
+				var s := float(block_size)
+				anim_sprite.scale = Vector2(s / ts.x, s / ts.y)
+		anim_sprite.play(&"glitch")
+		# Randomize start frame to avoid sync
+		anim_sprite.frame = randi() % glitch_anim_frames_count
+		debris_root.add_child(anim_sprite)
+	elif not _glitch_choices.is_empty():
+		# Fallback: static BFS sprites
 		var sprite := Sprite2D.new()
 		sprite.texture = _glitch_choices[randi() % _glitch_choices.size()]
 		sprite.centered = true
