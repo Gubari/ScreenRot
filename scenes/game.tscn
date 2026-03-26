@@ -8,13 +8,13 @@
 [ext_resource type="PackedScene" uid="uid://dom7chcv6feqq" path="res://scenes/menus/pause_menu.tscn" id="6_pausemenu"]
 [ext_resource type="Script" uid="uid://cfdwc1asb32m2" path="res://scripts/managers/wave_data.gd" id="7_kvuet"]
 [ext_resource type="PackedScene" uid="uid://beff53ikalm77" path="res://scenes/menus/upgrade_select.tscn" id="7_upgrade"]
-[ext_resource type="PackedScene" path="res://scenes/effects/screen_closing.tscn" id="12_screen_closing"]
 [ext_resource type="PackedScene" uid="uid://dwp4bu4c432oh" path="res://scenes/map/dungeon_map.tscn" id="8_dungeon_map"]
 [ext_resource type="Script" uid="uid://rqs6ujqgf1ee" path="res://scripts/managers/wave_manager.gd" id="8_wave_manager"]
 [ext_resource type="Resource" uid="uid://cdxps804a0b46" path="res://resources/waves/wave_1.tres" id="9_wave1"]
 [ext_resource type="Resource" uid="uid://blt1gfqwbic3u" path="res://resources/waves/wave_2.tres" id="10_wave2"]
-[ext_resource type="Script" uid="uid://bilot01blr3po" path="res://scripts/managers/spawn_group.gd" id="11_trtic"]
+[ext_resource type="Script" path="res://scripts/managers/spawn_group.gd" id="11_trtic"]
 [ext_resource type="Resource" uid="uid://chg67tvjqipj3" path="res://resources/waves/wave_3.tres" id="11_wave3"]
+[ext_resource type="PackedScene" path="res://scenes/effects/screen_closing.tscn" id="12_screen_closing"]
 
 [sub_resource type="Resource" id="Resource_ir15t"]
 script = ExtResource("11_trtic")
@@ -39,7 +39,6 @@ script = ExtResource("2_game_manager")
 position = Vector2(640, 360)
 fire_rate = 0.4
 bullet_speed = 800.0
-muzzle_offset = Vector2(18, 31)
 
 [node name="Enemies" type="Node2D" parent="." unique_id=1453406249]
 
@@ -51,7 +50,6 @@ script = ExtResource("4_spawner")
 [node name="WaveManager" type="Node" parent="." unique_id=1519002294]
 script = ExtResource("8_wave_manager")
 waves = Array[ExtResource("7_kvuet")]([ExtResource("9_wave1"), ExtResource("10_wave2"), ExtResource("11_wave3"), SubResource("Resource_ca42v")])
-is_endless_mode = true
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1007073227]
 
@@ -131,7 +129,7 @@ offset_bottom = 124.0
 text = "CLEAN"
 horizontal_alignment = 2
 
-[node name="BossBarContainer" type="VBoxContainer" parent="HUD"]
+[node name="BossBarContainer" type="VBoxContainer" parent="HUD" unique_id=1198356650]
 visible = false
 anchors_preset = 5
 anchor_left = 0.5
@@ -142,12 +140,14 @@ offset_right = 200.0
 offset_bottom = 52.0
 grow_horizontal = 2
 
-[node name="BossNameLabel" type="Label" parent="HUD/BossBarContainer"]
-horizontal_alignment = 1
+[node name="BossNameLabel" type="Label" parent="HUD/BossBarContainer" unique_id=585165214]
+layout_mode = 2
 text = "BOSS"
+horizontal_alignment = 1
 
-[node name="BossHealthBar" type="ProgressBar" parent="HUD/BossBarContainer"]
+[node name="BossHealthBar" type="ProgressBar" parent="HUD/BossBarContainer" unique_id=661850877]
 custom_minimum_size = Vector2(400, 20)
+layout_mode = 2
 value = 100.0
 show_percentage = false
 
@@ -166,4 +166,4 @@ vertical_alignment = 1
 
 [node name="UpgradeSelect" parent="." unique_id=1051217664 instance=ExtResource("7_upgrade")]
 
-[node name="ScreenClosing" parent="." instance=ExtResource("12_screen_closing")]
+[node name="ScreenClosing" parent="." unique_id=543179393 instance=ExtResource("12_screen_closing")]

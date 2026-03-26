@@ -13,8 +13,9 @@ signal wave_completed(wave_number: int)
 @export var fire_rate: float = 0.15
 @export var bullet_speed: float = 600.0
 @export var bullet_damage: int = 1
-# In sprite pixels (96×96 frame); scaled by Sprite2D.scale in handle_rotation.
-@export var muzzle_offset: Vector2 = Vector2(24, 22)
+# In sprite pixels (96×96 frame); tuned for players red x3 top character.
+# Scaled by Sprite2D.scale in handle_rotation.
+@export var muzzle_offset: Vector2 = Vector2(20, 24)
 
 # HP
 @export var max_hp: int = 5
@@ -42,6 +43,7 @@ var dash_direction: Vector2 = Vector2.ZERO
 # Shooting state
 var fire_timer: float = 0.0
 var can_shoot: bool = true
+var shoot_anim_timer: float = 0.0
 
 # Map bounds (set by game_manager after map generation)
 var map_rect: Rect2 = Rect2()
@@ -71,6 +73,7 @@ func _physics_process(delta: float) -> void:
 		handle_movement()
 	handle_rotation()
 	handle_shooting(delta)
+	update_animation_state()
 	handle_defrag(delta)
 	handle_invincibility(delta)
 	move_and_slide()
@@ -82,11 +85,6 @@ func handle_movement() -> void:
 	input_dir.y = Input.get_axis("move_up", "move_down")
 	input_dir = input_dir.normalized()
 	velocity = input_dir * move_speed
-	# Animation
-	if input_dir != Vector2.ZERO:
-		sprite.play("walk")
-	else:
-		sprite.play("idle")
 
 func handle_rotation() -> void:
 	var mouse_pos := get_global_mouse_position()
@@ -103,11 +101,27 @@ func handle_rotation() -> void:
 
 func handle_shooting(delta: float) -> void:
 	fire_timer -= delta
+	shoot_anim_timer = max(shoot_anim_timer - delta, 0.0)
 	if fire_timer < 0:
 		fire_timer = 0
 	if Input.is_action_pressed("shoot") and fire_timer <= 0 and can_shoot:
 		shoot()
 		fire_timer = fire_rate
+		shoot_anim_timer = min(fire_rate * 0.9, 0.12)
+
+func update_animation_state() -> void:
+	if current_hp <= 0:
+		return
+	if shoot_anim_timer > 0.0 and sprite.sprite_frames.has_animation("shoot"):
+		sprite.play("shoot")
+		return
+	if velocity.length_squared() > 1.0:
+		if sprite.sprite_frames.has_animation("run"):
+			sprite.play("run")
+		else:
+			sprite.play("walk")
+	else:
+		sprite.play("idle")
 
 func shoot() -> void:
 	var bullet = bullet_scene.instantiate()
@@ -201,7 +215,6 @@ func take_damage(amount: int = 1) -> void:
 	player_damaged.emit(current_hp)
 	if current_hp <= 0:
 		die()
-		AudioManager.play_sfx("player_death")
 	else:
 		AudioManager.play_sfx("player_damage")
 		invincible = true
@@ -210,6 +223,11 @@ func take_damage(amount: int = 1) -> void:
 func die() -> void:
 	player_died.emit(score, int(score / 100))
 	set_physics_process(false)
+	velocity = Vector2.ZERO
+	can_shoot = false
+	if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("death"):
+		sprite.play("death")
+		await sprite.animation_finished
 	visible = false
 
 func add_score(points: int) -> void:

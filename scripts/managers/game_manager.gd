@@ -28,6 +28,12 @@ var wave_active: bool = false
 var kills_this_wave: int = 0
 var run_credits: int = 0
 
+# Ensure win/loss sounds play only once per run.
+var _played_game_lost: bool = false
+var _played_game_won: bool = false
+var _game_over_started: bool = false
+var _game_won_sfx_player: AudioStreamPlayer = null
+
 # Boss tracking
 var _active_boss: BossBase = null
 var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
@@ -168,6 +174,15 @@ func _on_screen_fully_closed() -> void:
 	# Screen went fully black — game over
 	if not player or not is_instance_valid(player) or not player.visible:
 		return
+	if _game_over_started:
+		return
+	_game_over_started = true
+	if not _played_game_lost:
+		AudioManager.play_sfx("game_lost")
+		_played_game_lost = true
+	# Small delay so the player can actually hear the sound
+	# game_lost.wav ~0.95s
+	await get_tree().create_timer(1.1, true).timeout
 	wave_active = false
 	player.set_physics_process(false)
 	player.visible = false
@@ -184,8 +199,14 @@ func _on_screen_fully_closed() -> void:
 	game_over_screen.show_game_over(player.score, run_credits, "YOU DIED!", "There was not enough screen.")
 
 func _on_boss_defeated(_boss_id: String, _score: int) -> void:
+	if not _played_game_won:
+		_game_won_sfx_player = AudioManager.play_sfx_with_player("game_won")
+		_played_game_won = true
 	_active_boss = null
 	boss_bar_container.visible = false
+	# Don't delay sound here; boss_defeated is emitted after the boss death animation.
+	# Delay (if any) should happen before showing the win screen UI.
+	_game_over_started = true
 	# Reset screen effects
 	if screen_closing:
 		screen_closing.reset_to_full()
@@ -269,7 +290,10 @@ func _on_all_enemies_dead() -> void:
 	wave_label.modulate.a = 1.0
 	wave_label.visible = true
 	run_credits += 10
-	AudioManager.play_sfx("wave_clear")
+	# In boss fights, boss defeat should trigger "game_won" instead of "wave_clear".
+	# boss_bar_container.visible is set when a BossBase is connected and active.
+	if not boss_bar_container.visible and not _played_game_won:
+		AudioManager.play_sfx("wave_clear")
 	_update_credits_display()
 
 	await get_tree().create_timer(1.5).timeout
@@ -285,7 +309,13 @@ func _on_all_waves_completed() -> void:
 	wave_label.visible = true
 	SaveManager.add_credits(run_credits)
 	SaveManager.update_high_score(player.score)
-	game_over_screen.show_game_over(player.score, run_credits)
+	if _played_game_won:
+		# Wait until the actual game_won sound finishes (no fixed timer).
+		if _game_won_sfx_player and _game_won_sfx_player.playing:
+			await _game_won_sfx_player.finished
+		game_over_screen.show_game_over(player.score, run_credits, "GAME WON", "BOSS DEFEATED!")
+	else:
+		game_over_screen.show_game_over(player.score, run_credits)
 
 func _on_upgrade_chosen(_upgrade_id: String) -> void:
 	# TODO: apply upgrade effects to player here
@@ -308,6 +338,15 @@ func _on_score_changed(score: int, multiplier: int) -> void:
 	_update_credits_display()
 
 func _on_player_died(final_score: int, _credits: int) -> void:
+	if _game_over_started:
+		return
+	_game_over_started = true
+	if not _played_game_lost:
+		AudioManager.play_sfx("game_lost")
+		_played_game_lost = true
+	# Small delay so the player can actually hear the sound
+	# game_lost.wav ~0.95s
+	await get_tree().create_timer(1.1, true).timeout
 	wave_active = false
 	# Clean up boss effects on death
 	if _active_boss and is_instance_valid(_active_boss):
