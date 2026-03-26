@@ -43,6 +43,9 @@ var dash_direction: Vector2 = Vector2.ZERO
 var fire_timer: float = 0.0
 var can_shoot: bool = true
 
+# Map bounds (set by game_manager after map generation)
+var map_rect: Rect2 = Rect2()
+
 # Invincibility after damage
 var invincible: bool = false
 var invincible_timer: float = 0.0
@@ -218,9 +221,22 @@ func set_multiplier(new_multiplier: int) -> void:
 	score_changed.emit(score, multiplier)
 
 func clamp_to_arena() -> void:
-	var viewport_rect := get_viewport_rect()
-	global_position.x = clamp(global_position.x, 16, viewport_rect.size.x - 16)
-	global_position.y = clamp(global_position.y, 16, viewport_rect.size.y - 16)
+	if map_rect.size == Vector2.ZERO:
+		var viewport_rect := get_viewport_rect()
+		global_position.x = clamp(global_position.x, 16, viewport_rect.size.x - 16)
+		global_position.y = clamp(global_position.y, 16, viewport_rect.size.y - 16)
+		return
+	var margin := 16.0
+	global_position.x = clamp(global_position.x, map_rect.position.x + margin, map_rect.end.x - margin)
+	global_position.y = clamp(global_position.y, map_rect.position.y + margin, map_rect.end.y - margin)
+
+func setup_camera_limits(rect: Rect2) -> void:
+	var cam := $Camera2D as Camera2D
+	if cam:
+		cam.limit_left = int(rect.position.x)
+		cam.limit_top = int(rect.position.y)
+		cam.limit_right = int(rect.end.x)
+		cam.limit_bottom = int(rect.end.y)
 
 func get_defrag_percent() -> float:
 	if can_defrag:

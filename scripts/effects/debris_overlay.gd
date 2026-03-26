@@ -49,6 +49,10 @@ func _ready() -> void:
 		_glitch_choices = _build_glitch_choices(tex)
 
 
+func setup_map_size(_size: Vector2) -> void:
+	# Debris covers the screen, not the map — use viewport size
+	_init_coverage_tracker()
+
 func _init_coverage_tracker() -> void:
 	var sz: Vector2 = get_viewport().get_visible_rect().size
 	if sz.x <= 1.0 or sz.y <= 1.0:
@@ -86,9 +90,18 @@ func get_debris_percent() -> float:
 	return debris_percent
 
 func add_debris(world_pos: Vector2, _enemy_type: String) -> void:
-	_spawn_glitch_block(world_pos)
-	_mark_debris_coverage(world_pos)
+	# Convert world position to screen position (CanvasLayer uses screen coords)
+	var screen_pos := _world_to_screen(world_pos)
+	_spawn_glitch_block(screen_pos)
+	_mark_debris_coverage(screen_pos)
 	debris_changed.emit(debris_percent)
+
+func _world_to_screen(world_pos: Vector2) -> Vector2:
+	var camera := get_viewport().get_camera_2d()
+	if camera:
+		var vp_size := get_viewport().get_visible_rect().size
+		return world_pos - camera.global_position + vp_size / 2.0
+	return world_pos
 
 func defrag_clear() -> void:
 	_init_coverage_tracker()
