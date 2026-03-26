@@ -103,10 +103,19 @@ func _world_to_screen(world_pos: Vector2) -> Vector2:
 		return world_pos - camera.global_position + vp_size / 2.0
 	return world_pos
 
-func defrag_clear() -> void:
-	_init_coverage_tracker()
-	debris_changed.emit(debris_percent)
-	_animate_clear_all()
+func defrag_clear(percent_to_clear: float = 35.0) -> void:
+	var children := debris_root.get_children()
+	if children.is_empty():
+		return
+	var count_to_remove := int(ceil(children.size() * (percent_to_clear / 100.0)))
+	count_to_remove = mini(count_to_remove, children.size())
+	# Shuffle and pick random debris to remove
+	var shuffled := children.duplicate()
+	shuffled.shuffle()
+	var to_remove := shuffled.slice(0, count_to_remove)
+	_animate_clear(to_remove)
+	# Recalculate coverage after removal
+	_recalculate_coverage(to_remove)
 
 func _spawn_glitch_block(pos: Vector2) -> void:
 	# Pick 1 of N extracted glitch sprites (static).
@@ -216,10 +225,32 @@ func _build_glitch_choices(tex: Texture2D) -> Array[Texture2D]:
 
 	return out
 
-func _animate_clear_all() -> void:
-	# Copy children first to avoid mutation issues during tween callbacks.
-	var children := debris_root.get_children()
-	for c in children:
+func _recalculate_coverage(removed_nodes: Array) -> void:
+	# Unmark grid cells for removed debris
+	var cs := float(maxi(tracker_cell_size, 1))
+	var half := float(block_size) * 0.5
+	for node in removed_nodes:
+		if not (node is CanvasItem):
+			continue
+		var center: Vector2 = node.position
+		var r := Rect2(center.x - half, center.y - half, float(block_size), float(block_size))
+		var x0: int = clampi(int(floor(r.position.x / cs)), 0, _grid_cols - 1)
+		var y0: int = clampi(int(floor(r.position.y / cs)), 0, _grid_rows - 1)
+		var x1: int = clampi(int(floor((r.position.x + r.size.x - 0.001) / cs)), 0, _grid_cols - 1)
+		var y1: int = clampi(int(floor((r.position.y + r.size.y - 0.001) / cs)), 0, _grid_rows - 1)
+		for gy in range(y0, y1 + 1):
+			var row_off: int = gy * _grid_cols
+			for gx in range(x0, x1 + 1):
+				var idx: int = row_off + gx
+				if _grid[idx] == 1:
+					_grid[idx] = 0
+					_filled_cells -= 1
+	var total_cells: int = _grid_cols * _grid_rows
+	debris_percent = (100.0 * float(_filled_cells) / float(total_cells)) if total_cells > 0 else 0.0
+	debris_changed.emit(debris_percent)
+
+func _animate_clear(nodes: Array) -> void:
+	for c in nodes:
 		if not (c is CanvasItem):
 			c.queue_free()
 			continue

@@ -39,11 +39,11 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
-size = Vector2(21, 41)
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 14.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
-size = Vector2(25, 45)
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 16.0
 
 [node name="PixelGrunt" type="CharacterBody2D" unique_id=1518155190]
 collision_layer = 2
@@ -57,15 +57,15 @@ animation = &"walk"
 autoplay = "walk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=384983763]
-position = Vector2(0, 3)
-shape = SubResource("RectangleShape2D_body")
+scale = Vector2(0.7600006, 0.80000204)
+shape = SubResource("CircleShape2D_body")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=709899303]
 collision_layer = 2
 
 [node name="HitboxShape" type="CollisionShape2D" parent="Hitbox" unique_id=1989928898]
-position = Vector2(0, 3)
-shape = SubResource("RectangleShape2D_hitbox")
+scale = Vector2(1, 1.240001)
+shape = SubResource("CircleShape2D_hitbox")
 
 [connection signal="body_entered" from="Hitbox" to="." method="_on_hit_player"]
 [connection signal="body_exited" from="Hitbox" to="." method="_on_hit_player_exited"]

@@ -3,27 +3,24 @@ extends CanvasLayer
 signal upgrade_chosen(upgrade_id: String)
 
 const UPGRADE_POOL: Array = [
-	{"id": "fire_rate_up", "name": "Fire Rate+", "desc": "Pucanje 20% brze", "category": "offense"},
-	{"id": "spread_shot", "name": "Spread Shot", "desc": "3 metka u lepezi", "category": "offense"},
-	{"id": "piercing", "name": "Piercing Rounds", "desc": "Meci prolaze kroz 2 neprijatelja", "category": "offense"},
-	{"id": "ricochet", "name": "Ricochet", "desc": "Meci se odbijaju od ivica", "category": "offense"},
-	{"id": "explosive", "name": "Explosive Rounds", "desc": "Mali AoE eksplozija na kontakt", "category": "offense"},
-	{"id": "overcharge", "name": "Overcharge", "desc": "+50% damage na x3+ multiplikatoru", "category": "offense"},
-	{"id": "shield", "name": "Shield", "desc": "Apsorbuje 1 hit po wave-u", "category": "defense"},
-	{"id": "speed_boost", "name": "Speed Boost", "desc": "+15% brzina kretanja", "category": "defense"},
-	{"id": "hp_regen", "name": "HP Regen", "desc": "+1 HP na pocetku svakog wave-a", "category": "defense"},
-	{"id": "ad_block", "name": "Ad Block", "desc": "Auto-zatvara 1 pop-up svakih 8s", "category": "ui"},
-	{"id": "dark_mode", "name": "Dark Mode", "desc": "Debris postaje providniji na 3s", "category": "ui"},
-	{"id": "defrag_plus", "name": "Defrag+", "desc": "Defrag cooldown -3s", "category": "ui"},
-	{"id": "auto_close", "name": "Auto-Close", "desc": "UI elementi nestaju 2s brze", "category": "ui"},
-	{"id": "spam_filter", "name": "Spam Filter", "desc": "Cookie banneri 50% redje", "category": "ui"},
-	{"id": "premium", "name": "Premium Account", "desc": "Svi UI elementi 30% manji", "category": "ui"},
+	# Combat upgrades
+	{"id": "rapid_fire", "name": "Rapid Fire", "desc": "Fire rate +25%", "category": "combat"},
+	{"id": "heavy_rounds", "name": "Heavy Rounds", "desc": "Bullet damage +1", "category": "combat"},
+	{"id": "velocity_boost", "name": "Velocity Boost", "desc": "Move speed +20%", "category": "combat"},
+	{"id": "armor_plating", "name": "Armor Plating", "desc": "Max HP +1 i odmah heal", "category": "combat"},
+	{"id": "scatter_shot", "name": "Scatter Shot", "desc": "+2 metka pod uglom", "category": "combat"},
+	# Debris / Defrag upgrades
+	{"id": "lucky_drops", "name": "Lucky Drops", "desc": "Defrag drop sansa +10%", "category": "defrag"},
+	{"id": "extended_pickup", "name": "Extended Pickup", "desc": "Pickup traje 8s umesto 5s", "category": "defrag"},
+	{"id": "strong_defrag", "name": "Strong Defrag", "desc": "Pickup cisti 50% umesto 35%", "category": "defrag"},
+	{"id": "clean_kill", "name": "Clean Kill", "desc": "15% sanse da kill ne ostavi debris", "category": "defrag"},
+	# Movement upgrade
+	{"id": "quick_dash", "name": "Quick Dash", "desc": "Dash cooldown -25%", "category": "combat"},
 ]
 
 const CATEGORY_COLORS: Dictionary = {
-	"offense": Color(1.0, 0.3, 0.3),
-	"defense": Color(0.3, 0.7, 1.0),
-	"ui": Color(0.3, 1.0, 0.5),
+	"combat": Color(1.0, 0.3, 0.3),
+	"defrag": Color(0.3, 1.0, 0.5),
 }
 
 var chosen_upgrades: Array = []
