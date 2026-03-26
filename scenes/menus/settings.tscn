@@ -20,62 +20,53 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.03, 0.03, 0.06, 1)
 
-[node name="TopBar" type="HBoxContainer" parent="."]
+[node name="Title" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = 40.0
-offset_top = 20.0
-offset_right = -40.0
-offset_bottom = 60.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 50.0
+offset_right = 300.0
+offset_bottom = 120.0
 grow_horizontal = 2
-
-[node name="BackButton" type="Button" parent="TopBar"]
-layout_mode = 2
-custom_minimum_size = Vector2(100, 36)
-text = "< BACK"
-
-[node name="Title" type="Label" parent="TopBar"]
-layout_mode = 2
-size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+theme_override_font_sizes/font_size = 67
 text = "SETTINGS"
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="TopBar"]
-layout_mode = 2
-custom_minimum_size = Vector2(100, 0)
-
-[node name="Panel" type="MarginContainer" parent="."]
+[node name="ContentBox" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 200.0
-offset_top = 80.0
-offset_right = -200.0
-offset_bottom = -20.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -180.0
+offset_right = 340.0
+offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 20
 
-[node name="VBox" type="VBoxContainer" parent="Panel"]
+[node name="AudioTitle" type="Label" parent="ContentBox"]
 layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="AudioTitle" type="Label" parent="Panel/VBox"]
-layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.45, 0.5, 1)
+theme_override_font_sizes/font_size = 28
 text = "-- AUDIO --"
 horizontal_alignment = 1
 
-[node name="MasterRow" type="HBoxContainer" parent="Panel/VBox"]
+[node name="MasterRow" type="HBoxContainer" parent="ContentBox"]
 layout_mode = 2
 
-[node name="MasterLabel" type="Label" parent="Panel/VBox/MasterRow"]
+[node name="MasterLabel" type="Label" parent="ContentBox/MasterRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(252, 0)
+theme_override_font_sizes/font_size = 31
 text = "Master Volume"
 
-[node name="MasterSlider" type="HSlider" parent="Panel/VBox/MasterRow"]
+[node name="MasterSlider" type="HSlider" parent="ContentBox/MasterRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 0.0
@@ -83,21 +74,23 @@ max_value = 100.0
 step = 1.0
 value = 100.0
 
-[node name="MasterValue" type="Label" parent="Panel/VBox/MasterRow"]
+[node name="MasterValue" type="Label" parent="ContentBox/MasterRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(84, 0)
+theme_override_font_sizes/font_size = 31
 text = "100%"
 horizontal_alignment = 2
 
-[node name="MusicRow" type="HBoxContainer" parent="Panel/VBox"]
+[node name="MusicRow" type="HBoxContainer" parent="ContentBox"]
 layout_mode = 2
 
-[node name="MusicLabel" type="Label" parent="Panel/VBox/MusicRow"]
+[node name="MusicLabel" type="Label" parent="ContentBox/MusicRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(252, 0)
+theme_override_font_sizes/font_size = 31
 text = "Music Volume"
 
-[node name="MusicSlider" type="HSlider" parent="Panel/VBox/MusicRow"]
+[node name="MusicSlider" type="HSlider" parent="ContentBox/MusicRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 0.0
@@ -105,21 +98,23 @@ max_value = 100.0
 step = 1.0
 value = 80.0
 
-[node name="MusicValue" type="Label" parent="Panel/VBox/MusicRow"]
+[node name="MusicValue" type="Label" parent="ContentBox/MusicRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(84, 0)
+theme_override_font_sizes/font_size = 31
 text = "80%"
 horizontal_alignment = 2
 
-[node name="SFXRow" type="HBoxContainer" parent="Panel/VBox"]
+[node name="SFXRow" type="HBoxContainer" parent="ContentBox"]
 layout_mode = 2
 
-[node name="SFXLabel" type="Label" parent="Panel/VBox/SFXRow"]
+[node name="SFXLabel" type="Label" parent="ContentBox/SFXRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(252, 0)
+theme_override_font_sizes/font_size = 31
 text = "SFX Volume"
 
-[node name="SFXSlider" type="HSlider" parent="Panel/VBox/SFXRow"]
+[node name="SFXSlider" type="HSlider" parent="ContentBox/SFXRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 0.0
@@ -127,39 +122,56 @@ max_value = 100.0
 step = 1.0
 value = 80.0
 
-[node name="SFXValue" type="Label" parent="Panel/VBox/SFXRow"]
+[node name="SFXValue" type="Label" parent="ContentBox/SFXRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(84, 0)
+theme_override_font_sizes/font_size = 31
 text = "80%"
 horizontal_alignment = 2
 
-[node name="MuteRow" type="HBoxContainer" parent="Panel/VBox"]
+[node name="MuteRow" type="HBoxContainer" parent="ContentBox"]
 layout_mode = 2
 
-[node name="MuteLabel" type="Label" parent="Panel/VBox/MuteRow"]
+[node name="MuteLabel" type="Label" parent="ContentBox/MuteRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(252, 0)
+theme_override_font_sizes/font_size = 31
 text = "Mute All"
 
-[node name="MuteCheck" type="CheckButton" parent="Panel/VBox/MuteRow"]
+[node name="MuteCheck" type="CheckButton" parent="ContentBox/MuteRow"]
 layout_mode = 2
 
-[node name="Sep1" type="HSeparator" parent="Panel/VBox"]
+[node name="Sep1" type="HSeparator" parent="ContentBox"]
 layout_mode = 2
 
-[node name="DisplayTitle" type="Label" parent="Panel/VBox"]
+[node name="DisplayTitle" type="Label" parent="ContentBox"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.45, 0.5, 1)
+theme_override_font_sizes/font_size = 28
 text = "-- DISPLAY --"
 horizontal_alignment = 1
 
-[node name="FullscreenRow" type="HBoxContainer" parent="Panel/VBox"]
+[node name="FullscreenRow" type="HBoxContainer" parent="ContentBox"]
 layout_mode = 2
 
-[node name="FullscreenLabel" type="Label" parent="Panel/VBox/FullscreenRow"]
+[node name="FullscreenLabel" type="Label" parent="ContentBox/FullscreenRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(252, 0)
+theme_override_font_sizes/font_size = 31
 text = "Fullscreen"
 
-[node name="FullscreenCheck" type="CheckButton" parent="Panel/VBox/FullscreenRow"]
+[node name="FullscreenCheck" type="CheckButton" parent="ContentBox/FullscreenRow"]
 layout_mode = 2
 
+[node name="BackLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = -80.0
+offset_right = 300.0
+offset_bottom = -40.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 45
+text = "BACK"

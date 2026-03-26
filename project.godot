@@ -19,12 +19,17 @@ config/icon="res://icon.svg"
 
 SaveManager="*res://scripts/managers/save_manager.gd"
 AudioManager="*res://scripts/managers/audio_manager.gd"
+CursorManager="*res://scripts/managers/cursor_manager.gd"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+
+[gui]
+
+theme/custom="res://assets/fonts/global_theme.tres"
 
 [input]
 

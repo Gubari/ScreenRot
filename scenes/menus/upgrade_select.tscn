@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://beff53ikalm77"]
+[gd_scene load_steps=4 format=3 uid="uid://beff53ikalm77"]
 
 [ext_resource type="Script" path="res://scripts/menus/upgrade_select.gd" id="1_upgrade"]
+[ext_resource type="Shader" path="res://shaders/card_background.gdshader" id="2_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_card"]
+shader = ExtResource("2_shader")
+shader_parameter/border_color = Color(0.3, 0.3, 0.4, 0.6)
+shader_parameter/fill_color = Color(0.05, 0.05, 0.1, 0.7)
+shader_parameter/border_width = 0.015
+shader_parameter/glow_intensity = 0.3
+shader_parameter/scanline_strength = 0.08
+shader_parameter/time_speed = 0.8
 
 [node name="UpgradeSelect" type="CanvasLayer"]
 layer = 9
@@ -12,145 +22,249 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(0, 0, 0.06, 0.8)
+color = Color(0, 0, 0.06, 0.85)
 
-[node name="Panel" type="MarginContainer" parent="."]
+[node name="ContentBox" type="VBoxContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_constants/margin_left = 80
-theme_override_constants/margin_top = 60
-theme_override_constants/margin_right = 80
-theme_override_constants/margin_bottom = 60
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
-layout_mode = 2
-theme_override_constants/separation = 20
+offset_left = 80.0
+offset_top = 40.0
+offset_right = -80.0
+offset_bottom = -40.0
+theme_override_constants/separation = 24
 alignment = 1
 
-[node name="Title" type="Label" parent="Panel/VBoxContainer"]
+[node name="Title" type="Label" parent="ContentBox"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+theme_override_font_sizes/font_size = 36
 text = "CHOOSE UPGRADE"
 horizontal_alignment = 1
 
-[node name="CardContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
+[node name="CardContainer" type="HBoxContainer" parent="ContentBox"]
 layout_mode = 2
-theme_override_constants/separation = 30
+theme_override_constants/separation = 40
 alignment = 1
 
-[node name="Card1" type="PanelContainer" parent="Panel/VBoxContainer/CardContainer"]
+[node name="Card1" type="Control" parent="ContentBox/CardContainer"]
 layout_mode = 2
-custom_minimum_size = Vector2(220, 260)
+custom_minimum_size = Vector2(280, 320)
 
-[node name="VBox" type="VBoxContainer" parent="Panel/VBoxContainer/CardContainer/Card1"]
+[node name="CardBG" type="ColorRect" parent="ContentBox/CardContainer/Card1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+material = SubResource("ShaderMaterial_card")
+color = Color(1, 1, 1, 1)
+
+[node name="VBox" type="VBoxContainer" parent="ContentBox/CardContainer/Card1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorBar" type="ColorRect" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 8
+custom_minimum_size = Vector2(0, 3)
 
-[node name="ColorBar" type="ColorRect" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+[node name="Spacer" type="Control" parent="ContentBox/CardContainer/Card1/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
+
+[node name="Category" type="Label" parent="ContentBox/CardContainer/Card1/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+
+[node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 4)
 
-[node name="Spacer" type="Control" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+[node name="Name" type="Label" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 10)
-
-[node name="Category" type="Label" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
-layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+theme_override_font_sizes/font_size = 28
 horizontal_alignment = 1
 
-[node name="Name" type="Label" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+[node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
-horizontal_alignment = 1
+custom_minimum_size = Vector2(0, 8)
 
-[node name="Desc" type="Label" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+[node name="Desc" type="Label" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(260, 60)
+theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
+theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Spacer2" type="Control" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+[node name="Spacer3" type="Control" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ChooseButton" type="Button" parent="Panel/VBoxContainer/CardContainer/Card1/VBox"]
+[node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(180, 36)
-text = "CHOOSE"
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "[ CHOOSE ]"
+horizontal_alignment = 1
 
-[node name="Card2" type="PanelContainer" parent="Panel/VBoxContainer/CardContainer"]
+[node name="BottomBar" type="ColorRect" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(220, 260)
+custom_minimum_size = Vector2(0, 1)
+color = Color(0.15, 0.15, 0.2, 1)
 
-[node name="VBox" type="VBoxContainer" parent="Panel/VBoxContainer/CardContainer/Card2"]
+[node name="Card2" type="Control" parent="ContentBox/CardContainer"]
 layout_mode = 2
-theme_override_constants/separation = 8
+custom_minimum_size = Vector2(280, 320)
 
-[node name="ColorBar" type="ColorRect" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+[node name="CardBG" type="ColorRect" parent="ContentBox/CardContainer/Card2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+material = SubResource("ShaderMaterial_card")
+color = Color(1, 1, 1, 1)
+
+[node name="VBox" type="VBoxContainer" parent="ContentBox/CardContainer/Card2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorBar" type="ColorRect" parent="ContentBox/CardContainer/Card2/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 3)
+
+[node name="Spacer" type="Control" parent="ContentBox/CardContainer/Card2/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
+
+[node name="Category" type="Label" parent="ContentBox/CardContainer/Card2/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+
+[node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 4)
 
-[node name="Spacer" type="Control" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+[node name="Name" type="Label" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 10)
-
-[node name="Category" type="Label" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
-layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+theme_override_font_sizes/font_size = 28
 horizontal_alignment = 1
 
-[node name="Name" type="Label" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+[node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
-horizontal_alignment = 1
+custom_minimum_size = Vector2(0, 8)
 
-[node name="Desc" type="Label" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+[node name="Desc" type="Label" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(260, 60)
+theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
+theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Spacer2" type="Control" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+[node name="Spacer3" type="Control" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ChooseButton" type="Button" parent="Panel/VBoxContainer/CardContainer/Card2/VBox"]
+[node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(180, 36)
-text = "CHOOSE"
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "[ CHOOSE ]"
+horizontal_alignment = 1
 
-[node name="Card3" type="PanelContainer" parent="Panel/VBoxContainer/CardContainer"]
+[node name="BottomBar" type="ColorRect" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(220, 260)
+custom_minimum_size = Vector2(0, 1)
+color = Color(0.15, 0.15, 0.2, 1)
 
-[node name="VBox" type="VBoxContainer" parent="Panel/VBoxContainer/CardContainer/Card3"]
+[node name="Card3" type="Control" parent="ContentBox/CardContainer"]
 layout_mode = 2
-theme_override_constants/separation = 8
+custom_minimum_size = Vector2(280, 320)
 
-[node name="ColorBar" type="ColorRect" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+[node name="CardBG" type="ColorRect" parent="ContentBox/CardContainer/Card3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+material = SubResource("ShaderMaterial_card")
+color = Color(1, 1, 1, 1)
+
+[node name="VBox" type="VBoxContainer" parent="ContentBox/CardContainer/Card3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorBar" type="ColorRect" parent="ContentBox/CardContainer/Card3/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 3)
+
+[node name="Spacer" type="Control" parent="ContentBox/CardContainer/Card3/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
+
+[node name="Category" type="Label" parent="ContentBox/CardContainer/Card3/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+
+[node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card3/VBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 4)
 
-[node name="Spacer" type="Control" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+[node name="Name" type="Label" parent="ContentBox/CardContainer/Card3/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 10)
-
-[node name="Category" type="Label" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
-layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+theme_override_font_sizes/font_size = 28
 horizontal_alignment = 1
 
-[node name="Name" type="Label" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+[node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card3/VBox"]
 layout_mode = 2
-horizontal_alignment = 1
+custom_minimum_size = Vector2(0, 8)
 
-[node name="Desc" type="Label" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+[node name="Desc" type="Label" parent="ContentBox/CardContainer/Card3/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(260, 60)
+theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
+theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Spacer2" type="Control" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+[node name="Spacer3" type="Control" parent="ContentBox/CardContainer/Card3/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ChooseButton" type="Button" parent="Panel/VBoxContainer/CardContainer/Card3/VBox"]
+[node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card3/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(180, 36)
-text = "CHOOSE"
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "[ CHOOSE ]"
+horizontal_alignment = 1
+
+[node name="BottomBar" type="ColorRect" parent="ContentBox/CardContainer/Card3/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 1)
+color = Color(0.15, 0.15, 0.2, 1)

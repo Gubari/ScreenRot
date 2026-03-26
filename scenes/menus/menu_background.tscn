@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cyl1w1lb5k8oy"]
+
+[ext_resource type="TileSet" uid="uid://di3s2rmvqvpbp" path="res://TileSetAll.tres" id="2_tileset"]
+
+[node name="MenuBackground" type="Node2D" unique_id=923408379]
+z_index = -10
+
+[node name="FloorLayer" type="TileMapLayer" parent="." unique_id=841198999]
+z_index = -2
+tile_set = ExtResource("2_tileset")
+
+[node name="WallLayer" type="TileMapLayer" parent="." unique_id=1507859320]
+z_index = -1
+tile_set = ExtResource("2_tileset")
