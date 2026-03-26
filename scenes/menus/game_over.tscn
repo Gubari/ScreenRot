@@ -33,6 +33,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1.0, 0.3, 0.3, 1)
 theme_override_font_sizes/font_size = 56
 text = "GAME OVER"
+<<<<<<< HEAD
 
 [node name="Subtitle" type="Label" parent="Panel"]
 visible = false
@@ -43,6 +44,8 @@ modulate = Color(1, 0.4, 0.4, 1)
 custom_minimum_size = Vector2(0, 10)
 
 [node name="ScoreTitle" type="Label" parent="Panel"]
+=======
+>>>>>>> 3ae208a07cbabb4f69451bfee9c18f747d2384f2
 horizontal_alignment = 1
 
 [node name="Spacer1" type="Control" parent="ContentBox"]

@@ -1,5 +1,6 @@
 extends CanvasLayer
 
+<<<<<<< HEAD
 @onready var title_label: Label = $Panel/Title
 @onready var subtitle_label: Label = $Panel/Subtitle
 @onready var score_value: Label = $Panel/ScoreValue
@@ -9,6 +10,21 @@ extends CanvasLayer
 @onready var retry_button: Button = $Panel/RetryButton
 @onready var main_menu_button: Button = $Panel/MainMenuButton
 @onready var quit_button: Button = $Panel/QuitButton
+=======
+const COLOR_NORMAL := Color(0.45, 0.45, 0.5)
+const COLOR_HOVER := Color(0.85, 0.9, 1.0)
+const HOVER_PREFIX := "> "
+
+@onready var score_value: Label = $ContentBox/ScoreValue
+@onready var credits_value: Label = $ContentBox/StatsRow/CreditsBox/CreditsValue
+@onready var high_score_value: Label = $ContentBox/StatsRow/HighScoreBox/HighScoreValue
+@onready var total_credits_value: Label = $ContentBox/StatsRow/TotalCreditsBox/TotalCreditsValue
+@onready var retry_label: Label = $ContentBox/MenuItems/RetryLabel
+@onready var main_menu_label: Label = $ContentBox/MenuItems/MainMenuLabel
+@onready var quit_label: Label = $ContentBox/MenuItems/QuitLabel
+
+var menu_items: Array[Dictionary] = []
+>>>>>>> 3ae208a07cbabb4f69451bfee9c18f747d2384f2
 
 func _ready() -> void:
 	menu_items = [
@@ -39,7 +55,11 @@ func _on_item_unhover(item: Dictionary) -> void:
 func _on_item_input(event: InputEvent, item: Dictionary) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		item.action.call()
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 3ae208a07cbabb4f69451bfee9c18f747d2384f2
 func show_game_over(score: int, credits_earned: int, title: String = "GAME OVER", subtitle: String = "") -> void:
 	title_label.text = title
 	if subtitle != "":
