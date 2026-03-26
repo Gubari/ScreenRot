@@ -60,33 +60,18 @@ offset_right = 200.0
 offset_bottom = 40.0
 text = "HP: 5/5"
 
-[node name="DefragLabel" type="Label" parent="HUD" unique_id=1086321773]
+[node name="DashLabel" type="Label" parent="HUD" unique_id=765826155]
 offset_left = 16.0
 offset_top = 40.0
 offset_right = 160.0
 offset_bottom = 56.0
-text = "DEFRAG"
-
-[node name="DefragBar" type="ProgressBar" parent="HUD" unique_id=26854529]
-offset_left = 16.0
-offset_top = 56.0
-offset_right = 160.0
-offset_bottom = 68.0
-value = 100.0
-show_percentage = false
-
-[node name="DashLabel" type="Label" parent="HUD" unique_id=765826155]
-offset_left = 16.0
-offset_top = 72.0
-offset_right = 160.0
-offset_bottom = 88.0
 text = "DASH"
 
 [node name="DashBar" type="ProgressBar" parent="HUD" unique_id=1720269616]
 offset_left = 16.0
-offset_top = 88.0
+offset_top = 56.0
 offset_right = 160.0
-offset_bottom = 100.0
+offset_bottom = 68.0
 value = 100.0
 show_percentage = false
 

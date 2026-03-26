@@ -13,6 +13,8 @@ var spawning: bool = false
 var map_rect: Rect2 = Rect2()
 # How far outside camera to spawn (set by game_manager from WaveManager)
 var spawn_margin: float = 96.0
+# Reference to dungeon map for walkability checks
+var dungeon_map: Node2D = null
 
 func _ready() -> void:
 	enemy_scenes = {
@@ -62,7 +64,7 @@ func _get_spawn_position() -> Vector2:
 			3: return Vector2(vp.x + margin, randf_range(margin, vp.y - margin))
 		return Vector2(-margin, -margin)
 
-	# Spawn at spawn_margin distance from camera center, within map bounds
+	# Spawn at spawn_margin distance from camera center, on walkable tiles
 	var camera := get_viewport().get_camera_2d()
 	if not camera:
 		return map_rect.get_center()
@@ -70,18 +72,23 @@ func _get_spawn_position() -> Vector2:
 	var center := camera.global_position
 	var map_margin := 16.0
 
-	for _attempt in 20:
+	for _attempt in 40:
 		var angle := randf() * TAU
 		var pos := center + Vector2(cos(angle), sin(angle)) * spawn_margin
-		if map_rect.grow(-map_margin).has_point(pos):
+		if map_rect.grow(-map_margin).has_point(pos) and _is_walkable(pos):
 			return pos
 
 	# Fallback: clamp to map bounds
 	var fb_angle := randf() * TAU
-	var pos := center + Vector2(cos(fb_angle), sin(fb_angle)) * spawn_margin
-	pos.x = clampf(pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
-	pos.y = clampf(pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
-	return pos
+	var fallback_pos := center + Vector2(cos(fb_angle), sin(fb_angle)) * spawn_margin
+	fallback_pos.x = clampf(fallback_pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
+	fallback_pos.y = clampf(fallback_pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
+	return fallback_pos
+
+func _is_walkable(pos: Vector2) -> bool:
+	if dungeon_map and dungeon_map.has_method("is_walkable"):
+		return dungeon_map.is_walkable(pos)
+	return true
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	enemy_killed_global.emit(pos, type)

@@ -2,9 +2,7 @@ extends CharacterBody2D
 
 signal player_died(score: int, credits: int)
 signal player_damaged(current_hp: int)
-signal defrag_activated()
 signal score_changed(score: int, multiplier: int)
-signal wave_completed(wave_number: int)
 
 # Movement
 @export var move_speed: float = 250.0
@@ -25,11 +23,6 @@ var current_hp: int = max_hp
 var score: int = 0
 var multiplier: int = 1
 
-# Defrag
-@export var defrag_cooldown: float = 12.0
-var defrag_timer: float = 0.0
-var can_defrag: bool = true
-
 # Dash
 @export var dash_speed: float = 600.0
 @export var dash_duration: float = 0.15
@@ -44,6 +37,14 @@ var dash_direction: Vector2 = Vector2.ZERO
 var fire_timer: float = 0.0
 var can_shoot: bool = true
 var shoot_anim_timer: float = 0.0
+
+# Upgrade stats
+var upgrade_scatter_shot: bool = false
+var upgrade_clean_kill_chance: float = 0.0
+var upgrade_defrag_drop_bonus: float = 0.0
+var upgrade_defrag_lifetime_bonus: float = 0.0
+var upgrade_defrag_strength_bonus: float = 0.0
+var upgrade_adrenaline: bool = false
 
 # Map bounds (set by game_manager after map generation)
 var map_rect: Rect2 = Rect2()
@@ -84,7 +85,10 @@ func handle_movement() -> void:
 	input_dir.x = Input.get_axis("move_left", "move_right")
 	input_dir.y = Input.get_axis("move_up", "move_down")
 	input_dir = input_dir.normalized()
-	velocity = input_dir * move_speed
+	var speed := move_speed
+	if upgrade_adrenaline and current_hp <= max_hp / 2.0:
+		speed *= 1.15
+	velocity = input_dir * speed
 
 func handle_rotation() -> void:
 	var mouse_pos := get_global_mouse_position()
@@ -124,33 +128,24 @@ func update_animation_state() -> void:
 		sprite.play("idle")
 
 func shoot() -> void:
+	_spawn_bullet(Vector2.ZERO)
+	if upgrade_scatter_shot:
+		_spawn_bullet(Vector2.ZERO, deg_to_rad(15.0))
+		_spawn_bullet(Vector2.ZERO, deg_to_rad(-15.0))
+	AudioManager.play_sfx("shoot")
+
+func _spawn_bullet(offset: Vector2, angle_offset: float = 0.0) -> void:
 	var bullet = bullet_scene.instantiate()
-	bullet.global_position = muzzle.global_position
-	# Aim from muzzle toward cursor; center→mouse would miss the crosshair when spawn is offset.
+	bullet.global_position = muzzle.global_position + offset
 	var aim_dir: Vector2 = (get_global_mouse_position() - bullet.global_position).normalized()
+	if angle_offset != 0.0:
+		aim_dir = aim_dir.rotated(angle_offset)
 	bullet.rotation = aim_dir.angle()
 	bullet.direction = aim_dir
 	bullet.speed = bullet_speed
 	bullet.damage = bullet_damage
 	get_tree().current_scene.add_child(bullet)
-	AudioManager.play_sfx("shoot")
 
-func handle_defrag(delta: float) -> void:
-	if not can_defrag:
-		defrag_timer -= delta
-		if defrag_timer <= 0:
-			can_defrag = true
-			defrag_timer = 0
-	if Input.is_action_just_pressed("defrag") and can_defrag:
-		activate_defrag()
-
-func activate_defrag() -> void:
-	can_defrag = false
-	defrag_timer = defrag_cooldown
-	multiplier = 1
-	score_changed.emit(score, multiplier)
-	defrag_activated.emit()
-	AudioManager.play_sfx("defrag")
 
 func handle_dash(delta: float) -> void:
 	# Cooldown
@@ -221,7 +216,7 @@ func take_damage(amount: int = 1) -> void:
 		invincible_timer = invincible_duration
 
 func die() -> void:
-	player_died.emit(score, int(score / 100))
+	player_died.emit(score, int(score / 100.0))
 	set_physics_process(false)
 	velocity = Vector2.ZERO
 	can_shoot = false
@@ -255,11 +250,6 @@ func setup_camera_limits(rect: Rect2) -> void:
 		cam.limit_top = int(rect.position.y)
 		cam.limit_right = int(rect.end.x)
 		cam.limit_bottom = int(rect.end.y)
-
-func get_defrag_percent() -> float:
-	if can_defrag:
-		return 1.0
-	return 1.0 - (defrag_timer / defrag_cooldown)
 
 func get_dash_percent() -> float:
 	if can_dash:

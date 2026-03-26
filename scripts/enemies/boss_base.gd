@@ -72,14 +72,13 @@ func _physics_process(delta: float) -> void:
 		_handle_fragment_spawning(delta)
 		_update_animation()
 
-func do_movement(_delta: float) -> void:
+func do_movement(delta: float) -> void:
 	if not player or not is_instance_valid(player):
 		return
-	var dir = (player.global_position - global_position).normalized()
-	velocity = dir * move_speed
+	super.do_movement(delta)
 	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
 	if spr:
-		spr.flip_h = dir.x < 0.0
+		spr.flip_h = velocity.x < 0.0
 
 # ── Phase management ──────────────────────────────────────────
 

@@ -4,7 +4,6 @@ extends Node2D
 @onready var hud: CanvasLayer = $HUD
 @onready var hp_label: Label = $HUD/HPLabel
 @onready var score_label: Label = $HUD/ScoreLabel
-@onready var defrag_bar: ProgressBar = $HUD/DefragBar
 @onready var dash_bar: ProgressBar = $HUD/DashBar
 @onready var multiplier_label: Label = $HUD/MultiplierLabel
 @onready var debris_bar: ProgressBar = $HUD/DebrisBar
@@ -37,6 +36,7 @@ var _game_won_sfx_player: AudioStreamPlayer = null
 # Boss tracking
 var _active_boss: BossBase = null
 var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
+var _defrag_pickup_scene: PackedScene = preload("res://scenes/effects/defrag_pickup.tscn")
 
 func _ready() -> void:
 	# Generate dungeon map first
@@ -49,8 +49,9 @@ func _ready() -> void:
 		player.setup_camera_limits(map_rect)
 		player.global_position = dungeon_map.get_player_spawn()
 
-		# Pass map bounds to enemy spawner
+		# Pass map bounds and map reference to enemy spawner
 		enemy_spawner.map_rect = map_rect
+		enemy_spawner.dungeon_map = dungeon_map
 
 		# Pass map size to debris overlay
 		if debris_overlay and debris_overlay.has_method("setup_map_size"):
@@ -59,7 +60,6 @@ func _ready() -> void:
 	player.player_damaged.connect(_on_player_damaged)
 	player.score_changed.connect(_on_score_changed)
 	player.player_died.connect(_on_player_died)
-	player.defrag_activated.connect(_on_defrag_activated)
 	enemy_spawner.all_enemies_dead.connect(_on_all_enemies_dead)
 	enemy_spawner.enemy_killed_global.connect(_on_enemy_killed)
 	upgrade_select.upgrade_chosen.connect(_on_upgrade_chosen)
@@ -77,7 +77,6 @@ func _ready() -> void:
 	start_next_wave()
 
 func _process(_delta: float) -> void:
-	defrag_bar.value = player.get_defrag_percent() * 100.0
 	dash_bar.value = player.get_dash_percent() * 100.0
 	# Auto-detect boss if not connected yet
 	if not _active_boss or not is_instance_valid(_active_boss):
@@ -235,11 +234,15 @@ func _update_boss_bar_color() -> void:
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	kills_this_wave += 1
 	run_credits += 1
-	if debris_overlay and debris_overlay.has_method("add_debris"):
+	# Clean Kill upgrade: chance to skip debris
+	var skip_debris: bool = player.upgrade_clean_kill_chance > 0.0 and randf() < player.upgrade_clean_kill_chance
+	if not skip_debris and debris_overlay and debris_overlay.has_method("add_debris"):
 		debris_overlay.add_debris(pos, type)
 	update_debris_display()
 	update_multiplier()
 	_update_credits_display()
+	# Connect any new defrag pickups spawned by enemy death
+	_connect_defrag_pickups()
 
 func update_multiplier() -> void:
 	var debris_percent := _get_debris_percent()
@@ -317,9 +320,35 @@ func _on_all_waves_completed() -> void:
 	else:
 		game_over_screen.show_game_over(player.score, run_credits)
 
-func _on_upgrade_chosen(_upgrade_id: String) -> void:
-	# TODO: apply upgrade effects to player here
+func _on_upgrade_chosen(upgrade_id: String) -> void:
+	_apply_upgrade(upgrade_id)
 	start_next_wave()
+
+func _apply_upgrade(upgrade_id: String) -> void:
+	match upgrade_id:
+		"rapid_fire":
+			player.fire_rate *= 0.75
+		"heavy_rounds":
+			player.bullet_damage += 1
+		"velocity_boost":
+			player.move_speed *= 1.20
+		"armor_plating":
+			player.max_hp += 1
+			player.current_hp += 1
+			_on_player_damaged(player.current_hp)
+		"scatter_shot":
+			player.upgrade_scatter_shot = true
+		"lucky_drops":
+			player.upgrade_defrag_drop_bonus += 0.10
+		"extended_pickup":
+			player.upgrade_defrag_lifetime_bonus += 3.0
+		"strong_defrag":
+			player.upgrade_defrag_strength_bonus += 15.0
+		"clean_kill":
+			player.upgrade_clean_kill_chance += 0.15
+		"quick_dash":
+			player.dash_cooldown *= 0.75
+
 
 func update_hud() -> void:
 	hp_label.text = "HP: " + str(player.current_hp) + "/" + str(player.max_hp)
@@ -367,9 +396,17 @@ func _on_player_died(final_score: int, _credits: int) -> void:
 func _update_credits_display() -> void:
 	credits_label.text = "Credits: " + str(run_credits)
 
-func _on_defrag_activated() -> void:
+func _connect_defrag_pickups() -> void:
+	for pickup in get_tree().get_nodes_in_group("defrag_pickups"):
+		if not pickup.collected.is_connected(_on_defrag_pickup_collected):
+			# Apply upgrade bonuses to pickup
+			pickup.lifetime = 5.0 + player.upgrade_defrag_lifetime_bonus
+			pickup.defrag_percent = 35.0 + player.upgrade_defrag_strength_bonus
+			pickup.collected.connect(_on_defrag_pickup_collected.bind(pickup.defrag_percent))
+
+func _on_defrag_pickup_collected(clear_percent: float) -> void:
 	if debris_overlay and debris_overlay.has_method("defrag_clear"):
-		debris_overlay.defrag_clear()
+		debris_overlay.defrag_clear(clear_percent)
 	update_debris_display()
 	update_multiplier()
 
