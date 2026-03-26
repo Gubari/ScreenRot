@@ -14,6 +14,7 @@ func _ready() -> void:
 		"pixel_grunt": preload("res://scenes/enemies/pixel_grunt.tscn"),
 		"static_walker": preload("res://scenes/enemies/static_walker.tscn"),
 		"bit_bug": preload("res://scenes/enemies/bit_bug.tscn"),
+		"bloatware_boss": preload("res://scenes/enemies/bloatware_boss.tscn"),
 	}
 
 func _process(delta: float) -> void:

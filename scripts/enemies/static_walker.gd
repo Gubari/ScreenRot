@@ -5,9 +5,6 @@ var zig_zag_dir: float = 1.0
 @export var zig_zag_interval: float = 0.8
 
 func _ready() -> void:
-	max_hp = 2
-	move_speed = 100.0
-	score_value = 20
 	enemy_type = "static_walker"
 	super._ready()
 
