@@ -27,18 +27,25 @@ func _ready() -> void:
 	# Create music player
 	music_player = AudioStreamPlayer.new()
 	music_player.bus = "Music"
+	# Keep playing even when the game tree is paused.
+	music_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(music_player)
 
 	# Create SFX player pool
 	for i in SFX_POOL_SIZE:
 		var player := AudioStreamPlayer.new()
 		player.bus = "SFX"
+		# Keep playing even when the game tree is paused.
+		player.process_mode = Node.PROCESS_MODE_ALWAYS
 		add_child(player)
 		sfx_players.append(player)
 
 	# Load sound files
 	_load_sfx_library()
 	_load_music_library()
+	# Hook UI buttons globally so ui_click plays even when Controls consume the mouse event.
+	_hook_ui_buttons_recursive(get_tree().root)
+	get_tree().node_added.connect(_on_node_added)
 
 func _load_sfx_library() -> void:
 	var dir := DirAccess.open(SFX_PATH)
@@ -95,6 +102,18 @@ func play_sfx(sound_name: String, volume_db: float = 0.0) -> void:
 	player.play()
 	sfx_index = (sfx_index + 1) % SFX_POOL_SIZE
 
+## Play a sound effect and return the AudioStreamPlayer used.
+## Returns null if the sound doesn't exist in the library.
+func play_sfx_with_player(sound_name: String, volume_db: float = 0.0) -> AudioStreamPlayer:
+	if sound_name not in sfx_library:
+		return null
+	var player := sfx_players[sfx_index]
+	player.stream = sfx_library[sound_name]
+	player.volume_db = volume_db
+	player.play()
+	sfx_index = (sfx_index + 1) % SFX_POOL_SIZE
+	return player
+
 ## Play music track by name (e.g. "gameplay", "menu", "boss")
 ## Loops by default. Silently does nothing if track doesn't exist yet
 func play_music(track_name: String, volume_db: float = 0.0) -> void:
@@ -123,3 +142,30 @@ func has_sfx(sound_name: String) -> bool:
 
 func has_music(track_name: String) -> bool:
 	return track_name in music_library
+
+var _last_ui_click_ms: int = -100000
+
+func _on_node_added(node: Node) -> void:
+	_maybe_connect_ui_click(node)
+
+func _hook_ui_buttons_recursive(n: Node) -> void:
+	_maybe_connect_ui_click(n)
+	for child in n.get_children():
+		if child is Node:
+			_hook_ui_buttons_recursive(child)
+
+func _maybe_connect_ui_click(node: Node) -> void:
+	# Most clickable UI in Godot derives from BaseButton.
+	if node is BaseButton:
+		var btn := node as BaseButton
+		# Prevent double-connecting.
+		if not btn.pressed.is_connected(Callable(self, "_play_ui_click")):
+			btn.pressed.connect(Callable(self, "_play_ui_click"))
+
+func _play_ui_click() -> void:
+	var now := Time.get_ticks_msec()
+	# Debounce: avoid double playback from multiple signals in same frame.
+	if now - _last_ui_click_ms < 80:
+		return
+	_last_ui_click_ms = now
+	play_sfx("ui_click")

@@ -9,6 +9,9 @@ extends Node
 
 @export var waves: Array[WaveData] = []
 @export var is_endless_mode: bool = false
+## Default distance from camera center at which enemies spawn (in pixels).
+## Used when a WaveData doesn't set its own spawn_radius.
+@export var default_spawn_radius: float = 600.0
 
 ## Converts a WaveData resource into the spawn queue format
 ## that EnemySpawner expects: [{"type": String, "count": int, "delay": float}]
@@ -38,6 +41,21 @@ func get_wave_data(wave_number: int) -> Array:
 		})
 
 	return queue
+
+func get_wave_name(wave_number: int) -> String:
+	var index := clampi(wave_number - 1, 0, waves.size() - 1)
+	if not waves.is_empty() and waves[index].wave_name != "":
+		return waves[index].wave_name
+	return "Wave " + str(wave_number)
+
+func get_spawn_radius(wave_number: int) -> float:
+	if waves.is_empty():
+		return default_spawn_radius
+	var index := clampi(wave_number - 1, 0, waves.size() - 1)
+	var wave: WaveData = waves[index]
+	if wave.spawn_radius > 0.0:
+		return wave.spawn_radius
+	return default_spawn_radius
 
 func has_next_wave(current_wave: int) -> bool:
 	if is_endless_mode:

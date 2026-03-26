@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/screen_closing.gd" id="1_sc"]
+
+[node name="ScreenClosing" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_sc")
+
+[node name="Top" type="ColorRect" parent="."]
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Bottom" type="ColorRect" parent="."]
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Left" type="ColorRect" parent="."]
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Right" type="ColorRect" parent="."]
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
