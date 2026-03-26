@@ -10,6 +10,7 @@ extends Node2D
 @onready var debris_bar: ProgressBar = $HUD/DebrisBar
 @onready var debris_label: Label = $HUD/DebrisLabel
 @onready var enemy_spawner: Node2D = $EnemySpawner
+@onready var wave_manager: WaveManager = $WaveManager
 @onready var wave_label: Label = $HUD/WaveLabel
 @onready var credits_label: Label = $HUD/CreditsLabel
 @onready var game_over_screen: CanvasLayer = $GameOver
@@ -76,27 +77,7 @@ func start_next_wave() -> void:
 	enemy_spawner.start_spawning(queue)
 
 func get_wave_data(wave: int) -> Array:
-	match wave:
-		1:
-			return [
-				{"type": "pixel_grunt", "count": 3, "delay": 0.0},
-				{"type": "pixel_grunt", "count": 2, "delay": 3.0},
-				{"type": "static_walker", "count": 2, "delay": 4.0},
-				{"type": "bit_bug", "count": 3, "delay": 3.0},
-				{"type": "pixel_grunt", "count": 4, "delay": 4.0},
-				{"type": "static_walker", "count": 2, "delay": 3.0},
-				{"type": "bit_bug", "count": 5, "delay": 3.0},
-				{"type": "pixel_grunt", "count": 8, "delay": 4.0},
-				{"type": "static_walker", "count": 2, "delay": 2.0},
-				{"type": "bit_bug", "count": 5, "delay": 2.0},
-				{"type": "pixel_grunt", "count": 4, "delay": 2.0},
-			]
-		_:
-			return [
-				{"type": "pixel_grunt", "count": 5, "delay": 0.0},
-				{"type": "static_walker", "count": 3, "delay": 3.0},
-				{"type": "bit_bug", "count": 5, "delay": 3.0},
-			]
+	return wave_manager.get_wave_data(wave)
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	kills_this_wave += 1
@@ -160,7 +141,19 @@ func _on_all_enemies_dead() -> void:
 	_update_credits_display()
 
 	await get_tree().create_timer(1.5).timeout
-	upgrade_select.show_upgrades(current_wave)
+
+	if wave_manager.has_next_wave(current_wave):
+		upgrade_select.show_upgrades(current_wave)
+	else:
+		_on_all_waves_completed()
+
+func _on_all_waves_completed() -> void:
+	wave_label.text = "ALL WAVES CLEARED!"
+	wave_label.modulate.a = 1.0
+	wave_label.visible = true
+	SaveManager.add_credits(run_credits)
+	SaveManager.update_high_score(player.score)
+	game_over_screen.show_game_over(player.score, run_credits)
 
 func _on_upgrade_chosen(_upgrade_id: String) -> void:
 	# TODO: apply upgrade effects to player here

@@ -4,10 +4,27 @@
 [ext_resource type="Script" uid="uid://2v0e4m3ml5ea" path="res://scripts/managers/game_manager.gd" id="2_game_manager"]
 [ext_resource type="Script" uid="uid://b6j74amxi5d1y" path="res://scripts/managers/enemy_spawner.gd" id="4_spawner"]
 [ext_resource type="PackedScene" uid="uid://ce78ft6jgs5aa" path="res://scenes/menus/game_over.tscn" id="5_gameover"]
-[ext_resource type="PackedScene" uid="uid://dom7chcv6feqq" path="res://scenes/menus/pause_menu.tscn" id="6_pausemenu"]
-[ext_resource type="PackedScene" uid="uid://upgr4d3s3l001" path="res://scenes/menus/upgrade_select.tscn" id="7_upgrade"]
 [ext_resource type="PackedScene" uid="uid://debr1s0verl4y" path="res://scenes/effects/debris_overlay.tscn" id="6_debris_overlay"]
 [ext_resource type="PackedScene" uid="uid://dung30nm4p0001" path="res://scenes/map/dungeon_map.tscn" id="8_dungeon_map"]
+[ext_resource type="PackedScene" uid="uid://dom7chcv6feqq" path="res://scenes/menus/pause_menu.tscn" id="6_pausemenu"]
+[ext_resource type="Script" uid="uid://cfdwc1asb32m2" path="res://scripts/managers/wave_data.gd" id="7_kvuet"]
+[ext_resource type="PackedScene" uid="uid://beff53ikalm77" path="res://scenes/menus/upgrade_select.tscn" id="7_upgrade"]
+[ext_resource type="Script" uid="uid://rqs6ujqgf1ee" path="res://scripts/managers/wave_manager.gd" id="8_wave_manager"]
+[ext_resource type="Resource" uid="uid://cdxps804a0b46" path="res://resources/waves/wave_1.tres" id="9_wave1"]
+[ext_resource type="Resource" uid="uid://blt1gfqwbic3u" path="res://resources/waves/wave_2.tres" id="10_wave2"]
+[ext_resource type="Script" uid="uid://bilot01blr3po" path="res://scripts/managers/spawn_group.gd" id="11_trtic"]
+[ext_resource type="Resource" uid="uid://chg67tvjqipj3" path="res://resources/waves/wave_3.tres" id="11_wave3"]
+
+[sub_resource type="Resource" id="Resource_ir15t"]
+script = ExtResource("11_trtic")
+enemy_type = "bloatware_boss"
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_ca42v"]
+script = ExtResource("7_kvuet")
+wave_name = "Wave 4"
+spawn_groups = Array[ExtResource("11_trtic")]([SubResource("Resource_ir15t")])
+metadata/_custom_type_script = "uid://cfdwc1asb32m2"
 
 [node name="Game" type="Node2D" unique_id=1244125603]
 script = ExtResource("2_game_manager")
@@ -28,6 +45,11 @@ muzzle_offset = Vector2(18, 31)
 
 [node name="EnemySpawner" type="Node2D" parent="." unique_id=1337137573]
 script = ExtResource("4_spawner")
+
+[node name="WaveManager" type="Node" parent="." unique_id=1519002294]
+script = ExtResource("8_wave_manager")
+waves = Array[ExtResource("7_kvuet")]([ExtResource("9_wave1"), ExtResource("10_wave2"), ExtResource("11_wave3"), SubResource("Resource_ca42v")])
+is_endless_mode = true
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1007073227]
 
@@ -84,7 +106,7 @@ offset_bottom = 64.0
 text = "x1"
 horizontal_alignment = 2
 
-[node name="CreditsLabel" type="Label" parent="HUD"]
+[node name="CreditsLabel" type="Label" parent="HUD" unique_id=1919347428]
 offset_left = 1080.0
 offset_top = 64.0
 offset_right = 1264.0
@@ -118,6 +140,6 @@ vertical_alignment = 1
 
 [node name="GameOver" parent="." unique_id=1562961081 instance=ExtResource("5_gameover")]
 
-[node name="PauseMenu" parent="." instance=ExtResource("6_pausemenu")]
+[node name="PauseMenu" parent="." unique_id=875356330 instance=ExtResource("6_pausemenu")]
 
-[node name="UpgradeSelect" parent="." instance=ExtResource("7_upgrade")]
+[node name="UpgradeSelect" parent="." unique_id=1051217664 instance=ExtResource("7_upgrade")]

@@ -1,13 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://en3my_bitbg01"]
+[gd_scene format=3 uid="uid://by2h21qxfi1vn"]
 
-[ext_resource type="Script" path="res://scripts/enemies/bit_bug.gd" id="1_bitbug"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/enemies_x3.png" id="2_bitbug_atlas"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
-size = Vector2(20, 32)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
-size = Vector2(24, 36)
+[ext_resource type="Script" uid="uid://b8qi3m85lb814" path="res://scripts/enemies/bit_bug.gd" id="1_bitbug"]
+[ext_resource type="Texture2D" uid="uid://dirytjfxwwy4d" path="res://assets/sprites/enemies/enemies_x3.png" id="2_bitbug_atlas"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bitbug_0"]
 atlas = ExtResource("2_bitbug_atlas")
@@ -45,27 +39,33 @@ animations = [{
 "speed": 6.0
 }]
 
-[node name="BitBug" type="CharacterBody2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(20, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(24, 36)
+
+[node name="BitBug" type="CharacterBody2D" unique_id=1377790981]
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_bitbug")
+move_speed = 150.0
+enemy_type = "bit_bug"
 
-[node name="Sprite" type="AnimatedSprite2D" parent="."]
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=847632551]
+scale = Vector2(0.455, 0.455)
 sprite_frames = SubResource("SpriteFrames_bitbug")
 animation = &"walk"
-playing = true
 autoplay = "walk"
-scale = Vector2(0.455, 0.455)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1585499529]
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_body")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=2082882960]
 collision_layer = 2
-collision_mask = 1
 
-[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox" unique_id=670368177]
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_hitbox")
 

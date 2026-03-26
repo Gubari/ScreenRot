@@ -3,9 +3,6 @@ extends EnemyBase
 var jitter_offset: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
-	max_hp = 1
-	move_speed = 150.0
-	score_value = 10
 	enemy_type = "bit_bug"
 	super._ready()
 

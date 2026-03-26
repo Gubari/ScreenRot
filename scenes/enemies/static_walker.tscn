@@ -1,13 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://en3my_walkr01"]
+[gd_scene format=3 uid="uid://mailskoktoep"]
 
-[ext_resource type="Script" path="res://scripts/enemies/static_walker.gd" id="1_walker"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/enemies_x3.png" id="2_walker_atlas"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
-size = Vector2(31, 39)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
-size = Vector2(35, 43)
+[ext_resource type="Script" uid="uid://b0q7cucajm03q" path="res://scripts/enemies/static_walker.gd" id="1_walker"]
+[ext_resource type="Texture2D" uid="uid://dirytjfxwwy4d" path="res://assets/sprites/enemies/enemies_x3.png" id="2_walker_atlas"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_walker_0"]
 atlas = ExtResource("2_walker_atlas")
@@ -45,27 +39,35 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="StaticWalker" type="CharacterBody2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(31, 39)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(35, 43)
+
+[node name="StaticWalker" type="CharacterBody2D" unique_id=2111115747]
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_walker")
+max_hp = 2
+move_speed = 100.0
+score_value = 20
+enemy_type = "static_walker"
 
-[node name="Sprite" type="AnimatedSprite2D" parent="."]
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=982399046]
+scale = Vector2(0.52, 0.52)
 sprite_frames = SubResource("SpriteFrames_walker")
 animation = &"walk"
-playing = true
 autoplay = "walk"
-scale = Vector2(0.52, 0.52)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1797237074]
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_body")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=1358356285]
 collision_layer = 2
-collision_mask = 1
 
-[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox" unique_id=787689740]
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_hitbox")
 
