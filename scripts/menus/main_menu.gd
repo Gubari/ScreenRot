@@ -1,6 +1,7 @@
 extends Control
 
-@onready var start_label: Label = $MenuContainer/StartLabel
+@onready var classic_label: Label = $MenuContainer/ClassicLabel
+@onready var challenge_label: Label = $MenuContainer/ChallengeLabel
 @onready var settings_label: Label = $MenuContainer/SettingsLabel
 @onready var character_label: Label = $MenuContainer/CharacterLabel
 @onready var quit_label: Label = $MenuContainer/QuitLabel
@@ -14,7 +15,8 @@ var menu_items: Array[Dictionary] = []
 
 func _ready() -> void:
 	menu_items = [
-		{"label": start_label, "text": "START", "action": _on_start},
+		{"label": classic_label, "text": "CLASSIC MODE", "action": _on_classic},
+		{"label": challenge_label, "text": "CHALLENGE MODE", "action": _on_challenge},
 		{"label": settings_label, "text": "SETTINGS", "action": _on_settings},
 		{"label": character_label, "text": "CHARACTER", "action": _on_character_shop},
 		{"label": quit_label, "text": "QUIT", "action": _on_quit},
@@ -63,7 +65,12 @@ func _update_stats() -> void:
 func _on_credits_changed(_amount: int) -> void:
 	_update_stats()
 
-func _on_start() -> void:
+func _on_classic() -> void:
+	GameMode.current_mode = GameMode.Mode.CLASSIC
+	get_tree().change_scene_to_file("res://scenes/game.tscn")
+
+func _on_challenge() -> void:
+	GameMode.current_mode = GameMode.Mode.CHALLENGE
 	get_tree().change_scene_to_file("res://scenes/game.tscn")
 
 func _on_settings() -> void:

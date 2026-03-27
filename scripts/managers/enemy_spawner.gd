@@ -38,6 +38,7 @@ func _process(delta: float) -> void:
 				spawning = false
 
 func start_spawning(queue: Array) -> void:
+	enemies_alive = 0
 	spawn_queue = queue.duplicate(true)
 	spawning = true
 	if spawn_queue.size() > 0:
@@ -60,6 +61,7 @@ func _on_toxic_fly_egg_hatched(pos: Vector2) -> void:
 	fly.global_position = pos
 	fly.enemy_killed.connect(_on_enemy_killed)
 	get_parent().get_node("Enemies").add_child(fly)
+	enemies_alive += 1
 
 func _get_spawn_position(type: String = "") -> Vector2:
 	if type == "toxic_fly":
@@ -142,8 +144,8 @@ func _is_walkable(pos: Vector2) -> bool:
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	enemy_killed_global.emit(pos, type)
-	enemies_alive -= 1
-	if enemies_alive <= 0 and not spawning and spawn_queue.size() == 0:
+	enemies_alive = maxi(enemies_alive - 1, 0)
+	if enemies_alive == 0 and not spawning and spawn_queue.size() == 0:
 		all_enemies_dead.emit()
 
 func get_enemy_count() -> int:

@@ -89,8 +89,17 @@ func show_upgrades(wave_number: int) -> void:
 	available.shuffle()
 	current_picks = available.slice(0, 3)
 
+	# No upgrades left — skip straight to next wave
+	if current_picks.is_empty():
+		upgrade_chosen.emit("")
+		return
+
 	for i in 3:
-		_fill_card(cards[i], current_picks[i])
+		if i < current_picks.size():
+			_fill_card(cards[i], current_picks[i])
+			cards[i].visible = true
+		else:
+			cards[i].visible = false
 
 	visible = true
 	get_tree().paused = true
