@@ -29,7 +29,6 @@ spawn_radius = 200.0
 metadata/_custom_type_script = "uid://cfdwc1asb32m2"
 
 [node name="Game" type="Node2D" unique_id=1244125603]
-visible = false
 script = ExtResource("2_game_manager")
 
 [node name="DungeonMap" parent="." unique_id=1555452792 instance=ExtResource("8_dungeon_map")]
@@ -116,7 +115,6 @@ text = "CLEAN"
 horizontal_alignment = 2
 
 [node name="BossBarContainer" type="VBoxContainer" parent="HUD" unique_id=1198356650]
-visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -147,13 +145,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="GameOver" parent="." unique_id=1562961081 instance=ExtResource("5_gameover")]
-visible = false
 
 [node name="PauseMenu" parent="." unique_id=875356330 instance=ExtResource("6_pausemenu")]
-visible = false
 
 [node name="UpgradeSelect" parent="." unique_id=1051217664 instance=ExtResource("7_upgrade")]
-visible = false
 
 [node name="ScreenClosing" parent="." unique_id=543179393 instance=ExtResource("12_screen_closing")]
-visible = false
