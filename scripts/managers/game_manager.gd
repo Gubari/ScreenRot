@@ -24,6 +24,12 @@ extends Node2D
 const PLAYER_SCENES: Dictionary = {
 	"red_small": preload("res://scenes/player/player.tscn"),
 	"red_heavy": preload("res://scenes/player/player_heavy.tscn"),
+	"blue_small": preload("res://scenes/player/player_blue.tscn"),
+	"blue_heavy": preload("res://scenes/player/player_heavy_blue.tscn"),
+	"green_small": preload("res://scenes/player/player_green.tscn"),
+	"green_heavy": preload("res://scenes/player/player_heavy_green.tscn"),
+	"grey_small": preload("res://scenes/player/player_grey.tscn"),
+	"grey_heavy": preload("res://scenes/player/player_heavy_grey.tscn"),
 }
 
 var current_wave: int = 0

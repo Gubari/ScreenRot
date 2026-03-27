@@ -1,8 +1,553 @@
 [gd_scene format=3 uid="uid://c1d8auyuq7iyy"]
 
-[ext_resource type="Script" path="res://scripts/menus/shop.gd" id="1_shop"]
+[ext_resource type="Script" uid="uid://25n1ehfeu5m2" path="res://scripts/menus/shop.gd" id="1_shop"]
+[ext_resource type="PackedScene" uid="uid://bkojn6dpkapvh" path="res://scenes/menus/shop_background.tscn" id="2_shopbg"]
+[ext_resource type="Texture2D" uid="uid://c3d51qtukrqtf" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/NPC/npc x3.png" id="3_d4ipy"]
+[ext_resource type="Texture2D" uid="uid://d3yeoqf8ejvdb" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players blue x3.png" id="4_awhd1"]
+[ext_resource type="Texture2D" uid="uid://bne7qaer4ow1a" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players red x3.png" id="4_p6j4a"]
+[ext_resource type="Texture2D" uid="uid://cmlyvoxsewipv" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players green x3.png" id="6_tqrtc"]
+[ext_resource type="Texture2D" uid="uid://cv1sjjwxqu1vv" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players grey x3.png" id="7_op5ld"]
 
-[node name="Shop" type="Control"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_5ogrl"]
+atlas = ExtResource("3_d4ipy")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s5xlo"]
+atlas = ExtResource("3_d4ipy")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3bxsg"]
+atlas = ExtResource("3_d4ipy")
+region = Rect2(192, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jh02y"]
+atlas = ExtResource("3_d4ipy")
+region = Rect2(288, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_51dev"]
+atlas = ExtResource("3_d4ipy")
+region = Rect2(384, 0, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_awhd1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5ogrl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s5xlo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3bxsg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jh02y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_51dev")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hlia1"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(0, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t8gge"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(96, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xbfln"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(0, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_whiy6"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(96, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_guaar"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(192, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xione"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(288, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q47p7"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(384, 192, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0aa07"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hlia1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t8gge")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xbfln")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_whiy6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_guaar")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xione")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q47p7")
+}],
+"loop": false,
+"name": &"selected",
+"speed": 3.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0tncc"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(0, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lr2rd"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(96, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6j4a"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(0, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tqrtc"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(96, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_op5ld"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(192, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lsiq6"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(288, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m8xc7"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(384, 192, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hlia1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0tncc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lr2rd")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6j4a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tqrtc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_op5ld")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lsiq6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m8xc7")
+}],
+"loop": false,
+"name": &"selected",
+"speed": 3.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1v62w"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(0, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qaisr"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(96, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p5lgq"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(0, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wp74b"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(96, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pbc7x"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(192, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vovxh"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(288, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_73flu"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(384, 192, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_w7r28"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1v62w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qaisr")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p5lgq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wp74b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pbc7x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vovxh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_73flu")
+}],
+"loop": false,
+"name": &"selected",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_033t3"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(0, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oxkml"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(96, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3mimt"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(0, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_674wd"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(96, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4q1d5"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(192, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_di67g"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(288, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tp7b7"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(384, 192, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wmln4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_033t3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oxkml")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3mimt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_674wd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4q1d5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_di67g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tp7b7")
+}],
+"loop": false,
+"name": &"selected",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ar5o"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(0, 768, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6b2n"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(96, 768, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_83uv2"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(0, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_co1rb"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(96, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fjgcc"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(192, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pfnr7"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(288, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d78qo"]
+atlas = ExtResource("4_p6j4a")
+region = Rect2(384, 864, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eam54"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4ar5o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6b2n")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_83uv2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_co1rb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fjgcc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pfnr7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d78qo")
+}],
+"loop": false,
+"name": &"selected",
+"speed": 3.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mbg4b"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(0, 768, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wh1kb"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(96, 768, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_umy56"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(0, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xfasy"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(96, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lgmyl"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(192, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r8dff"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(288, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6wjnc"]
+atlas = ExtResource("4_awhd1")
+region = Rect2(384, 864, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ynxtp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mbg4b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wh1kb")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_umy56")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xfasy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lgmyl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r8dff")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6wjnc")
+}],
+"loop": false,
+"name": &"selected",
+"speed": 3.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_onpy4"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(0, 768, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_233oj"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(96, 768, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4qwad"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(0, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0epq"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(96, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uia2h"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(192, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n84ga"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(288, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ui43w"]
+atlas = ExtResource("6_tqrtc")
+region = Rect2(384, 864, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pxy4v"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_onpy4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_233oj")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4qwad")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0epq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uia2h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n84ga")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ui43w")
+}],
+"loop": false,
+"name": &"selected",
+"speed": 3.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4xc8n"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(0, 768, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qh55o"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(96, 768, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u43dp"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(0, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_61s8d"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(96, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uyd5d"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(192, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kry12"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(288, 864, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e2g2o"]
+atlas = ExtResource("7_op5ld")
+region = Rect2(384, 864, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rn5nv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4xc8n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qh55o")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u43dp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_61s8d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uyd5d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kry12")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e2g2o")
+}],
+"loop": false,
+"name": &"selected",
+"speed": 3.0
+}]
+
+[node name="Shop" type="Control" unique_id=1035947382]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,57 +556,430 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_shop")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="ShopBackground" parent="." unique_id=1424573054 instance=ExtResource("2_shopbg")]
+
+[node name="Overlay" type="ColorRect" parent="." unique_id=799185993]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.03, 0.03, 0.06, 1)
+color = Color(0.025840001, 0.025840001, 0.050708726, 0.3)
 
-[node name="TopBar" type="HBoxContainer" parent="."]
+[node name="UI" type="Control" parent="." unique_id=621046910]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_left = 40.0
-offset_top = 20.0
-offset_right = -40.0
-offset_bottom = 60.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 
-[node name="BackButton" type="Button" parent="TopBar"]
-layout_mode = 2
+[node name="BackButton" type="Button" parent="UI" unique_id=2043998156]
 custom_minimum_size = Vector2(100, 36)
+layout_mode = 0
+offset_left = 29.000002
+offset_top = 37.0
+offset_right = 129.0
+offset_bottom = 77.0
+scale = Vector2(1.2563107, 1.2563107)
 text = "< BACK"
 
-[node name="Title" type="Label" parent="TopBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "CHARACTER SHOP"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CreditsLabel" type="Label" parent="TopBar"]
-layout_mode = 2
+[node name="CreditsLabel" type="Label" parent="UI" unique_id=763360429]
+texture_filter = 1
 custom_minimum_size = Vector2(160, 0)
+layout_mode = 0
+offset_left = 1083.0
+offset_top = 46.0
+offset_right = 1243.0
+offset_bottom = 83.0
+theme_override_font_sizes/font_size = 36
 text = "Credits: 0"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 80.0
-offset_top = 80.0
-offset_right = -80.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ItemContainer" type="VBoxContainer" parent="ScrollContainer"]
-layout_mode = 2
+[node name="Title" type="Label" parent="UI" unique_id=1436593488]
+texture_filter = 1
+layout_mode = 0
+offset_left = 492.00003
+offset_top = 38.0
+offset_right = 640.0
+offset_bottom = 63.0
+scale = Vector2(1.3338223, 1.3338223)
 size_flags_horizontal = 3
-theme_override_constants/separation = 12
+theme_override_font_sizes/font_size = 36
+text = "CHARACTER SHOP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InfoLabel" type="Label" parent="UI" unique_id=1006395600]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 516.0
+offset_top = 102.0
+offset_right = -568.0
+offset_bottom = 127.0
+grow_horizontal = 2
+scale = Vector2(1.191368, 1.191368)
+text = "Selected: Red Light"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NPC" type="AnimatedSprite2D" parent="." unique_id=1019352266]
+texture_filter = 1
+position = Vector2(200, 359)
+scale = Vector2(2.6659172, 2.6678383)
+sprite_frames = SubResource("SpriteFrames_awhd1")
+autoplay = "default"
+
+[node name="red_small" type="Control" parent="." unique_id=1117685419]
+anchors_preset = 0
+offset_left = 481.0
+offset_top = 213.0
+offset_right = 577.0
+offset_bottom = 373.0
+
+[node name="Sprite" type="AnimatedSprite2D" parent="red_small" unique_id=1176468939]
+texture_filter = 1
+position = Vector2(43, 16.999996)
+scale = Vector2(1.452, 1.452)
+sprite_frames = SubResource("SpriteFrames_0aa07")
+animation = &"selected"
+autoplay = "idle"
+
+[node name="Overlay" type="ColorRect" parent="red_small" unique_id=1215843870]
+layout_mode = 0
+offset_right = 93.0
+offset_bottom = 93.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="LockLabel" type="Label" parent="red_small" unique_id=762941352]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+text = "LOCKED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="red_small" unique_id=1768312608]
+layout_mode = 0
+offset_top = 96.0
+offset_right = 96.0
+offset_bottom = 121.0
+horizontal_alignment = 1
+
+[node name="ActionButton" type="Button" parent="red_small" unique_id=1040051442]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 96.0
+offset_bottom = 156.0
+text = "SELECT"
+
+[node name="blue_small" type="Control" parent="." unique_id=1108417390]
+anchors_preset = 0
+offset_left = 674.0
+offset_top = 213.0
+offset_right = 674.0
+offset_bottom = 213.0
+
+[node name="Sprite" type="AnimatedSprite2D" parent="blue_small" unique_id=1241422748]
+texture_filter = 1
+position = Vector2(47, 16.999996)
+scale = Vector2(1.452226, 1.452226)
+sprite_frames = SubResource("SpriteFrames_hlia1")
+animation = &"selected"
+autoplay = "idle"
+
+[node name="Overlay" type="ColorRect" parent="blue_small" unique_id=1042284326]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 94.0
+offset_bottom = 93.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="LockLabel" type="Label" parent="blue_small" unique_id=2084836975]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+text = "LOCKED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="blue_small" unique_id=1235288446]
+layout_mode = 0
+offset_top = 96.0
+offset_right = 96.0
+offset_bottom = 121.0
+horizontal_alignment = 1
+
+[node name="ActionButton" type="Button" parent="blue_small" unique_id=724939648]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 96.0
+offset_bottom = 156.0
+text = "BUY"
+
+[node name="green_small" type="Control" parent="." unique_id=150199869]
+anchors_preset = 0
+offset_left = 866.0
+offset_top = 213.0
+offset_right = 962.0
+offset_bottom = 373.0
+
+[node name="Sprite" type="AnimatedSprite2D" parent="green_small" unique_id=676116294]
+texture_filter = 1
+position = Vector2(46, 16.999996)
+scale = Vector2(1.452, 1.452)
+sprite_frames = SubResource("SpriteFrames_w7r28")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.89093006
+
+[node name="Overlay" type="ColorRect" parent="green_small" unique_id=2110274876]
+layout_mode = 0
+offset_right = 94.0
+offset_bottom = 94.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="LockLabel" type="Label" parent="green_small" unique_id=925685087]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+text = "LOCKED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="green_small" unique_id=971841644]
+layout_mode = 0
+offset_top = 97.0
+offset_right = 96.0
+offset_bottom = 122.0
+horizontal_alignment = 1
+
+[node name="ActionButton" type="Button" parent="green_small" unique_id=1833619047]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 96.0
+offset_bottom = 156.0
+text = "BUY"
+
+[node name="grey_small" type="Control" parent="." unique_id=924191764]
+anchors_preset = 0
+offset_left = 1059.0
+offset_top = 212.0
+offset_right = 1155.0
+offset_bottom = 372.0
+
+[node name="Sprite" type="AnimatedSprite2D" parent="grey_small" unique_id=1559783379]
+texture_filter = 1
+position = Vector2(43, 17.999996)
+scale = Vector2(1.452, 1.452)
+sprite_frames = SubResource("SpriteFrames_wmln4")
+animation = &"selected"
+autoplay = "idle"
+
+[node name="Overlay" type="ColorRect" parent="grey_small" unique_id=635603532]
+layout_mode = 0
+offset_right = 93.0
+offset_bottom = 93.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="LockLabel" type="Label" parent="grey_small" unique_id=737269018]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+text = "LOCKED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="grey_small" unique_id=451988559]
+layout_mode = 0
+offset_top = 96.0
+offset_right = 96.0
+offset_bottom = 121.0
+horizontal_alignment = 1
+
+[node name="ActionButton" type="Button" parent="grey_small" unique_id=273176721]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 96.0
+offset_bottom = 156.0
+text = "BUY"
+
+[node name="red_heavy" type="Control" parent="." unique_id=1570339831]
+anchors_preset = 0
+offset_left = 481.0
+offset_top = 405.0
+offset_right = 577.0
+offset_bottom = 565.0
+
+[node name="Sprite" type="AnimatedSprite2D" parent="red_heavy" unique_id=822454134]
+texture_filter = 1
+position = Vector2(39, 22.999996)
+scale = Vector2(1.3, 1.3)
+sprite_frames = SubResource("SpriteFrames_eam54")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="Overlay" type="ColorRect" parent="red_heavy" unique_id=1859272058]
+layout_mode = 0
+offset_right = 95.0
+offset_bottom = 95.0
+scale = Vector2(1.0071899, 1.0010165)
+color = Color(0, 0, 0, 0.7)
+
+[node name="LockLabel" type="Label" parent="red_heavy" unique_id=818934110]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+text = "LOCKED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="red_heavy" unique_id=1107522495]
+layout_mode = 0
+offset_top = 97.0
+offset_right = 96.0
+offset_bottom = 122.0
+horizontal_alignment = 1
+
+[node name="ActionButton" type="Button" parent="red_heavy" unique_id=1978657618]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 96.0
+offset_bottom = 156.0
+text = "BUY"
+
+[node name="blue_heavy" type="Control" parent="." unique_id=1442419197]
+anchors_preset = 0
+offset_left = 674.0
+offset_top = 405.0
+offset_right = 770.0
+offset_bottom = 565.0
+
+[node name="Sprite" type="AnimatedSprite2D" parent="blue_heavy" unique_id=1197797304]
+texture_filter = 1
+position = Vector2(40, 22.999996)
+scale = Vector2(1.3, 1.3)
+sprite_frames = SubResource("SpriteFrames_ynxtp")
+animation = &"selected"
+autoplay = "idle"
+frame = 4
+frame_progress = 1.0
+
+[node name="Overlay" type="ColorRect" parent="blue_heavy" unique_id=195999738]
+layout_mode = 0
+offset_right = 94.0
+offset_bottom = 94.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="LockLabel" type="Label" parent="blue_heavy" unique_id=1748144068]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+text = "LOCKED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="blue_heavy" unique_id=711709263]
+layout_mode = 0
+offset_top = 96.0
+offset_right = 96.0
+offset_bottom = 121.0
+horizontal_alignment = 1
+
+[node name="ActionButton" type="Button" parent="blue_heavy" unique_id=672482042]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 96.0
+offset_bottom = 156.0
+text = "BUY"
+
+[node name="green_heavy" type="Control" parent="." unique_id=686844941]
+anchors_preset = 0
+offset_left = 866.0
+offset_top = 405.0
+offset_right = 962.0
+offset_bottom = 565.0
+
+[node name="Sprite" type="AnimatedSprite2D" parent="green_heavy" unique_id=423921351]
+texture_filter = 1
+position = Vector2(39, 23)
+scale = Vector2(1.3, 1.3)
+sprite_frames = SubResource("SpriteFrames_pxy4v")
+animation = &"selected"
+autoplay = "idle"
+frame = 4
+frame_progress = 1.0
+
+[node name="Overlay" type="ColorRect" parent="green_heavy" unique_id=438973196]
+layout_mode = 0
+offset_right = 94.0
+offset_bottom = 94.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="LockLabel" type="Label" parent="green_heavy" unique_id=1922150159]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+text = "LOCKED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="green_heavy" unique_id=2084847183]
+layout_mode = 0
+offset_top = 96.0
+offset_right = 96.0
+offset_bottom = 121.0
+horizontal_alignment = 1
+
+[node name="ActionButton" type="Button" parent="green_heavy" unique_id=467029082]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 96.0
+offset_bottom = 156.0
+text = "BUY"
+
+[node name="grey_heavy" type="Control" parent="." unique_id=333458269]
+anchors_preset = 0
+offset_left = 1059.0
+offset_top = 405.0
+offset_right = 1155.0
+offset_bottom = 565.0
+
+[node name="Sprite" type="AnimatedSprite2D" parent="grey_heavy" unique_id=1076441247]
+texture_filter = 1
+position = Vector2(41, 23)
+scale = Vector2(1.3, 1.3)
+sprite_frames = SubResource("SpriteFrames_rn5nv")
+animation = &"selected"
+autoplay = "idle"
+
+[node name="Overlay" type="ColorRect" parent="grey_heavy" unique_id=908308668]
+layout_mode = 0
+offset_right = 94.0
+offset_bottom = 94.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="LockLabel" type="Label" parent="grey_heavy" unique_id=1107028602]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+text = "LOCKED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PriceLabel" type="Label" parent="grey_heavy" unique_id=686696156]
+layout_mode = 0
+offset_top = 97.0
+offset_right = 96.0
+offset_bottom = 122.0
+horizontal_alignment = 1
+
+[node name="ActionButton" type="Button" parent="grey_heavy" unique_id=1986707287]
+layout_mode = 0
+offset_top = 124.0
+offset_right = 96.0
+offset_bottom = 156.0
+text = "BUY"

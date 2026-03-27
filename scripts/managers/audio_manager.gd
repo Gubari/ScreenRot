@@ -165,7 +165,8 @@ func _input(event: InputEvent) -> void:
 			and event.pressed:
 		var vp := get_viewport()
 		var hovered := vp.gui_get_hovered_control()
-		if hovered and hovered.is_visible_in_tree():
+		if hovered and hovered.is_visible_in_tree() \
+				and hovered.mouse_default_cursor_shape == Control.CURSOR_POINTING_HAND:
 			_play_ui_click()
 
 func _on_node_added(node: Node) -> void:

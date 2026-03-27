@@ -72,18 +72,27 @@ func _on_settings() -> void:
 func _on_quit() -> void:
 	get_tree().quit()
 
+const CHAR_DISPLAY_NAMES: Dictionary = {
+	"red_small": "RED LIGHT",
+	"blue_small": "BLUE LIGHT",
+	"green_small": "GREEN LIGHT",
+	"grey_small": "GREY LIGHT",
+	"red_heavy": "RED HEAVY",
+	"blue_heavy": "BLUE HEAVY",
+	"green_heavy": "GREEN HEAVY",
+	"grey_heavy": "GREY HEAVY",
+}
+
 func _display_name(char_id: String) -> String:
-	match char_id:
-		"red_small": return "SMALL"
-		"red_heavy": return "HEAVY"
-		_: return char_id.to_upper()
+	return CHAR_DISPLAY_NAMES.get(char_id, char_id.to_upper())
 
 func _update_character_label() -> void:
 	var sel := SaveManager.get_selected_character()
-	if sel == "red_heavy" and not SaveManager.has_character("red_heavy"):
+	# Validate: if selected character is not unlocked, revert to default
+	if sel != "red_small" and not SaveManager.has_character(sel):
 		sel = "red_small"
 		SaveManager.set_selected_character(sel)
-	character_label.text = "CHARACTER: " + _display_name(sel)
+	character_label.text = "CHARACTERS"
 
 func _on_character_shop() -> void:
 	get_tree().change_scene_to_file("res://scenes/menus/shop.tscn")
