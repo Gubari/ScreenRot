@@ -1,7 +1,31 @@
 [gd_scene format=3 uid="uid://p1ay3r000001"]
 
 [ext_resource type="Script" uid="uid://bf3hcv0kr376p" path="res://scripts/player/player.gd" id="1_player"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players red x3.png" id="2_spritesheet"]
+[ext_resource type="Texture2D" uid="uid://bne7qaer4ow1a" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players red x3.png" id="2_spritesheet"]
+
+[sub_resource type="AtlasTexture" id="death_0"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(0, 480, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_1"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(96, 480, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_2"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(288, 480, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_3"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(384, 480, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_4"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(480, 480, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_5"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(672, 480, 96, 96)
 
 [sub_resource type="AtlasTexture" id="idle_0"]
 atlas = ExtResource("2_spritesheet")
@@ -10,22 +34,6 @@ region = Rect2(0, 0, 96, 96)
 [sub_resource type="AtlasTexture" id="idle_nogun_0"]
 atlas = ExtResource("2_spritesheet")
 region = Rect2(192, 0, 96, 96)
-
-[sub_resource type="AtlasTexture" id="talk_0"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 96, 96, 96)
-
-[sub_resource type="AtlasTexture" id="talk_1"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(96, 96, 96, 96)
-
-[sub_resource type="AtlasTexture" id="talk_nogun_0"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(288, 96, 96, 96)
-
-[sub_resource type="AtlasTexture" id="talk_nogun_1"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(384, 96, 96, 96)
 
 [sub_resource type="AtlasTexture" id="reload_0"]
 atlas = ExtResource("2_spritesheet")
@@ -95,32 +103,47 @@ region = Rect2(192, 384, 96, 96)
 atlas = ExtResource("2_spritesheet")
 region = Rect2(288, 384, 96, 96)
 
-[sub_resource type="AtlasTexture" id="death_0"]
+[sub_resource type="AtlasTexture" id="talk_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 480, 96, 96)
+region = Rect2(0, 96, 96, 96)
 
-[sub_resource type="AtlasTexture" id="death_1"]
+[sub_resource type="AtlasTexture" id="talk_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(96, 480, 96, 96)
+region = Rect2(96, 96, 96, 96)
 
-[sub_resource type="AtlasTexture" id="death_2"]
+[sub_resource type="AtlasTexture" id="talk_nogun_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(288, 480, 96, 96)
+region = Rect2(288, 96, 96, 96)
 
-[sub_resource type="AtlasTexture" id="death_3"]
+[sub_resource type="AtlasTexture" id="talk_nogun_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(384, 480, 96, 96)
-
-[sub_resource type="AtlasTexture" id="death_4"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(480, 480, 96, 96)
-
-[sub_resource type="AtlasTexture" id="death_5"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(672, 480, 96, 96)
+region = Rect2(384, 96, 96, 96)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_player"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("death_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_5")
+}],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("idle_0")
@@ -136,28 +159,6 @@ animations = [{
 "loop": true,
 "name": &"idle_no_gun",
 "speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("talk_0")
-}, {
-"duration": 1.0,
-"texture": SubResource("talk_1")
-}],
-"loop": true,
-"name": &"talk",
-"speed": 6.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("talk_nogun_0")
-}, {
-"duration": 1.0,
-"texture": SubResource("talk_nogun_1")
-}],
-"loop": true,
-"name": &"talk_no_gun",
-"speed": 6.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -232,26 +233,25 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("death_0")
+"texture": SubResource("talk_0")
 }, {
 "duration": 1.0,
-"texture": SubResource("death_1")
-}, {
-"duration": 1.0,
-"texture": SubResource("death_2")
-}, {
-"duration": 1.0,
-"texture": SubResource("death_3")
-}, {
-"duration": 1.0,
-"texture": SubResource("death_4")
-}, {
-"duration": 1.0,
-"texture": SubResource("death_5")
+"texture": SubResource("talk_1")
 }],
-"loop": false,
-"name": &"death",
-"speed": 10.0
+"loop": true,
+"name": &"talk",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("talk_nogun_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("talk_nogun_1")
+}],
+"loop": true,
+"name": &"talk_no_gun",
+"speed": 6.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -277,7 +277,11 @@ radius = 18.0
 [node name="Player" type="CharacterBody2D" unique_id=1085202173]
 collision_mask = 2
 script = ExtResource("1_player")
-max_hp = 50
+fire_rate = 0.3
+bullet_damage = 2
+max_hp = 10
+dash_speed = 500.0
+dash_cooldown = 4.0
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=268205600]
 scale = Vector2(0.85, 0.85)

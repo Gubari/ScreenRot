@@ -60,6 +60,14 @@ func _set_percent(value: float) -> void:
 	_update_bars()
 	screen_percent_changed.emit(screen_percent)
 
+## Returns the visible (non-covered) rectangle in viewport coordinates.
+func get_visible_area() -> Rect2:
+	var vp_size := get_viewport().get_visible_rect().size
+	var cover := (1.0 - screen_percent / 100.0) * 0.5
+	var bar_h := vp_size.y * cover
+	var bar_w := vp_size.x * cover
+	return Rect2(bar_w, bar_h, vp_size.x - bar_w * 2.0, vp_size.y - bar_h * 2.0)
+
 func _update_bars() -> void:
 	var vp_size := get_viewport().get_visible_rect().size
 	# fraction of screen covered on each side (0 = no bar, 0.5 = fully closed)
@@ -74,8 +82,8 @@ func _update_bars() -> void:
 	bottom.position = Vector2(0, vp_size.y - bar_h)
 	bottom.size = Vector2(vp_size.x, bar_h)
 
-	left_bar.position = Vector2(0, bar_h)
-	left_bar.size = Vector2(bar_w, vp_size.y - bar_h * 2.0)
+	left_bar.position = Vector2.ZERO
+	left_bar.size = Vector2(bar_w, vp_size.y)
 
-	right_bar.position = Vector2(vp_size.x - bar_w, bar_h)
-	right_bar.size = Vector2(bar_w, vp_size.y - bar_h * 2.0)
+	right_bar.position = Vector2(vp_size.x - bar_w, 0)
+	right_bar.size = Vector2(bar_w, vp_size.y)

@@ -1,7 +1,31 @@
 [gd_scene format=3 uid="uid://bsmc38d53lb2g"]
 
 [ext_resource type="Script" uid="uid://bf3hcv0kr376p" path="res://scripts/player/player.gd" id="1_player"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players red x3.png" id="2_spritesheet"]
+[ext_resource type="Texture2D" uid="uid://bne7qaer4ow1a" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players red x3.png" id="2_spritesheet"]
+
+[sub_resource type="AtlasTexture" id="death_0"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(0, 1152, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_1"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(96, 1152, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_2"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(288, 1152, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_3"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(384, 1152, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_4"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(480, 1152, 96, 96)
+
+[sub_resource type="AtlasTexture" id="death_5"]
+atlas = ExtResource("2_spritesheet")
+region = Rect2(672, 1152, 96, 96)
 
 [sub_resource type="AtlasTexture" id="idle_0"]
 atlas = ExtResource("2_spritesheet")
@@ -10,22 +34,6 @@ region = Rect2(0, 672, 96, 96)
 [sub_resource type="AtlasTexture" id="idle_nogun_0"]
 atlas = ExtResource("2_spritesheet")
 region = Rect2(192, 672, 96, 96)
-
-[sub_resource type="AtlasTexture" id="talk_0"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 768, 96, 96)
-
-[sub_resource type="AtlasTexture" id="talk_1"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(96, 768, 96, 96)
-
-[sub_resource type="AtlasTexture" id="talk_nogun_0"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(288, 768, 96, 96)
-
-[sub_resource type="AtlasTexture" id="talk_nogun_1"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(384, 768, 96, 96)
 
 [sub_resource type="AtlasTexture" id="reload_0"]
 atlas = ExtResource("2_spritesheet")
@@ -95,32 +103,47 @@ region = Rect2(192, 1056, 96, 96)
 atlas = ExtResource("2_spritesheet")
 region = Rect2(288, 1056, 96, 96)
 
-[sub_resource type="AtlasTexture" id="death_0"]
+[sub_resource type="AtlasTexture" id="talk_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 1152, 96, 96)
+region = Rect2(0, 768, 96, 96)
 
-[sub_resource type="AtlasTexture" id="death_1"]
+[sub_resource type="AtlasTexture" id="talk_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(96, 1152, 96, 96)
+region = Rect2(96, 768, 96, 96)
 
-[sub_resource type="AtlasTexture" id="death_2"]
+[sub_resource type="AtlasTexture" id="talk_nogun_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(288, 1152, 96, 96)
+region = Rect2(288, 768, 96, 96)
 
-[sub_resource type="AtlasTexture" id="death_3"]
+[sub_resource type="AtlasTexture" id="talk_nogun_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(384, 1152, 96, 96)
-
-[sub_resource type="AtlasTexture" id="death_4"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(480, 1152, 96, 96)
-
-[sub_resource type="AtlasTexture" id="death_5"]
-atlas = ExtResource("2_spritesheet")
-region = Rect2(672, 1152, 96, 96)
+region = Rect2(384, 768, 96, 96)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_player"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("death_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("death_5")
+}],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("idle_0")
@@ -136,28 +159,6 @@ animations = [{
 "loop": true,
 "name": &"idle_no_gun",
 "speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("talk_0")
-}, {
-"duration": 1.0,
-"texture": SubResource("talk_1")
-}],
-"loop": true,
-"name": &"talk",
-"speed": 6.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("talk_nogun_0")
-}, {
-"duration": 1.0,
-"texture": SubResource("talk_nogun_1")
-}],
-"loop": true,
-"name": &"talk_no_gun",
-"speed": 6.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -232,26 +233,25 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("death_0")
+"texture": SubResource("talk_0")
 }, {
 "duration": 1.0,
-"texture": SubResource("death_1")
-}, {
-"duration": 1.0,
-"texture": SubResource("death_2")
-}, {
-"duration": 1.0,
-"texture": SubResource("death_3")
-}, {
-"duration": 1.0,
-"texture": SubResource("death_4")
-}, {
-"duration": 1.0,
-"texture": SubResource("death_5")
+"texture": SubResource("talk_1")
 }],
-"loop": false,
-"name": &"death",
-"speed": 10.0
+"loop": true,
+"name": &"talk",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("talk_nogun_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("talk_nogun_1")
+}],
+"loop": true,
+"name": &"talk_no_gun",
+"speed": 6.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -274,28 +274,32 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 22.0
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" unique_id=1079312927]
 collision_mask = 2
 script = ExtResource("1_player")
+move_speed = 200.0
+fire_rate = 0.7
+bullet_damage = 4
 bullet_scene_path = "res://scenes/player/bullet_heavy.tscn"
-# Heavier model: slightly bigger collision + slightly different muzzle
-muzzle_offset = Vector2(26, 28)
+max_hp = 15
+dash_speed = 800.0
+dash_cooldown = 6.0
 
-[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=885965872]
 scale = Vector2(0.9, 0.9)
 sprite_frames = SubResource("SpriteFrames_player")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 26)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1082480768]
+position = Vector2(3, 19)
+scale = Vector2(1.13324, 1)
 shape = SubResource("CircleShape2D_player")
 
-[node name="Muzzle" type="Marker2D" parent="."]
+[node name="Muzzle" type="Marker2D" parent="." unique_id=1822156585]
 position = Vector2(22, 26)
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1924111718]
 position = Vector2(0, 23)
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
-

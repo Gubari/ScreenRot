@@ -54,6 +54,8 @@ var is_dying: bool = false
 var is_transitioning: bool = false
 var current_zoom: float = 1.0
 var screen_percent: float = 100.0
+var screen_closing: CanvasLayer = null
+var dungeon_map: Node2D = null
 
 var bullet_scene: PackedScene = preload("res://scenes/enemies/boss_bullet.tscn")
 var fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
@@ -107,10 +109,8 @@ func take_damage(amount: int) -> void:
 	if is_dying or is_transitioning:
 		return
 
-	# Check immunity based on screen percent
-	var threshold := _get_immune_threshold()
-	if screen_percent < threshold:
-		# Boss is immune — visual feedback
+	# Check immunity: boss is immune when hidden behind black bars
+	if _is_hidden_by_bars():
 		flash_immune()
 		return
 
@@ -129,12 +129,17 @@ func take_damage(amount: int) -> void:
 	elif current_phase == 2 and hp_percent <= phase3_threshold:
 		_transition_to_phase(3)
 
-func _get_immune_threshold() -> float:
-	match current_phase:
-		1: return p1_immune_threshold
-		2: return p2_immune_threshold
-		3: return p3_immune_threshold
-	return 50.0
+func _is_hidden_by_bars() -> bool:
+	if not screen_closing or not screen_closing.has_method("get_visible_area"):
+		return false
+	var visible_rect: Rect2 = screen_closing.get_visible_area()
+	# Convert boss world position to viewport (screen) coordinates
+	var cam := get_viewport().get_camera_2d()
+	if not cam:
+		return false
+	var vp_size := get_viewport().get_visible_rect().size
+	var screen_pos := vp_size * 0.5 + (global_position - cam.global_position) * cam.zoom
+	return not visible_rect.has_point(screen_pos)
 
 func flash_immune() -> void:
 	modulate = Color(0.3, 0.3, 1.0, 1.0)
@@ -257,11 +262,15 @@ func _handle_fragment_spawning(delta: float) -> void:
 func _spawn_fragment(value: float) -> void:
 	if not player or not is_instance_valid(player):
 		return
-	# Spawn at random position around the player within visible range
-	var angle = randf() * TAU
-	var dist = randf_range(100.0, 300.0)
-	var pos = player.global_position + Vector2(cos(angle), sin(angle)) * dist
-	fragment_spawn_requested.emit(pos, value)
+	# Try up to 10 times to find a walkable position around the player
+	for i in 10:
+		var angle = randf() * TAU
+		var dist = randf_range(100.0, 300.0)
+		var pos = player.global_position + Vector2(cos(angle), sin(angle)) * dist
+		if dungeon_map and dungeon_map.has_method("is_walkable") and not dungeon_map.is_walkable(pos):
+			continue
+		fragment_spawn_requested.emit(pos, value)
+		return
 
 # ── Animation ─────────────────────────────────────────────────
 

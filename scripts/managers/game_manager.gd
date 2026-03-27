@@ -139,6 +139,8 @@ func _try_connect_boss() -> void:
 
 func _connect_boss(boss: BossBase) -> void:
 	_active_boss = boss
+	boss.screen_closing = screen_closing
+	boss.dungeon_map = dungeon_map
 	boss.phase_changed.connect(_on_boss_phase_changed)
 	boss.request_screen_shrink.connect(_on_boss_screen_shrink)
 	boss.request_screen_restore.connect(_on_boss_screen_restore)
