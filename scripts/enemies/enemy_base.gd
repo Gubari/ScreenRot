@@ -32,7 +32,7 @@ func _ready() -> void:
 	nav_agent = NavigationAgent2D.new()
 	nav_agent.path_desired_distance = 6.0
 	nav_agent.target_desired_distance = 6.0
-	nav_agent.radius = 24.0
+	nav_agent.radius = 40.0
 	nav_agent.avoidance_enabled = true
 	nav_agent.max_neighbors = 6
 	nav_agent.neighbor_distance = 120.0
