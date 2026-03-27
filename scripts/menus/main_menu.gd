@@ -28,6 +28,7 @@ func _ready() -> void:
 		label.gui_input.connect(_on_item_input.bind(item))
 
 	_update_stats()
+	SaveManager.credits_changed.connect(_on_credits_changed)
 	CursorManager.set_menu_cursor()
 	AudioManager.play_music("menu")
 
@@ -45,6 +46,9 @@ func _on_item_input(event: InputEvent, item: Dictionary) -> void:
 
 func _update_stats() -> void:
 	stats_label.text = "Credits: %d  |  High Score: %d" % [SaveManager.get_credits(), SaveManager.get_high_score()]
+
+func _on_credits_changed(_amount: int) -> void:
+	_update_stats()
 
 func _on_start() -> void:
 	get_tree().change_scene_to_file("res://scenes/game.tscn")

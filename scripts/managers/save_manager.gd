@@ -1,5 +1,7 @@
 extends Node
 
+signal credits_changed(new_amount: int)
+
 const SAVE_PATH := "user://save_data.json"
 
 var data: Dictionary = {
@@ -24,12 +26,14 @@ func get_credits() -> int:
 func add_credits(amount: int) -> void:
 	data.credits += amount
 	save_game()
+	credits_changed.emit(data.credits)
 
 func spend_credits(amount: int) -> bool:
 	if data.credits < amount:
 		return false
 	data.credits -= amount
 	save_game()
+	credits_changed.emit(data.credits)
 	return true
 
 func get_high_score() -> int:
