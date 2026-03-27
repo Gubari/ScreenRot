@@ -259,16 +259,15 @@ func _update_boss_bar_color() -> void:
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	kills_this_wave += 1
-	run_credits += 1
 	# Clean Kill upgrade: chance to skip debris
 	var skip_debris: bool = player.upgrade_clean_kill_chance > 0.0 and randf() < player.upgrade_clean_kill_chance
 	if not skip_debris and debris_overlay and debris_overlay.has_method("add_debris"):
 		debris_overlay.add_debris(pos, type)
 	update_debris_display()
 	update_multiplier()
-	_update_credits_display()
-	# Connect any new defrag pickups spawned by enemy death
+	# Connect any new pickups spawned by enemy death
 	_connect_defrag_pickups()
+	_connect_coin_pickups()
 
 func update_multiplier() -> void:
 	var debris_percent := _get_debris_percent()
@@ -435,6 +434,15 @@ func _on_defrag_pickup_collected(clear_percent: float) -> void:
 		debris_overlay.defrag_clear(clear_percent)
 	update_debris_display()
 	update_multiplier()
+
+func _connect_coin_pickups() -> void:
+	for coin in get_tree().get_nodes_in_group("coin_pickups"):
+		if not coin.collected.is_connected(_on_coin_pickup_collected):
+			coin.collected.connect(_on_coin_pickup_collected)
+
+func _on_coin_pickup_collected() -> void:
+	run_credits += 1
+	_update_credits_display()
 
 var _skip_used := false
 
