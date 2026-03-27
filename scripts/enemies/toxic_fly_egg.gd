@@ -57,8 +57,9 @@ func _break_egg() -> void:
 	enemy_killed.emit(global_position, "toxic_fly_egg")
 
 func _disable_collisions() -> void:
+	# Ne menjati koliziju tokom physics query flush-a (bullet → take_damage).
 	if body_shape:
-		body_shape.disabled = true
+		body_shape.set_deferred("disabled", true)
 	if hitbox_shape:
-		hitbox_shape.disabled = true
+		hitbox_shape.set_deferred("disabled", true)
 

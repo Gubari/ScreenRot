@@ -60,19 +60,48 @@ var dungeon_map: Node2D = null
 var bullet_scene: PackedScene = preload("res://scenes/enemies/boss_bullet.tscn")
 var fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
 
+const LEG_CUTOUT_SHADER: Shader = preload("res://shaders/boss_leg_cutout_only.gdshader")
+
 func _ready() -> void:
 	enemy_type = "boss"
 	super._ready()
+	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
+	var ol := get_node_or_null("Outline") as AnimatedSprite2D
+	if spr and LEG_CUTOUT_SHADER:
+		var mat := ShaderMaterial.new()
+		mat.shader = LEG_CUTOUT_SHADER
+		mat.set_shader_parameter("leg_cutout_uv_y", -1.0)
+		spr.material = mat
+	var outline_tex := load("res://assets/sprites/enemies/BloatwareBoss/boss_outline_x3.png") as Texture2D
+	if ol and spr and spr.sprite_frames and outline_tex and LEG_CUTOUT_SHADER:
+		ol.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		ol.sprite_frames = _sprite_frames_with_outline_atlas(spr.sprite_frames, outline_tex)
+		ol.animation = spr.animation
+		ol.frame = spr.frame
+		var omat := ShaderMaterial.new()
+		omat.shader = LEG_CUTOUT_SHADER
+		omat.set_shader_parameter("leg_cutout_uv_y", -1.0)
+		ol.material = omat
+	if has_node("Legs"):
+		var legs := get_node_or_null("Legs") as AnimatedSprite2D
+		if legs:
+			legs.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			legs.material = null
 	_enter_phase(1)
 
 func _physics_process(delta: float) -> void:
-	if is_dying or is_transitioning:
+	if is_transitioning:
+		return
+	if is_dying:
+		_sync_boss_death_visuals()
 		return
 	super._physics_process(delta)
 	if player and is_instance_valid(player) and player.visible:
 		_handle_shooting(delta)
 		_handle_fragment_spawning(delta)
 		_update_animation()
+	_sync_boss_outline_with_sprite()
+	_sync_boss_legs_layer()
 
 func do_movement(delta: float) -> void:
 	if not player or not is_instance_valid(player):
@@ -81,6 +110,12 @@ func do_movement(delta: float) -> void:
 	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
 	if spr:
 		spr.flip_h = velocity.x < 0.0
+	var legs := get_node_or_null("Legs") as AnimatedSprite2D
+	var ol_legs := get_node_or_null("OutlineLegs") as AnimatedSprite2D
+	if legs:
+		legs.flip_h = spr.flip_h if spr else false
+	if ol_legs:
+		ol_legs.flip_h = spr.flip_h if spr else false
 
 # ── Phase management ──────────────────────────────────────────
 
@@ -272,6 +307,82 @@ func _spawn_fragment(value: float) -> void:
 		fragment_spawn_requested.emit(pos, value)
 		return
 
+# ── Outline atlas (isti grid kao boss_x3) + noge pri shoot ─────────────────
+
+func _sprite_frames_with_outline_atlas(sf: SpriteFrames, outline_tex: Texture2D) -> SpriteFrames:
+	var out := sf.duplicate(true) as SpriteFrames
+	for anim_name in out.get_animation_names():
+		for i in range(out.get_frame_count(anim_name)):
+			var t := out.get_frame_texture(anim_name, i)
+			if t is AtlasTexture:
+				var at := (t as AtlasTexture).duplicate() as AtlasTexture
+				at.atlas = outline_tex
+				var dur := out.get_frame_duration(anim_name, i)
+				out.set_frame(anim_name, i, at, dur)
+	return out
+
+
+func _sync_boss_death_visuals() -> void:
+	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
+	var ol := get_node_or_null("Outline") as AnimatedSprite2D
+	if not spr or not ol:
+		return
+	if ol.animation != spr.animation:
+		ol.animation = spr.animation
+	ol.frame = spr.frame
+	ol.flip_h = spr.flip_h
+
+
+func _sync_boss_outline_with_sprite() -> void:
+	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
+	var ol := get_node_or_null("Outline") as AnimatedSprite2D
+	if not spr or not ol or not ol.sprite_frames:
+		return
+	if ol.animation != spr.animation:
+		ol.animation = spr.animation
+	ol.frame = spr.frame
+	ol.flip_h = spr.flip_h
+
+
+func _sync_boss_legs_layer() -> void:
+	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
+	var legs := get_node_or_null("Legs") as AnimatedSprite2D
+	var ol := get_node_or_null("Outline") as AnimatedSprite2D
+	if not spr:
+		return
+	var cut_v := -1.0
+	if legs and spr.animation == "shoot" and not is_dying:
+		cut_v = 0.69
+	if spr.material is ShaderMaterial:
+		spr.material.set_shader_parameter("leg_cutout_uv_y", cut_v)
+	if ol and ol.material is ShaderMaterial:
+		ol.material.set_shader_parameter("leg_cutout_uv_y", cut_v)
+	if not legs:
+		var oll := get_node_or_null("OutlineLegs") as AnimatedSprite2D
+		if oll:
+			oll.visible = false
+		return
+	var ol_legs := get_node_or_null("OutlineLegs") as AnimatedSprite2D
+	if spr.animation == "shoot" and not is_dying:
+		legs.visible = true
+		var anim_name := "default"
+		if legs.sprite_frames and legs.sprite_frames.has_animation(anim_name):
+			var fc := legs.sprite_frames.get_frame_count(anim_name)
+			if fc > 0:
+				legs.frame = spr.frame % fc
+		if ol_legs:
+			ol_legs.visible = true
+			if ol_legs.sprite_frames and ol_legs.sprite_frames.has_animation(anim_name):
+				var ofc := ol_legs.sprite_frames.get_frame_count(anim_name)
+				if ofc > 0:
+					ol_legs.frame = spr.frame % ofc
+			ol_legs.flip_h = spr.flip_h
+	else:
+		legs.visible = false
+		if ol_legs:
+			ol_legs.visible = false
+
+
 # ── Animation ─────────────────────────────────────────────────
 
 func _update_animation() -> void:
@@ -300,8 +411,17 @@ func die() -> void:
 	request_screen_shrink.emit(0.0)
 	request_zoom.emit(1.0)
 	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
+	var ol := get_node_or_null("Outline") as AnimatedSprite2D
+	var legs := get_node_or_null("Legs") as AnimatedSprite2D
+	var ol_legs := get_node_or_null("OutlineLegs") as AnimatedSprite2D
+	if legs:
+		legs.visible = false
+	if ol_legs:
+		ol_legs.visible = false
 	if spr and spr.sprite_frames.has_animation("death"):
 		spr.play("death")
+		if ol and ol.sprite_frames and ol.sprite_frames.has_animation("death"):
+			ol.play("death")
 		await spr.animation_finished
 	AudioManager.play_sfx("enemy_kill")
 	enemy_killed.emit(global_position, enemy_type)

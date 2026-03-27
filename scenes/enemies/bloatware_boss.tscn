@@ -2,6 +2,79 @@
 
 [ext_resource type="Script" uid="uid://dqbcsococ0r35" path="res://scripts/enemies/boss_base.gd" id="1_boss"]
 [ext_resource type="Texture2D" uid="uid://c3texnfjx5rfn" path="res://assets/sprites/enemies/BloatwareBoss/boss_x3.png" id="2_boss_atlas"]
+[ext_resource type="Texture2D" uid="uid://c8wmq7fnqlwf2" path="res://assets/sprites/enemies/BloatwareBoss/boss_outline_x3.png" id="3_outline_atlas"]
+
+[sub_resource type="AtlasTexture" id="ol_run_legs_0"]
+atlas = ExtResource("3_outline_atlas")
+region = Rect2(0, 516, 192, 60)
+
+[sub_resource type="AtlasTexture" id="ol_run_legs_1"]
+atlas = ExtResource("3_outline_atlas")
+region = Rect2(192, 516, 192, 60)
+
+[sub_resource type="AtlasTexture" id="ol_run_legs_2"]
+atlas = ExtResource("3_outline_atlas")
+region = Rect2(384, 516, 192, 60)
+
+[sub_resource type="AtlasTexture" id="ol_run_legs_3"]
+atlas = ExtResource("3_outline_atlas")
+region = Rect2(576, 516, 192, 60)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_outline_legs"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("ol_run_legs_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("ol_run_legs_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("ol_run_legs_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("ol_run_legs_3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
+
+[sub_resource type="AtlasTexture" id="run_legs_0"]
+atlas = ExtResource("2_boss_atlas")
+region = Rect2(0, 516, 192, 60)
+
+[sub_resource type="AtlasTexture" id="run_legs_1"]
+atlas = ExtResource("2_boss_atlas")
+region = Rect2(192, 516, 192, 60)
+
+[sub_resource type="AtlasTexture" id="run_legs_2"]
+atlas = ExtResource("2_boss_atlas")
+region = Rect2(384, 516, 192, 60)
+
+[sub_resource type="AtlasTexture" id="run_legs_3"]
+atlas = ExtResource("2_boss_atlas")
+region = Rect2(576, 516, 192, 60)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_legs"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("run_legs_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("run_legs_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("run_legs_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("run_legs_3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
 
 [sub_resource type="AtlasTexture" id="death_0"]
 atlas = ExtResource("2_boss_atlas")
@@ -187,6 +260,8 @@ size = Vector2(60, 50)
 size = Vector2(65, 55)
 
 [node name="BloatwareBoss" type="CharacterBody2D" unique_id=1011660143]
+texture_filter = 1
+scale = Vector2(1.9163929, 1.9523907)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_boss")
@@ -208,6 +283,26 @@ move_speed = 40.0
 contact_damage = 2
 score_value = 500
 enemy_type = "boss"
+
+[node name="Outline" type="AnimatedSprite2D" parent="." unique_id=2136475282]
+z_index = -2
+texture_filter = 1
+scale = Vector2(0.55, 0.55)
+
+[node name="OutlineLegs" type="AnimatedSprite2D" parent="." unique_id=2136475281]
+visible = false
+z_index = -1
+texture_filter = 1
+position = Vector2(0, 35)
+scale = Vector2(0.55, 0.55)
+sprite_frames = SubResource("SpriteFrames_outline_legs")
+
+[node name="Legs" type="AnimatedSprite2D" parent="." unique_id=2136475283]
+visible = false
+z_index = -1
+position = Vector2(0, 35)
+scale = Vector2(0.55, 0.55)
+sprite_frames = SubResource("SpriteFrames_legs")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=2136475284]
 scale = Vector2(0.55, 0.55)
