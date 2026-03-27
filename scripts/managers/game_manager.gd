@@ -174,6 +174,7 @@ func _connect_boss(boss: BossBase) -> void:
 	boss.request_screen_restore.connect(_on_boss_screen_restore)
 	boss.request_zoom.connect(_on_boss_zoom)
 	boss.fragment_spawn_requested.connect(_on_boss_fragment_spawn)
+	boss.boss_wave_requested.connect(_on_boss_wave_requested)
 	boss.boss_defeated.connect(_on_boss_defeated)
 	# Show boss health bar
 	boss_name_label.text = boss.boss_id.to_upper()
@@ -187,6 +188,9 @@ func _connect_boss(boss: BossBase) -> void:
 
 func _on_boss_phase_changed(_phase: int) -> void:
 	_update_boss_bar_color()
+
+func _on_boss_wave_requested(queue: Array) -> void:
+	enemy_spawner.add_spawning(queue)
 
 func _on_boss_screen_shrink(rate: float) -> void:
 	if screen_closing:
@@ -346,7 +350,7 @@ func _on_debris_changed(_percent: float) -> void:
 	update_multiplier()
 
 func _on_all_enemies_dead() -> void:
-	if not wave_active:
+	if not wave_active or _game_over_started:
 		return
 	wave_active = false
 	wave_label.text = wave_manager.get_wave_name(current_wave) + " CLEARED!"
@@ -358,7 +362,7 @@ func _on_all_enemies_dead() -> void:
 		AudioManager.play_sfx("wave_clear")
 	_update_credits_display()
 
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(wave_manager.get_post_wave_delay(current_wave)).timeout
 
 	if wave_manager.has_next_wave(current_wave):
 		upgrade_select.show_upgrades(current_wave)

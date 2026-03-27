@@ -7,6 +7,7 @@ signal request_screen_shrink(rate: float)
 signal request_screen_restore(amount: float)
 signal request_zoom(target_zoom: float)
 signal fragment_spawn_requested(world_pos: Vector2, value: float)
+signal boss_wave_requested(queue: Array)
 
 @export var boss_id: String = "bloatware"
 @export var bullet_damage: int = 1
@@ -30,7 +31,7 @@ signal fragment_spawn_requested(world_pos: Vector2, value: float)
 @export var p2_fire_rate: float = 0.8
 @export var p2_move_speed: float = 70.0
 @export var p2_spread_count: int = 3
-@export var p2_spread_angle: float = 25.0
+@export var p2_spread_angle: float = 45.0
 @export var p2_fragment_rate: float = 3.0
 @export var p2_fragment_value: float = 10.0
 @export var p2_immune_threshold: float = 50.0
@@ -41,11 +42,19 @@ signal fragment_spawn_requested(world_pos: Vector2, value: float)
 @export var p3_shrink_rate: float = 6.0
 @export var p3_fire_rate: float = 0.6
 @export var p3_move_speed: float = 100.0
-@export var p3_ring_count: int = 8
+@export var p3_spread_count: int = 5
+@export var p3_spread_angle: float = 60.0
 @export var p3_fragment_rate: float = 2.5
 @export var p3_fragment_value: float = 8.0
 @export var p3_immune_threshold: float = 60.0
 @export var p3_panic_threshold: float = 20.0
+
+# Boss wave spawns per phase (uses same SpawnGroup resource as regular waves)
+@export_group("Boss Waves")
+@export var p1_wave: Array[SpawnGroup] = []
+@export var p2_wave: Array[SpawnGroup] = []
+@export var p3_wave: Array[SpawnGroup] = []
+@export_group("")
 
 var current_phase: int = 0
 var fire_timer: float = 0.0
@@ -139,6 +148,16 @@ func _enter_phase(phase: int) -> void:
 			request_screen_shrink.emit(p3_shrink_rate)
 	fire_timer = fire_rate
 	phase_changed.emit(phase)
+	var groups: Array[SpawnGroup] = []
+	match phase:
+		1: groups = p1_wave
+		2: groups = p2_wave
+		3: groups = p3_wave
+	if groups.size() > 0:
+		var queue: Array = []
+		for g in groups:
+			queue.append({"type": g.enemy_type, "count": g.count, "delay": g.delay_before_spawn})
+		boss_wave_requested.emit(queue)
 
 func take_damage(amount: int) -> void:
 	if is_dying or is_transitioning:
@@ -197,10 +216,6 @@ func _transition_to_phase(phase: int) -> void:
 
 	var pause_time := 1.0 if phase == 2 else 1.5
 
-	# Phase 3 mercy reset: give player some screen back
-	if phase == 3:
-		request_screen_restore.emit(40.0)
-
 	await get_tree().create_timer(pause_time).timeout
 
 	if not is_instance_valid(self):
@@ -242,33 +257,27 @@ func _shoot() -> void:
 		1:
 			_shoot_single()
 		2:
-			_shoot_spread()
+			_shoot_spread(p2_spread_count, p2_spread_angle)
 		3:
-			_shoot_ring()
+			_shoot_spread(p3_spread_count, p3_spread_angle)
 
 func _shoot_single() -> void:
 	var dir = (player.global_position - global_position).normalized()
 	_spawn_bullet(dir)
 
-func _shoot_spread() -> void:
+func _shoot_spread(count: int, spread_deg: float) -> void:
 	var base_dir = (player.global_position - global_position).normalized()
 	var base_angle = base_dir.angle()
-	var half_spread = deg_to_rad(p2_spread_angle) / 2.0
-	for i in p2_spread_count:
+	var half_spread = deg_to_rad(spread_deg) / 2.0
+	for i in count:
 		var t := 0.0
-		if p2_spread_count > 1:
-			t = float(i) / float(p2_spread_count - 1)  # 0 to 1
+		if count > 1:
+			t = float(i) / float(count - 1)  # 0 to 1
 		var angle = base_angle - half_spread + t * half_spread * 2.0
 		_spawn_bullet(Vector2(cos(angle), sin(angle)))
 	# Zoom effect
 	current_zoom = minf(current_zoom + p2_zoom_per_shot, p2_max_zoom)
 	request_zoom.emit(current_zoom)
-
-func _shoot_ring() -> void:
-	var angle_step = TAU / float(p3_ring_count)
-	for i in p3_ring_count:
-		var angle = i * angle_step
-		_spawn_bullet(Vector2(cos(angle), sin(angle)))
 
 func _spawn_bullet(dir: Vector2) -> void:
 	var bullet = bullet_scene.instantiate()

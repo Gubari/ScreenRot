@@ -26,6 +26,7 @@ script = ExtResource("7_kvuet")
 wave_name = "Boss Fight"
 spawn_groups = Array[ExtResource("11_trtic")]([SubResource("Resource_ir15t")])
 spawn_radius = 200.0
+post_wave_delay = 0.0
 metadata/_custom_type_script = "uid://cfdwc1asb32m2"
 
 [node name="Game" type="Node2D" unique_id=1244125603]

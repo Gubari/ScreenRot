@@ -44,6 +44,13 @@ func start_spawning(queue: Array) -> void:
 	if spawn_queue.size() > 0:
 		spawn_timer = spawn_queue[0].get("delay", 0.0)
 
+func add_spawning(queue: Array) -> void:
+	spawn_queue.append_array(queue.duplicate(true))
+	if not spawning:
+		spawning = true
+		if spawn_queue.size() > 0:
+			spawn_timer = spawn_queue[0].get("delay", 0.0)
+
 func _do_spawn(type: String, count: int) -> void:
 	if not enemy_scenes.has(type):
 		return
