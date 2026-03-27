@@ -12,7 +12,7 @@
 [ext_resource type="Script" uid="uid://rqs6ujqgf1ee" path="res://scripts/managers/wave_manager.gd" id="8_wave_manager"]
 [ext_resource type="Resource" uid="uid://cdxps804a0b46" path="res://resources/waves/wave_1.tres" id="9_wave1"]
 [ext_resource type="Resource" uid="uid://blt1gfqwbic3u" path="res://resources/waves/wave_2.tres" id="10_wave2"]
-[ext_resource type="Script" path="res://scripts/managers/spawn_group.gd" id="11_trtic"]
+[ext_resource type="Script" uid="uid://bilot01blr3po" path="res://scripts/managers/spawn_group.gd" id="11_trtic"]
 [ext_resource type="Resource" uid="uid://chg67tvjqipj3" path="res://resources/waves/wave_3.tres" id="11_wave3"]
 [ext_resource type="PackedScene" path="res://scenes/effects/screen_closing.tscn" id="12_screen_closing"]
 
