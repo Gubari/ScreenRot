@@ -19,6 +19,7 @@ var sfx_library: Dictionary = {}
 # Music tracks - drop .ogg files into assets/audio/music/
 #   gameplay.ogg, menu.ogg, boss.ogg
 var music_library: Dictionary = {}
+var _music_was_playing_before_pause: bool = false
 
 const SFX_PATH := "res://assets/audio/sfx/"
 const MUSIC_PATH := "res://assets/audio/music/"
@@ -136,6 +137,18 @@ func stop_music(fade_time: float = 0.0) -> void:
 		tween.tween_property(music_player, "volume_db", -40.0, fade_time)
 		tween.tween_callback(music_player.stop)
 
+## Pause currently playing music (used by pause menu).
+func pause_music() -> void:
+	_music_was_playing_before_pause = music_player.playing
+	if music_player.playing:
+		music_player.stream_paused = true
+
+## Resume music paused by pause_music().
+func resume_music() -> void:
+	if _music_was_playing_before_pause and music_player.stream:
+		music_player.stream_paused = false
+	_music_was_playing_before_pause = false
+
 ## Check if a sound exists in the library
 func has_sfx(sound_name: String) -> bool:
 	return sound_name in sfx_library
@@ -144,6 +157,16 @@ func has_music(track_name: String) -> bool:
 	return track_name in music_library
 
 var _last_ui_click_ms: int = -100000
+
+func _input(event: InputEvent) -> void:
+	# Fallback for custom clickable UI (e.g. Label + gui_input) that is not BaseButton.
+	if event is InputEventMouseButton \
+			and event.button_index == MOUSE_BUTTON_LEFT \
+			and event.pressed:
+		var vp := get_viewport()
+		var hovered := vp.gui_get_hovered_control()
+		if hovered and hovered.is_visible_in_tree():
+			_play_ui_click()
 
 func _on_node_added(node: Node) -> void:
 	_maybe_connect_ui_click(node)

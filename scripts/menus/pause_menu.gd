@@ -66,6 +66,9 @@ func _on_item_unhover(item: Dictionary) -> void:
 
 func _on_item_input(event: InputEvent, item: Dictionary) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		Input.action_release("shoot")
+		AudioManager.play_sfx("ui_click")
 		item.action.call()
 
 func _on_back_hover() -> void:
@@ -78,6 +81,9 @@ func _on_back_unhover() -> void:
 
 func _on_back_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		Input.action_release("shoot")
+		AudioManager.play_sfx("ui_click")
 		_on_settings_back()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -95,12 +101,14 @@ func _show_pause() -> void:
 	visible = true
 	main_panel.visible = true
 	settings_panel.visible = false
+	AudioManager.pause_music()
 	get_tree().paused = true
 	CursorManager.set_menu_cursor()
 
 func _on_resume() -> void:
 	visible = false
 	get_tree().paused = false
+	AudioManager.resume_music()
 	CursorManager.set_crosshair()
 
 func _on_settings() -> void:
