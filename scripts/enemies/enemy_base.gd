@@ -165,10 +165,19 @@ func die() -> void:
 	_drop_coin()
 	queue_free()
 
+func _get_drop_rates() -> Dictionary:
+	var game := get_tree().current_scene
+	if game and "wave_manager" in game and "current_wave" in game:
+		var wm: WaveManager = game.wave_manager
+		var wave: int = game.current_wave
+		return {"coin": wm.get_coin_drop_rate(wave), "defrag": wm.get_defrag_drop_rate(wave)}
+	return {"coin": 1.0, "defrag": 1.0}
+
 func _try_drop_defrag() -> void:
 	var chance := defrag_drop_chance
 	if player and "upgrade_defrag_drop_bonus" in player:
 		chance += player.upgrade_defrag_drop_bonus
+	chance *= _get_drop_rates().defrag
 	if randf() < chance:
 		var scene: PackedScene = preload("res://scenes/effects/defrag_pickup.tscn")
 		var pickup = scene.instantiate()
@@ -176,6 +185,8 @@ func _try_drop_defrag() -> void:
 		get_tree().current_scene.call_deferred("add_child", pickup)
 
 func _drop_coin() -> void:
+	if randf() > _get_drop_rates().coin:
+		return
 	var scene: PackedScene = preload("res://scenes/effects/coin_pickup.tscn")
 	var coin = scene.instantiate()
 	var offset := Vector2(randf_range(-50, 50), randf_range(-50, 50))

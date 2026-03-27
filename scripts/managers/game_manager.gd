@@ -44,6 +44,8 @@ var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment
 
 func _ready() -> void:
 	_swap_player_if_needed()
+	# Configure wave manager based on selected game mode
+	wave_manager.is_endless_mode = GameMode.is_challenge()
 	# Generate dungeon map first
 	if dungeon_map and dungeon_map.has_method("generate"):
 		dungeon_map.generate()
@@ -258,6 +260,8 @@ func _update_boss_bar_color() -> void:
 # ── Standard wave/enemy handling ──────────────────────────────
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
+	if type == "":
+		return
 	kills_this_wave += 1
 	# Clean Kill upgrade: chance to skip debris
 	var skip_debris: bool = player.upgrade_clean_kill_chance > 0.0 and randf() < player.upgrade_clean_kill_chance
@@ -345,7 +349,9 @@ func _on_all_waves_completed() -> void:
 		game_over_screen.show_game_over(player.score, run_credits)
 
 func _on_upgrade_chosen(upgrade_id: String) -> void:
-	_apply_upgrade(upgrade_id)
+	if upgrade_id != "":
+		_apply_upgrade(upgrade_id)
+	await get_tree().create_timer(2.5).timeout
 	start_next_wave()
 
 func _apply_upgrade(upgrade_id: String) -> void:
@@ -416,7 +422,10 @@ func _on_player_died(final_score: int, _credits: int) -> void:
 		frag.queue_free()
 	SaveManager.add_credits(run_credits)
 	SaveManager.update_high_score(final_score)
-	game_over_screen.show_game_over(final_score, run_credits)
+	if GameMode.is_challenge():
+		game_over_screen.show_game_over(final_score, run_credits, "YOU DIED!", "Reached Wave " + str(current_wave))
+	else:
+		game_over_screen.show_game_over(final_score, run_credits)
 
 func _update_credits_display() -> void:
 	credits_label.text = "Credits: " + str(run_credits)
