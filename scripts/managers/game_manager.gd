@@ -21,6 +21,11 @@ extends Node2D
 @onready var boss_name_label: Label = $HUD/BossBarContainer/BossNameLabel
 @onready var boss_health_bar: ProgressBar = $HUD/BossBarContainer/BossHealthBar
 
+const PLAYER_SCENES: Dictionary = {
+	"red_small": preload("res://scenes/player/player.tscn"),
+	"red_heavy": preload("res://scenes/player/player_heavy.tscn"),
+}
+
 var current_wave: int = 0
 var wave_active: bool = false
 
@@ -38,6 +43,7 @@ var _active_boss: BossBase = null
 var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
 
 func _ready() -> void:
+	_swap_player_if_needed()
 	# Generate dungeon map first
 	if dungeon_map and dungeon_map.has_method("generate"):
 		dungeon_map.generate()
@@ -74,6 +80,23 @@ func _ready() -> void:
 	AudioManager.play_music("gameplay")
 	await get_tree().create_timer(1.0).timeout
 	start_next_wave()
+
+func _swap_player_if_needed() -> void:
+	var selected := SaveManager.get_selected_character()
+	var packed: PackedScene = PLAYER_SCENES.get(selected, null)
+	if packed == null:
+		return
+	# If already correct, do nothing.
+	if player and player.scene_file_path == packed.resource_path:
+		return
+	var parent := player.get_parent()
+	var old_pos := player.global_position
+	var new_player := packed.instantiate() as CharacterBody2D
+	new_player.name = "Player"
+	parent.add_child(new_player)
+	new_player.global_position = old_pos
+	player.queue_free()
+	player = new_player
 
 func _process(_delta: float) -> void:
 	dash_bar.value = player.get_dash_percent() * 100.0
@@ -116,6 +139,8 @@ func _try_connect_boss() -> void:
 
 func _connect_boss(boss: BossBase) -> void:
 	_active_boss = boss
+	boss.screen_closing = screen_closing
+	boss.dungeon_map = dungeon_map
 	boss.phase_changed.connect(_on_boss_phase_changed)
 	boss.request_screen_shrink.connect(_on_boss_screen_shrink)
 	boss.request_screen_restore.connect(_on_boss_screen_restore)
@@ -176,6 +201,7 @@ func _on_screen_fully_closed() -> void:
 		return
 	_game_over_started = true
 	if not _played_game_lost:
+		AudioManager.stop_music(0.2)
 		AudioManager.play_sfx("game_lost")
 		_played_game_lost = true
 	# Small delay so the player can actually hear the sound
@@ -198,6 +224,7 @@ func _on_screen_fully_closed() -> void:
 
 func _on_boss_defeated(_boss_id: String, _score: int) -> void:
 	if not _played_game_won:
+		AudioManager.stop_music(0.2)
 		_game_won_sfx_player = AudioManager.play_sfx_with_player("game_won")
 		_played_game_won = true
 	_active_boss = null
@@ -292,9 +319,8 @@ func _on_all_enemies_dead() -> void:
 	wave_label.modulate.a = 1.0
 	wave_label.visible = true
 	run_credits += 10
-	# In boss fights, boss defeat should trigger "game_won" instead of "wave_clear".
-	# boss_bar_container.visible is set when a BossBase is connected and active.
-	if not boss_bar_container.visible and not _played_game_won:
+	# Play wave clear only for non-final waves (i.e. waves before the boss/end).
+	if wave_manager.has_next_wave(current_wave):
 		AudioManager.play_sfx("wave_clear")
 	_update_credits_display()
 
@@ -370,6 +396,7 @@ func _on_player_died(final_score: int, _credits: int) -> void:
 		return
 	_game_over_started = true
 	if not _played_game_lost:
+		AudioManager.stop_music(0.2)
 		AudioManager.play_sfx("game_lost")
 		_played_game_lost = true
 	# Small delay so the player can actually hear the sound

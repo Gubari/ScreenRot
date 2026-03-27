@@ -44,6 +44,9 @@ func _on_item_unhover(item: Dictionary) -> void:
 
 func _on_item_input(event: InputEvent, item: Dictionary) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		Input.action_release("shoot")
+		AudioManager.play_sfx("ui_click")
 		item.action.call()
 
 func show_game_over(score: int, credits_earned: int, title: String = "GAME OVER", subtitle: String = "") -> void:

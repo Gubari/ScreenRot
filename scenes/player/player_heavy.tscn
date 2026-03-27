@@ -1,123 +1,123 @@
-[gd_scene format=3 uid="uid://p1ay3r000001"]
+[gd_scene format=3 uid="uid://bsmc38d53lb2g"]
 
 [ext_resource type="Script" uid="uid://bf3hcv0kr376p" path="res://scripts/player/player.gd" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://bne7qaer4ow1a" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players red x3.png" id="2_spritesheet"]
 
 [sub_resource type="AtlasTexture" id="death_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 480, 96, 96)
+region = Rect2(0, 1152, 96, 96)
 
 [sub_resource type="AtlasTexture" id="death_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(96, 480, 96, 96)
+region = Rect2(96, 1152, 96, 96)
 
 [sub_resource type="AtlasTexture" id="death_2"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(288, 480, 96, 96)
+region = Rect2(288, 1152, 96, 96)
 
 [sub_resource type="AtlasTexture" id="death_3"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(384, 480, 96, 96)
+region = Rect2(384, 1152, 96, 96)
 
 [sub_resource type="AtlasTexture" id="death_4"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(480, 480, 96, 96)
+region = Rect2(480, 1152, 96, 96)
 
 [sub_resource type="AtlasTexture" id="death_5"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(672, 480, 96, 96)
+region = Rect2(672, 1152, 96, 96)
 
 [sub_resource type="AtlasTexture" id="idle_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 0, 96, 96)
+region = Rect2(0, 672, 96, 96)
 
 [sub_resource type="AtlasTexture" id="idle_nogun_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(192, 0, 96, 96)
+region = Rect2(192, 672, 96, 96)
 
 [sub_resource type="AtlasTexture" id="reload_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 192, 96, 96)
+region = Rect2(0, 864, 96, 96)
 
 [sub_resource type="AtlasTexture" id="reload_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(96, 192, 96, 96)
+region = Rect2(96, 864, 96, 96)
 
 [sub_resource type="AtlasTexture" id="reload_2"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(192, 192, 96, 96)
+region = Rect2(192, 864, 96, 96)
 
 [sub_resource type="AtlasTexture" id="reload_3"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(288, 192, 96, 96)
+region = Rect2(288, 864, 96, 96)
 
 [sub_resource type="AtlasTexture" id="reload_4"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(384, 192, 96, 96)
+region = Rect2(384, 864, 96, 96)
 
 [sub_resource type="AtlasTexture" id="run_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 288, 96, 96)
+region = Rect2(0, 960, 96, 96)
 
 [sub_resource type="AtlasTexture" id="run_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(96, 288, 96, 96)
+region = Rect2(96, 960, 96, 96)
 
 [sub_resource type="AtlasTexture" id="run_2"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(192, 288, 96, 96)
+region = Rect2(192, 960, 96, 96)
 
 [sub_resource type="AtlasTexture" id="run_3"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(288, 288, 96, 96)
+region = Rect2(288, 960, 96, 96)
 
 [sub_resource type="AtlasTexture" id="run_nogun_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(480, 288, 96, 96)
+region = Rect2(480, 960, 96, 96)
 
 [sub_resource type="AtlasTexture" id="run_nogun_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(576, 288, 96, 96)
+region = Rect2(576, 960, 96, 96)
 
 [sub_resource type="AtlasTexture" id="run_nogun_2"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(672, 288, 96, 96)
+region = Rect2(672, 960, 96, 96)
 
 [sub_resource type="AtlasTexture" id="run_nogun_3"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(768, 288, 96, 96)
+region = Rect2(768, 960, 96, 96)
 
 [sub_resource type="AtlasTexture" id="shoot_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 384, 96, 96)
+region = Rect2(0, 1056, 96, 96)
 
 [sub_resource type="AtlasTexture" id="shoot_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(96, 384, 96, 96)
+region = Rect2(96, 1056, 96, 96)
 
 [sub_resource type="AtlasTexture" id="shoot_2"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(192, 384, 96, 96)
+region = Rect2(192, 1056, 96, 96)
 
 [sub_resource type="AtlasTexture" id="shoot_3"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(288, 384, 96, 96)
+region = Rect2(288, 1056, 96, 96)
 
 [sub_resource type="AtlasTexture" id="talk_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(0, 96, 96, 96)
+region = Rect2(0, 768, 96, 96)
 
 [sub_resource type="AtlasTexture" id="talk_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(96, 96, 96, 96)
+region = Rect2(96, 768, 96, 96)
 
 [sub_resource type="AtlasTexture" id="talk_nogun_0"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(288, 96, 96, 96)
+region = Rect2(288, 768, 96, 96)
 
 [sub_resource type="AtlasTexture" id="talk_nogun_1"]
 atlas = ExtResource("2_spritesheet")
-region = Rect2(384, 96, 96, 96)
+region = Rect2(384, 768, 96, 96)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_player"]
 animations = [{
@@ -272,31 +272,34 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
-radius = 18.0
+radius = 22.0
 
-[node name="Player" type="CharacterBody2D" unique_id=1085202173]
+[node name="Player" type="CharacterBody2D" unique_id=1079312927]
 collision_mask = 2
 script = ExtResource("1_player")
-fire_rate = 0.3
-bullet_damage = 2
-max_hp = 10
-dash_speed = 500.0
-dash_cooldown = 4.0
+move_speed = 200.0
+fire_rate = 0.7
+bullet_damage = 4
+bullet_scene_path = "res://scenes/player/bullet_heavy.tscn"
+max_hp = 15
+dash_speed = 800.0
+dash_cooldown = 6.0
 
-[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=268205600]
-scale = Vector2(0.85, 0.85)
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=885965872]
+scale = Vector2(0.9, 0.9)
 sprite_frames = SubResource("SpriteFrames_player")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=387627183]
-position = Vector2(0, 23)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1082480768]
+position = Vector2(3, 19)
+scale = Vector2(1.13324, 1)
 shape = SubResource("CircleShape2D_player")
 
-[node name="Muzzle" type="Marker2D" parent="." unique_id=531094047]
-position = Vector2(18, 23)
+[node name="Muzzle" type="Marker2D" parent="." unique_id=1822156585]
+position = Vector2(22, 26)
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=154444512]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1924111718]
 position = Vector2(0, 23)
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0

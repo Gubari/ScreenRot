@@ -76,6 +76,8 @@ func _on_card_unhover(index: int) -> void:
 
 func _on_card_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		Input.action_release("shoot")
 		_on_upgrade_picked(index)
 
 func show_upgrades(wave_number: int) -> void:
@@ -110,7 +112,7 @@ func _fill_card(card: Control, upgrade: Dictionary) -> void:
 func _on_upgrade_picked(index: int) -> void:
 	var upgrade_id: String = current_picks[index].id
 	chosen_upgrades.append(upgrade_id)
-	AudioManager.play_sfx("level_up")
+	AudioManager.play_sfx("ui_click")
 	visible = false
 	get_tree().paused = false
 	CursorManager.set_crosshair()

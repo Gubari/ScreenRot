@@ -57,6 +57,12 @@ size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 54
 text = "SETTINGS"
 
+[node name="CharacterLabel" type="Label" parent="MenuContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 48
+text = "CHARACTER: DEFAULT"
+
 [node name="QuitLabel" type="Label" parent="MenuContainer" unique_id=1983479547]
 layout_mode = 2
 size_flags_horizontal = 0
