@@ -38,24 +38,24 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 28.0
-offset_top = -413.0
-offset_right = 468.0
-offset_bottom = -116.0
+offset_left = 29.0
+offset_top = -344.0
+offset_right = 469.0
+offset_bottom = -47.0
 grow_vertical = 0
 theme_override_constants/separation = 12
 
-[node name="ClassicLabel" type="Label" parent="MenuContainer"]
+[node name="ClassicLabel" type="Label" parent="MenuContainer" unique_id=1271473122]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 50
 text = "CLASSIC MODE"
 
-[node name="ChallengeLabel" type="Label" parent="MenuContainer"]
+[node name="EndlessLabel" type="Label" parent="MenuContainer" unique_id=434291516]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 50
-text = "CHALLENGE MODE"
+text = "ENDLESS MODE"
 
 [node name="CharacterLabel" type="Label" parent="MenuContainer" unique_id=1564347388]
 layout_mode = 2
