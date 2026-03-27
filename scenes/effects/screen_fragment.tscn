@@ -1,23 +1,21 @@
-[gd_scene format=3 uid="uid://b0rr11nnv2hva"]
+[gd_scene load_steps=4 format=3 uid="uid://b0rr11nnv2hva"]
 
 [ext_resource type="Script" uid="uid://c780yjwpu4u47" path="res://scripts/effects/screen_fragment.gd" id="1_frag"]
+[ext_resource type="Texture2D" uid="uid://n3ncr62kdhis" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Props and Items/props and items x3.png" id="2_props"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_frag"]
 radius = 14.0
 
 [node name="ScreenFragment" type="Area2D" unique_id=1700417815]
 texture_filter = 1
-scale = Vector2(1.68, 1.68)
 collision_layer = 0
 script = ExtResource("1_frag")
 
-[node name="Sprite" type="Polygon2D" parent="." unique_id=877099799]
-color = Color(0, 1, 1, 0.9)
-polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
-
-[node name="Glow" type="Polygon2D" parent="." unique_id=534821319]
-modulate = Color(0, 1, 1, 0.3)
-polygon = PackedVector2Array(-12, -12, 12, -12, 12, 12, -12, 12)
+[node name="Sprite" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_props")
+region_enabled = true
+region_rect = Rect2(864, 768, 96, 96)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1867454860]
 shape = SubResource("CircleShape2D_frag")

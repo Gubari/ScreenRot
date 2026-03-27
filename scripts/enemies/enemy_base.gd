@@ -162,6 +162,7 @@ func die() -> void:
 	if player and player.has_method("add_score"):
 		player.add_score(score_value)
 	_try_drop_defrag()
+	_drop_coin()
 	queue_free()
 
 func _try_drop_defrag() -> void:
@@ -173,6 +174,13 @@ func _try_drop_defrag() -> void:
 		var pickup = scene.instantiate()
 		pickup.global_position = global_position
 		get_tree().current_scene.call_deferred("add_child", pickup)
+
+func _drop_coin() -> void:
+	var scene: PackedScene = preload("res://scenes/effects/coin_pickup.tscn")
+	var coin = scene.instantiate()
+	var offset := Vector2(randf_range(-50, 50), randf_range(-50, 50))
+	coin.global_position = global_position + offset
+	get_tree().current_scene.call_deferred("add_child", coin)
 
 func _on_hit_player(body: Node2D) -> void:
 	if body.is_in_group("player"):

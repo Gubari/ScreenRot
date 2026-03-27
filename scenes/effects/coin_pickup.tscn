@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/coin_pickup.gd" id="1_coin"]
+[ext_resource type="Texture2D" uid="uid://n3ncr62kdhis" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Props and Items/props and items x3.png" id="2_props"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_coin"]
+radius = 18.0
+
+[node name="CoinPickup" type="Area2D"]
+texture_filter = 1
+collision_layer = 0
+script = ExtResource("1_coin")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_props")
+region_enabled = true
+region_rect = Rect2(864, 672, 96, 96)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_coin")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
