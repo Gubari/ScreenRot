@@ -98,15 +98,8 @@ func _get_spawn_position_in_player_viewport() -> Vector2:
 		if _is_walkable(pos):
 			return pos
 
-	# Fallback: unutra viewporta, clamp na mapu ako postoji
-	var fallback_pos := center + Vector2(
-		randf_range(-half_w + inset, half_w - inset),
-		randf_range(-half_h + inset, half_h - inset)
-	)
-	if map_rect.size != Vector2.ZERO:
-		fallback_pos.x = clampf(fallback_pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
-		fallback_pos.y = clampf(fallback_pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
-	return fallback_pos
+	# Fallback: random walkable position anywhere on the map
+	return _get_any_walkable_position()
 
 
 func _get_spawn_position_default() -> Vector2:
@@ -136,12 +129,19 @@ func _get_spawn_position_default() -> Vector2:
 		if map_rect.grow(-map_margin).has_point(pos) and _is_walkable(pos):
 			return pos
 
-	# Fallback: clamp to map bounds
-	var fb_angle := randf() * TAU
-	var fallback_pos := center + Vector2(cos(fb_angle), sin(fb_angle)) * spawn_margin
-	fallback_pos.x = clampf(fallback_pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
-	fallback_pos.y = clampf(fallback_pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
-	return fallback_pos
+	# Fallback: random walkable position anywhere on the map
+	return _get_any_walkable_position()
+
+func _get_any_walkable_position() -> Vector2:
+	var margin := 32.0
+	for _attempt in 100:
+		var pos := Vector2(
+			randf_range(map_rect.position.x + margin, map_rect.end.x - margin),
+			randf_range(map_rect.position.y + margin, map_rect.end.y - margin)
+		)
+		if _is_walkable(pos):
+			return pos
+	return map_rect.get_center()
 
 func _is_walkable(pos: Vector2) -> bool:
 	if dungeon_map and dungeon_map.has_method("is_walkable"):

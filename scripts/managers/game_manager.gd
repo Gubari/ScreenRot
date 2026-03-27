@@ -44,6 +44,9 @@ var _played_game_won: bool = false
 var _game_over_started: bool = false
 var _game_won_sfx_player: AudioStreamPlayer = null
 
+const TUTORIAL_SCENE := preload("res://scenes/hud/tutorial_overlay.tscn")
+@export var force_tutorial: bool = false
+
 # Boss tracking
 var _active_boss: BossBase = null
 var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
@@ -86,6 +89,23 @@ func _ready() -> void:
 	boss_bar_container.visible = false
 	wave_label.visible = false
 	AudioManager.play_music("gameplay")
+	if force_tutorial or not SaveManager.get_setting("tutorial_seen", false):
+		_show_tutorial()
+	else:
+		await get_tree().create_timer(1.0).timeout
+		start_next_wave()
+
+func _show_tutorial() -> void:
+	await get_tree().process_frame
+	var cam := player.get_node_or_null("Camera2D") as Camera2D
+	if cam:
+		cam.reset_smoothing()
+		cam.force_update_scroll()
+	var tutorial = TUTORIAL_SCENE.instantiate()
+	add_child(tutorial)
+	tutorial.tutorial_finished.connect(_on_tutorial_finished)
+
+func _on_tutorial_finished() -> void:
 	await get_tree().create_timer(1.0).timeout
 	start_next_wave()
 
@@ -452,7 +472,7 @@ func _connect_defrag_pickups() -> void:
 		if not pickup.collected.is_connected(_on_defrag_pickup_collected):
 			# Apply upgrade bonuses to pickup
 			pickup.lifetime = 5.0 + player.upgrade_defrag_lifetime_bonus
-			pickup.defrag_percent = 35.0 + player.upgrade_defrag_strength_bonus
+			pickup.defrag_percent = pickup.defrag_percent + player.upgrade_defrag_strength_bonus
 			pickup.collected.connect(_on_defrag_pickup_collected.bind(pickup.defrag_percent))
 
 func _on_defrag_pickup_collected(clear_percent: float) -> void:
