@@ -1,0 +1,72 @@
+[gd_scene load_steps=9 format=3 uid="uid://en3my_toxicfly01"]
+
+[ext_resource type="Script" path="res://scripts/enemies/toxic_fly.gd" id="1_fly"]
+[ext_resource type="Texture2D" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Enemies/enemies x3.png" id="2_fly_atlas"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 14.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fly_0"]
+atlas = ExtResource("2_fly_atlas")
+region = Rect2(0, 3456, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fly_1"]
+atlas = ExtResource("2_fly_atlas")
+region = Rect2(96, 3456, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fly_2"]
+atlas = ExtResource("2_fly_atlas")
+region = Rect2(192, 3456, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fly_3"]
+atlas = ExtResource("2_fly_atlas")
+region = Rect2(288, 3456, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fly"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fly_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fly_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fly_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fly_3")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 8.0
+}]
+
+[node name="ToxicFly" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_fly")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_fly")
+animation = &"walk"
+playing = true
+autoplay = "walk"
+scale = Vector2(0.42, 0.42)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 1
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_hitbox")
+
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hit_player"]
+[connection signal="body_exited" from="Hitbox" to="." method="_on_hit_player_exited"]
+
