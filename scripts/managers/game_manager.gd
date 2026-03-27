@@ -188,6 +188,7 @@ func _on_boss_fragment_spawn(world_pos: Vector2, value: float) -> void:
 	get_tree().current_scene.add_child(frag)
 
 func _on_fragment_collected(value: float) -> void:
+	AudioManager.play_sfx("screen_fragment")
 	if screen_closing:
 		screen_closing.restore(value)
 
@@ -451,6 +452,7 @@ func _connect_coin_pickups() -> void:
 
 func _on_coin_pickup_collected() -> void:
 	run_credits += 1
+	AudioManager.play_sfx("coin_collect")
 	_update_credits_display()
 
 var _skip_used := false
