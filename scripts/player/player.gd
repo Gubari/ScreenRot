@@ -159,9 +159,11 @@ func handle_dash(delta: float) -> void:
 	if is_dashing:
 		dash_timer -= delta
 		velocity = dash_direction * dash_speed
+		sprite.visible = true
 		if dash_timer <= 0:
 			is_dashing = false
 			invincible = false
+			sprite.visible = true
 
 	# Start dash
 	if Input.is_action_just_pressed("dash") and can_dash and not is_dashing:
@@ -196,6 +198,9 @@ func _spawn_dash_ghost() -> void:
 	tween.tween_callback(ghost.queue_free)
 
 func handle_invincibility(delta: float) -> void:
+	if invincible and is_dashing:
+		sprite.visible = true
+		return
 	if invincible and not is_dashing:
 		invincible_timer -= delta
 		sprite.visible = fmod(invincible_timer, 0.2) > 0.1

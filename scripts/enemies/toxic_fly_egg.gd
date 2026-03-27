@@ -39,6 +39,8 @@ func _hatch() -> void:
 	_alive = false
 	_disable_collisions()
 	# Auto hatch should not count as a kill/debris event.
+	# Emit enemy_killed so the spawner decrements enemies_alive for the egg.
+	enemy_killed.emit(global_position, "")
 	if sprite:
 		sprite.visible = false
 	hatch_requested.emit(global_position)
@@ -53,12 +55,16 @@ func _break_egg() -> void:
 	_disable_collisions()
 	if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("spawn_death"):
 		sprite.play("spawn_death")
+		sprite.animation_finished.connect(queue_free)
+	else:
+		queue_free()
 	# Screen debris + kill count; do NOT emit hatch_requested — fly never spawns.
 	enemy_killed.emit(global_position, "toxic_fly_egg")
 
 func _disable_collisions() -> void:
+	# Ne menjati koliziju tokom physics query flush-a (bullet → take_damage).
 	if body_shape:
-		body_shape.disabled = true
+		body_shape.set_deferred("disabled", true)
 	if hitbox_shape:
-		hitbox_shape.disabled = true
+		hitbox_shape.set_deferred("disabled", true)
 

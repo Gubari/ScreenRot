@@ -275,12 +275,15 @@ animations = [{
 radius = 18.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1085202173]
+texture_filter = 1
+scale = Vector2(1.5999995, 1.5999995)
 collision_mask = 2
 script = ExtResource("1_player")
 fire_rate = 0.3
 bullet_damage = 2
 max_hp = 10
-dash_speed = 500.0
+dash_speed = 1000.0
+dash_duration = 0.2
 dash_cooldown = 4.0
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=268205600]

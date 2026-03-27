@@ -1,13 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://en3my_toxicfly01"]
+[gd_scene format=3 uid="uid://3da1vb2an43v"]
 
-[ext_resource type="Script" path="res://scripts/enemies/toxic_fly.gd" id="1_fly"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Enemies/enemies x3.png" id="2_fly_atlas"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
-radius = 12.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
-radius = 14.0
+[ext_resource type="Script" uid="uid://cw2q48hnvm7l1" path="res://scripts/enemies/toxic_fly.gd" id="1_fly"]
+[ext_resource type="Texture2D" uid="uid://dwvldpohy4t63" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Enemies/enemies x3.png" id="2_fly_atlas"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fly_0"]
 atlas = ExtResource("2_fly_atlas")
@@ -45,28 +39,32 @@ animations = [{
 "speed": 8.0
 }]
 
-[node name="ToxicFly" type="CharacterBody2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 14.0
+
+[node name="ToxicFly" type="CharacterBody2D" unique_id=152338781]
+scale = Vector2(1.7200003, 1.7200003)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_fly")
 
-[node name="Sprite" type="AnimatedSprite2D" parent="."]
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=722398910]
+scale = Vector2(0.42, 0.42)
 sprite_frames = SubResource("SpriteFrames_fly")
 animation = &"walk"
-playing = true
 autoplay = "walk"
-scale = Vector2(0.42, 0.42)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=846878607]
 shape = SubResource("CircleShape2D_body")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=1032108085]
 collision_layer = 2
-collision_mask = 1
 
-[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox" unique_id=998788713]
 shape = SubResource("CircleShape2D_hitbox")
 
 [connection signal="body_entered" from="Hitbox" to="." method="_on_hit_player"]
 [connection signal="body_exited" from="Hitbox" to="." method="_on_hit_player_exited"]
-

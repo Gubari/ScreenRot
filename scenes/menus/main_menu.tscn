@@ -39,17 +39,23 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 28.0
-offset_top = -319.0
-offset_right = 374.0
-offset_bottom = -57.0
+offset_top = -413.0
+offset_right = 468.0
+offset_bottom = -116.0
 grow_vertical = 0
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 
-[node name="StartLabel" type="Label" parent="MenuContainer" unique_id=2111579690]
+[node name="ClassicLabel" type="Label" parent="MenuContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 54
-text = "START"
+theme_override_font_sizes/font_size = 50
+text = "CLASSIC MODE"
+
+[node name="ChallengeLabel" type="Label" parent="MenuContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 50
+text = "CHALLENGE MODE"
 
 [node name="CharacterLabel" type="Label" parent="MenuContainer" unique_id=1564347388]
 layout_mode = 2
@@ -60,13 +66,13 @@ text = "CHARACTERS"
 [node name="SettingsLabel" type="Label" parent="MenuContainer" unique_id=426461518]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 50
 text = "SETTINGS"
 
 [node name="QuitLabel" type="Label" parent="MenuContainer" unique_id=1983479547]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 50
 text = "QUIT"
 
 [node name="StatsLabel" type="Label" parent="." unique_id=582545625]

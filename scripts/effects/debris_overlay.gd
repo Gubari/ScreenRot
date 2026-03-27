@@ -3,7 +3,8 @@ extends CanvasLayer
 signal debris_changed(percent: float)
 
 ## Pixel size of one debris piece on screen (matches _spawn_glitch_block scaling).
-@export var block_size: int = 80
+## Base 80; +120% (tj. 220% od baze) = 80 * 2.2.
+@export var block_size: int = 110
 ## Grid cell size in pixels for coverage tracking (smaller = more accurate, slightly more work).
 @export var tracker_cell_size: int = 16
 @export var glitch_anim_texture_path: String = "res://scenes/effects/glitch_animation.png"
@@ -140,7 +141,7 @@ func _build_sprite_frames() -> Array[SpriteFrames]:
 		var sheet_img := (tex as Texture2D).get_image()
 		if sheet_img == null:
 			continue
-		var frame_w: int = sheet_img.get_width() / glitch_anim_frames_count
+		var frame_w: int = int(floor(sheet_img.get_width() / float(glitch_anim_frames_count)))
 		var frame_h: int = sheet_img.get_height()
 		if frame_w < 1 or frame_h < 1:
 			continue

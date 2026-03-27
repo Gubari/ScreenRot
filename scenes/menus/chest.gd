@@ -27,6 +27,7 @@ func _open() -> void:
 	_opened = true
 	_opened_chests.append(get_path())
 	play("open")
+	AudioManager.play_sfx("coin_collect")
 	SaveManager.add_credits(CREDIT_AMOUNT)
 	_spawn_credits()
 

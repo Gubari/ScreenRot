@@ -32,7 +32,7 @@ func _ready() -> void:
 	nav_agent = NavigationAgent2D.new()
 	nav_agent.path_desired_distance = 6.0
 	nav_agent.target_desired_distance = 6.0
-	nav_agent.radius = 24.0
+	nav_agent.radius = 40.0
 	nav_agent.avoidance_enabled = true
 	nav_agent.max_neighbors = 6
 	nav_agent.neighbor_distance = 120.0
@@ -162,17 +162,36 @@ func die() -> void:
 	if player and player.has_method("add_score"):
 		player.add_score(score_value)
 	_try_drop_defrag()
+	_drop_coin()
 	queue_free()
+
+func _get_drop_rates() -> Dictionary:
+	var game := get_tree().current_scene
+	if game and "wave_manager" in game and "current_wave" in game:
+		var wm: WaveManager = game.wave_manager
+		var wave: int = game.current_wave
+		return {"coin": wm.get_coin_drop_rate(wave), "defrag": wm.get_defrag_drop_rate(wave)}
+	return {"coin": 1.0, "defrag": 1.0}
 
 func _try_drop_defrag() -> void:
 	var chance := defrag_drop_chance
 	if player and "upgrade_defrag_drop_bonus" in player:
 		chance += player.upgrade_defrag_drop_bonus
+	chance *= _get_drop_rates().defrag
 	if randf() < chance:
 		var scene: PackedScene = preload("res://scenes/effects/defrag_pickup.tscn")
 		var pickup = scene.instantiate()
 		pickup.global_position = global_position
 		get_tree().current_scene.call_deferred("add_child", pickup)
+
+func _drop_coin() -> void:
+	if randf() > _get_drop_rates().coin:
+		return
+	var scene: PackedScene = preload("res://scenes/effects/coin_pickup.tscn")
+	var coin = scene.instantiate()
+	var offset := Vector2(randf_range(-50, 50), randf_range(-50, 50))
+	coin.global_position = global_position + offset
+	get_tree().current_scene.call_deferred("add_child", coin)
 
 func _on_hit_player(body: Node2D) -> void:
 	if body.is_in_group("player"):

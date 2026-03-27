@@ -38,6 +38,7 @@ func _process(delta: float) -> void:
 				spawning = false
 
 func start_spawning(queue: Array) -> void:
+	enemies_alive = 0
 	spawn_queue = queue.duplicate(true)
 	spawning = true
 	if spawn_queue.size() > 0:
@@ -60,6 +61,7 @@ func _on_toxic_fly_egg_hatched(pos: Vector2) -> void:
 	fly.global_position = pos
 	fly.enemy_killed.connect(_on_enemy_killed)
 	get_parent().get_node("Enemies").add_child(fly)
+	enemies_alive += 1
 
 func _get_spawn_position(type: String = "") -> Vector2:
 	if type == "toxic_fly":
@@ -73,8 +75,8 @@ func _get_spawn_position_in_player_viewport() -> Vector2:
 		return _get_spawn_position_default()
 
 	var vp_size := get_viewport().get_visible_rect().size
-	var half_w := (vp_size.x / cam.zoom.x) * 0.5
-	var half_h := (vp_size.y / cam.zoom.y) * 0.5
+	var half_w := (float(vp_size.x) / cam.zoom.x) * 0.5
+	var half_h := (float(vp_size.y) / cam.zoom.y) * 0.5
 	var inset := 32.0
 	var center := cam.get_screen_center_position()
 	var map_margin := 16.0
@@ -91,14 +93,14 @@ func _get_spawn_position_in_player_viewport() -> Vector2:
 			return pos
 
 	# Fallback: unutra viewporta, clamp na mapu ako postoji
-	var pos := center + Vector2(
+	var fallback_pos := center + Vector2(
 		randf_range(-half_w + inset, half_w - inset),
 		randf_range(-half_h + inset, half_h - inset)
 	)
 	if map_rect.size != Vector2.ZERO:
-		pos.x = clampf(pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
-		pos.y = clampf(pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
-	return pos
+		fallback_pos.x = clampf(fallback_pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
+		fallback_pos.y = clampf(fallback_pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
+	return fallback_pos
 
 
 func _get_spawn_position_default() -> Vector2:
@@ -142,8 +144,8 @@ func _is_walkable(pos: Vector2) -> bool:
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	enemy_killed_global.emit(pos, type)
-	enemies_alive -= 1
-	if enemies_alive <= 0 and not spawning and spawn_queue.size() == 0:
+	enemies_alive = maxi(enemies_alive - 1, 0)
+	if enemies_alive == 0 and not spawning and spawn_queue.size() == 0:
 		all_enemies_dead.emit()
 
 func get_enemy_count() -> int:

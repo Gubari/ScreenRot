@@ -46,6 +46,8 @@ radius = 14.0
 radius = 16.0
 
 [node name="PixelGrunt" type="CharacterBody2D" unique_id=1518155190]
+texture_filter = 1
+scale = Vector2(1.8400004, 1.8400004)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_grunt")
@@ -58,14 +60,13 @@ animation = &"walk"
 autoplay = "walk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=384983763]
-scale = Vector2(0.7600006, 0.80000204)
 shape = SubResource("CircleShape2D_body")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=709899303]
 collision_layer = 2
 
 [node name="HitboxShape" type="CollisionShape2D" parent="Hitbox" unique_id=1989928898]
-scale = Vector2(1, 1.240001)
+scale = Vector2(1.1290323, 1.400001)
 shape = SubResource("CircleShape2D_hitbox")
 
 [connection signal="body_entered" from="Hitbox" to="." method="_on_hit_player"]

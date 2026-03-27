@@ -50,6 +50,8 @@ var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment
 
 func _ready() -> void:
 	_swap_player_if_needed()
+	# Configure wave manager based on selected game mode
+	wave_manager.is_endless_mode = GameMode.is_challenge()
 	# Generate dungeon map first
 	if dungeon_map and dungeon_map.has_method("generate"):
 		dungeon_map.generate()
@@ -192,6 +194,7 @@ func _on_boss_fragment_spawn(world_pos: Vector2, value: float) -> void:
 	get_tree().current_scene.add_child(frag)
 
 func _on_fragment_collected(value: float) -> void:
+	AudioManager.play_sfx("screen_fragment")
 	if screen_closing:
 		screen_closing.restore(value)
 
@@ -264,17 +267,18 @@ func _update_boss_bar_color() -> void:
 # ── Standard wave/enemy handling ──────────────────────────────
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
+	if type == "":
+		return
 	kills_this_wave += 1
-	run_credits += 1
 	# Clean Kill upgrade: chance to skip debris
 	var skip_debris: bool = player.upgrade_clean_kill_chance > 0.0 and randf() < player.upgrade_clean_kill_chance
 	if not skip_debris and debris_overlay and debris_overlay.has_method("add_debris"):
 		debris_overlay.add_debris(pos, type)
 	update_debris_display()
 	update_multiplier()
-	_update_credits_display()
-	# Connect any new defrag pickups spawned by enemy death
+	# Connect any new pickups spawned by enemy death
 	_connect_defrag_pickups()
+	_connect_coin_pickups()
 
 func update_multiplier() -> void:
 	var debris_percent := _get_debris_percent()
@@ -352,7 +356,9 @@ func _on_all_waves_completed() -> void:
 		game_over_screen.show_game_over(player.score, run_credits)
 
 func _on_upgrade_chosen(upgrade_id: String) -> void:
-	_apply_upgrade(upgrade_id)
+	if upgrade_id != "":
+		_apply_upgrade(upgrade_id)
+	await get_tree().create_timer(2.5).timeout
 	start_next_wave()
 
 func _apply_upgrade(upgrade_id: String) -> void:
@@ -423,7 +429,10 @@ func _on_player_died(final_score: int, _credits: int) -> void:
 		frag.queue_free()
 	SaveManager.add_credits(run_credits)
 	SaveManager.update_high_score(final_score)
-	game_over_screen.show_game_over(final_score, run_credits)
+	if GameMode.is_challenge():
+		game_over_screen.show_game_over(final_score, run_credits, "YOU DIED!", "Reached Wave " + str(current_wave))
+	else:
+		game_over_screen.show_game_over(final_score, run_credits)
 
 func _update_credits_display() -> void:
 	credits_label.text = "Credits: " + str(run_credits)
@@ -441,6 +450,16 @@ func _on_defrag_pickup_collected(clear_percent: float) -> void:
 		debris_overlay.defrag_clear(clear_percent)
 	update_debris_display()
 	update_multiplier()
+
+func _connect_coin_pickups() -> void:
+	for coin in get_tree().get_nodes_in_group("coin_pickups"):
+		if not coin.collected.is_connected(_on_coin_pickup_collected):
+			coin.collected.connect(_on_coin_pickup_collected)
+
+func _on_coin_pickup_collected() -> void:
+	run_credits += 1
+	AudioManager.play_sfx("coin_collect")
+	_update_credits_display()
 
 var _skip_used := false
 
