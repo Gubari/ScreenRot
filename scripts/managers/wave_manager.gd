@@ -102,6 +102,15 @@ func get_defrag_drop_rate(wave_number: int) -> float:
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
 	return waves[index].defrag_drop_rate
 
+## Returns the post-wave delay for the given wave.
+func get_post_wave_delay(wave_number: int) -> float:
+	if is_endless_mode:
+		return 1.5
+	if waves.is_empty():
+		return 1.5
+	var index := clampi(wave_number - 1, 0, waves.size() - 1)
+	return waves[index].post_wave_delay
+
 ## Generates a procedural wave for challenge/endless mode.
 ## Enemies scale up incrementally each wave. New enemy types unlock gradually.
 func _generate_challenge_wave(wave_number: int) -> Array:
