@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dtyguv1xp1ehx"]
+[gd_scene format=3 uid="uid://dtyguv1xp1ehx"]
 
 [ext_resource type="Script" uid="uid://b1bwhfeyft4fv" path="res://scripts/effects/defrag_pickup.gd" id="1_defrag"]
 [ext_resource type="Texture2D" uid="uid://n3ncr62kdhis" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Props and Items/props and items x3.png" id="2_props"]
@@ -10,8 +10,9 @@ radius = 16.0
 texture_filter = 1
 collision_layer = 0
 script = ExtResource("1_defrag")
+defrag_percent = 15.0
 
-[node name="Sprite" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1370503782]
 texture_filter = 1
 texture = ExtResource("2_props")
 region_enabled = true
