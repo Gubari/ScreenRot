@@ -26,4 +26,3 @@ func do_movement(delta: float) -> void:
 	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
 	if spr and player and is_instance_valid(player):
 		spr.flip_h = player.global_position.x < global_position.x
-

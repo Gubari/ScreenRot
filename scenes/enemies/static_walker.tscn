@@ -46,6 +46,8 @@ radius = 16.0
 radius = 18.0
 
 [node name="StaticWalker" type="CharacterBody2D" unique_id=2111115747]
+texture_filter = 1
+scale = Vector2(2.2427084, 2.24)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_walker")

@@ -82,6 +82,8 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_bullet"]
 
 [node name="BossBullet" type="Area2D" unique_id=1357723390]
+texture_filter = 1
+scale = Vector2(2.24, 2.24)
 collision_layer = 8
 script = ExtResource("1_bullet")
 

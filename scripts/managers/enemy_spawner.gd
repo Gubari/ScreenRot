@@ -73,8 +73,8 @@ func _get_spawn_position_in_player_viewport() -> Vector2:
 		return _get_spawn_position_default()
 
 	var vp_size := get_viewport().get_visible_rect().size
-	var half_w := (vp_size.x / cam.zoom.x) * 0.5
-	var half_h := (vp_size.y / cam.zoom.y) * 0.5
+	var half_w := (float(vp_size.x) / cam.zoom.x) * 0.5
+	var half_h := (float(vp_size.y) / cam.zoom.y) * 0.5
 	var inset := 32.0
 	var center := cam.get_screen_center_position()
 	var map_margin := 16.0
@@ -91,14 +91,14 @@ func _get_spawn_position_in_player_viewport() -> Vector2:
 			return pos
 
 	# Fallback: unutra viewporta, clamp na mapu ako postoji
-	var pos := center + Vector2(
+	var fallback_pos := center + Vector2(
 		randf_range(-half_w + inset, half_w - inset),
 		randf_range(-half_h + inset, half_h - inset)
 	)
 	if map_rect.size != Vector2.ZERO:
-		pos.x = clampf(pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
-		pos.y = clampf(pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
-	return pos
+		fallback_pos.x = clampf(fallback_pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
+		fallback_pos.y = clampf(fallback_pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
+	return fallback_pos
 
 
 func _get_spawn_position_default() -> Vector2:
