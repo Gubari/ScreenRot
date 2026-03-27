@@ -1,15 +1,8 @@
 extends Control
 
 const SHOP_ITEMS: Array = [
-	{"id": "hp_plus_1", "name": "HP +1", "desc": "Start with 6 HP instead of 5", "cost": 30},
-	{"id": "quick_boot", "name": "Quick Boot", "desc": "Wave 1 has 10% fewer enemies", "cost": 20},
-	{"id": "defrag_cd_1", "name": "Defrag -1s", "desc": "Defrag cooldown starts at 11s", "cost": 40},
-	{"id": "start_speed", "name": "Speed +5%", "desc": "Slightly faster movement from the start", "cost": 25},
-	{"id": "hp_plus_2", "name": "HP +2", "desc": "Start with 7 HP", "cost": 80},
-	{"id": "defrag_cd_2", "name": "Defrag -2s", "desc": "Defrag cooldown at 10s", "cost": 90},
-	{"id": "lucky_rolls", "name": "Lucky Rolls", "desc": "Level-up offers 4 choices instead of 3", "cost": 100},
-	{"id": "hp_plus_3", "name": "HP +3", "desc": "Start with 8 HP", "cost": 200},
-	{"id": "double_credits", "name": "Double Credits", "desc": "Earn 2x credits permanently", "cost": 300},
+	{"id": "char_red_small", "name": "Character: Small", "desc": "Default character (free).", "cost": 0},
+	{"id": "char_red_heavy", "name": "New Character: Heavy", "desc": "Unlock the heavy unit (playable).", "cost": 250},
 ]
 
 @onready var credits_label: Label = $TopBar/CreditsLabel
@@ -32,9 +25,10 @@ func _populate_shop() -> void:
 		var row := _create_item_row(item)
 		item_container.add_child(row)
 
-func _create_item_row(item: Dictionary) -> HBoxContainer:
+func _create_item_row(item: Dictionary) -> Control:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 16)
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	# Name + Desc
 	var info := VBoxContainer.new()
@@ -42,11 +36,12 @@ func _create_item_row(item: Dictionary) -> HBoxContainer:
 
 	var name_label := Label.new()
 	name_label.text = item.name
+	name_label.add_theme_color_override("font_color", Color(0.9, 0.95, 1.0))
 	info.add_child(name_label)
 
 	var desc_label := Label.new()
 	desc_label.text = item.desc
-	desc_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	desc_label.add_theme_color_override("font_color", Color(0.65, 0.7, 0.75))
 	info.add_child(desc_label)
 
 	row.add_child(info)
@@ -57,6 +52,7 @@ func _create_item_row(item: Dictionary) -> HBoxContainer:
 	cost_label.custom_minimum_size = Vector2(80, 0)
 	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	cost_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	cost_label.add_theme_color_override("font_color", Color(0.85, 0.9, 1.0))
 	row.add_child(cost_label)
 
 	# Buy button
@@ -66,43 +62,61 @@ func _create_item_row(item: Dictionary) -> HBoxContainer:
 	buy_buttons.append(btn)
 	row.add_child(btn)
 
-	# Separator
 	var sep := HSeparator.new()
-	sep.add_theme_constant_override("separation", 4)
+	sep.modulate = Color(0.2, 0.22, 0.28)
 
 	var wrapper := VBoxContainer.new()
+	wrapper.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	wrapper.add_child(row)
 	wrapper.add_child(sep)
-
-	# Return the wrapper so separator is included
-	# Actually HBoxContainer is expected, let me restructure
-	# Just return row, add separator separately
-	return row
+	return wrapper
 
 func _update_display() -> void:
 	credits_label.text = "Credits: " + str(SaveManager.get_credits())
+	var selected_char := SaveManager.get_selected_character()
 
 	for i in SHOP_ITEMS.size():
 		var item: Dictionary = SHOP_ITEMS[i]
 		var btn: Button = buy_buttons[i]
 
-		if SaveManager.has_upgrade(item.id):
-			btn.text = "OWNED"
-			btn.disabled = true
-		elif SaveManager.get_credits() < item.cost:
-			btn.text = str(item.cost) + " CR"
-			btn.disabled = true
+		var char_id := "red_small" if item.id == "char_red_small" else "red_heavy"
+		var owned_char := true if char_id == "red_small" else SaveManager.has_character("red_heavy")
+
+		if owned_char:
+			if selected_char == char_id:
+				btn.text = "SELECTED"
+				btn.disabled = true
+			else:
+				btn.text = "SELECT"
+				btn.disabled = false
 		else:
-			btn.text = "BUY"
-			btn.disabled = false
+			if SaveManager.get_credits() < item.cost:
+				btn.text = str(item.cost) + " CR"
+				btn.disabled = true
+			else:
+				btn.text = "BUY"
+				btn.disabled = false
 
 func _on_buy(item_id: String) -> void:
 	for item in SHOP_ITEMS:
-		if item.id == item_id:
-			if SaveManager.spend_credits(item.cost):
-				SaveManager.purchase_upgrade(item_id)
+		if item.id != item_id:
+			continue
+
+		if item_id == "char_red_small":
+			SaveManager.set_selected_character("red_small")
+			_update_display()
+			return
+
+		if item_id == "char_red_heavy":
+			if SaveManager.has_character("red_heavy"):
+				SaveManager.set_selected_character("red_heavy")
 				_update_display()
-			break
+				return
+			if SaveManager.spend_credits(item.cost):
+				SaveManager.unlock_character("red_heavy")
+				SaveManager.set_selected_character("red_heavy")
+				_update_display()
+			return
 
 func _on_back() -> void:
 	get_tree().change_scene_to_file("res://scenes/menus/main_menu.tscn")

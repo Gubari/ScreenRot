@@ -11,6 +11,7 @@ signal score_changed(score: int, multiplier: int)
 @export var fire_rate: float = 0.15
 @export var bullet_speed: float = 600.0
 @export var bullet_damage: int = 1
+@export var bullet_scene_path: String = "res://scenes/player/bullet.tscn"
 # In sprite pixels (96×96 frame); tuned for players red x3 top character.
 # Scaled by Sprite2D.scale in handle_rotation.
 @export var muzzle_offset: Vector2 = Vector2(20, 24)
@@ -63,7 +64,9 @@ var bullet_scene: PackedScene
 
 func _ready() -> void:
 	current_hp = max_hp
-	bullet_scene = preload("res://scenes/player/bullet.tscn")
+	bullet_scene = load(bullet_scene_path) as PackedScene
+	if bullet_scene == null:
+		bullet_scene = preload("res://scenes/player/bullet.tscn")
 	add_to_group("player")
 	CursorManager.set_crosshair()
 

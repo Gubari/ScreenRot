@@ -6,6 +6,8 @@ var data: Dictionary = {
 	"credits": 0,
 	"high_score": 0,
 	"purchased_upgrades": [],
+	"unlocked_characters": ["red_small"],
+	"selected_character": "red_small",
 	"master_volume": 1.0,
 	"music_volume": 0.8,
 	"sfx_volume": 0.8,
@@ -49,6 +51,24 @@ func purchase_upgrade(upgrade_id: String) -> void:
 	if upgrade_id not in data.purchased_upgrades:
 		data.purchased_upgrades.append(upgrade_id)
 		save_game()
+
+func has_character(character_id: String) -> bool:
+	var unlocked: Array = data.get("unlocked_characters", [])
+	return character_id in unlocked
+
+func unlock_character(character_id: String) -> void:
+	var unlocked: Array = data.get("unlocked_characters", [])
+	if character_id not in unlocked:
+		unlocked.append(character_id)
+		data["unlocked_characters"] = unlocked
+		save_game()
+
+func get_selected_character() -> String:
+	return str(data.get("selected_character", "red_small"))
+
+func set_selected_character(character_id: String) -> void:
+	data["selected_character"] = character_id
+	save_game()
 
 func save_game() -> void:
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -101,6 +121,8 @@ func reset_save() -> void:
 		"credits": 0,
 		"high_score": 0,
 		"purchased_upgrades": [],
+		"unlocked_characters": ["red_small"],
+		"selected_character": "red_small",
 		"master_volume": 1.0,
 		"music_volume": 0.8,
 		"sfx_volume": 0.8,
