@@ -267,8 +267,6 @@ func _update_boss_bar_color() -> void:
 # ── Standard wave/enemy handling ──────────────────────────────
 
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
-	if type == "":
-		return
 	kills_this_wave += 1
 	# Clean Kill upgrade: chance to skip debris
 	var skip_debris: bool = player.upgrade_clean_kill_chance > 0.0 and randf() < player.upgrade_clean_kill_chance
@@ -347,6 +345,8 @@ func _on_all_waves_completed() -> void:
 	wave_label.visible = true
 	SaveManager.add_credits(run_credits)
 	SaveManager.update_high_score(player.score)
+	if GameMode.is_classic() and not SaveManager.is_challenge_unlocked():
+		SaveManager.unlock_challenge()
 	if _played_game_won:
 		# Wait until the actual game_won sound finishes (no fixed timer).
 		if _game_won_sfx_player and _game_won_sfx_player.playing:

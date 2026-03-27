@@ -39,8 +39,7 @@ func _hatch() -> void:
 	_alive = false
 	_disable_collisions()
 	# Auto hatch should not count as a kill/debris event.
-	# Emit enemy_killed so the spawner decrements enemies_alive for the egg.
-	enemy_killed.emit(global_position, "")
+	# Fly inherits the egg's enemies_alive slot — no enemy_killed emit needed.
 	if sprite:
 		sprite.visible = false
 	hatch_requested.emit(global_position)

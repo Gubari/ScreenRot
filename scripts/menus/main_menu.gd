@@ -9,11 +9,15 @@ extends Control
 
 const COLOR_NORMAL := Color(0.45, 0.45, 0.5)
 const COLOR_HOVER := Color(0.85, 0.9, 1.0)
+const COLOR_LOCKED := Color(0.25, 0.25, 0.3)
 const HOVER_PREFIX := "> "
 
 var menu_items: Array[Dictionary] = []
+var _challenge_locked: bool = false
 
 func _ready() -> void:
+	_challenge_locked = not SaveManager.is_challenge_unlocked()
+
 	menu_items = [
 		{"label": classic_label, "text": "CLASSIC MODE", "action": _on_classic},
 		{"label": challenge_label, "text": "CHALLENGE MODE", "action": _on_challenge},
@@ -31,6 +35,11 @@ func _ready() -> void:
 		label.mouse_exited.connect(_on_item_unhover.bind(item))
 		label.gui_input.connect(_on_item_input.bind(item))
 
+	if _challenge_locked:
+		challenge_label.text = "CHALLENGE MODE [LOCKED]"
+		challenge_label.add_theme_color_override("font_color", COLOR_LOCKED)
+		challenge_label.mouse_default_cursor_shape = Control.CURSOR_ARROW
+
 	_update_stats()
 	SaveManager.credits_changed.connect(_on_credits_changed)
 	_update_character_label()
@@ -38,6 +47,8 @@ func _ready() -> void:
 	AudioManager.play_music("menu")
 
 func _on_item_hover(item: Dictionary) -> void:
+	if item.label == challenge_label and _challenge_locked:
+		return
 	if item.label == character_label:
 		_update_character_label()
 		character_label.text = HOVER_PREFIX + character_label.text
@@ -46,6 +57,8 @@ func _on_item_hover(item: Dictionary) -> void:
 	item.label.add_theme_color_override("font_color", COLOR_HOVER)
 
 func _on_item_unhover(item: Dictionary) -> void:
+	if item.label == challenge_label and _challenge_locked:
+		return
 	if item.label == character_label:
 		_update_character_label()
 	else:
@@ -54,6 +67,8 @@ func _on_item_unhover(item: Dictionary) -> void:
 
 func _on_item_input(event: InputEvent, item: Dictionary) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if item.label == challenge_label and _challenge_locked:
+			return
 		get_viewport().set_input_as_handled()
 		Input.action_release("shoot")
 		AudioManager.play_sfx("ui_click")
@@ -95,7 +110,6 @@ func _display_name(char_id: String) -> String:
 
 func _update_character_label() -> void:
 	var sel := SaveManager.get_selected_character()
-	# Validate: if selected character is not unlocked, revert to default
 	if sel != "red_small" and not SaveManager.has_character(sel):
 		sel = "red_small"
 		SaveManager.set_selected_character(sel)

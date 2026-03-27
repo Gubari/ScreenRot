@@ -61,7 +61,6 @@ func _on_toxic_fly_egg_hatched(pos: Vector2) -> void:
 	fly.global_position = pos
 	fly.enemy_killed.connect(_on_enemy_killed)
 	get_parent().get_node("Enemies").add_child(fly)
-	enemies_alive += 1
 
 func _get_spawn_position(type: String = "") -> Vector2:
 	if type == "toxic_fly":

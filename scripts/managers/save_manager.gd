@@ -15,6 +15,7 @@ var data: Dictionary = {
 	"sfx_volume": 0.8,
 	"muted": false,
 	"fullscreen": false,
+	"challenge_unlocked": false,
 }
 
 func _ready() -> void:
@@ -91,6 +92,13 @@ func load_game() -> void:
 		for key in loaded:
 			data[key] = loaded[key]
 
+func is_challenge_unlocked() -> bool:
+	return data.get("challenge_unlocked", false)
+
+func unlock_challenge() -> void:
+	data["challenge_unlocked"] = true
+	save_game()
+
 func set_setting(key: String, value: Variant) -> void:
 	data[key] = value
 	save_game()
@@ -132,5 +140,6 @@ func reset_save() -> void:
 		"sfx_volume": 0.8,
 		"muted": false,
 			"fullscreen": false,
+		"challenge_unlocked": false,
 	}
 	save_game()
