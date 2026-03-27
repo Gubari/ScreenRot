@@ -73,8 +73,9 @@ func _load_music_library() -> void:
 		if not dir.current_is_dir() and not file_name.ends_with(".import"):
 			if _is_audio_file(file_name):
 				var key := _strip_audio_extensions(file_name)
-				var stream = load(MUSIC_PATH + file_name)
+				var stream: AudioStream = load(MUSIC_PATH + file_name)
 				if stream:
+					_set_music_stream_loop(stream, true)
 					music_library[key] = stream
 		file_name = dir.get_next()
 
@@ -89,6 +90,15 @@ func _strip_audio_extensions(file_name: String) -> String:
 	while result.get_extension().to_lower() in audio_exts:
 		result = result.get_basename()
 	return result
+
+func _set_music_stream_loop(stream: AudioStream, enabled: bool) -> void:
+	if stream is AudioStreamOggVorbis:
+		(stream as AudioStreamOggVorbis).loop = enabled
+	elif stream is AudioStreamMP3:
+		(stream as AudioStreamMP3).loop = enabled
+	elif stream is AudioStreamWAV:
+		var wav := stream as AudioStreamWAV
+		wav.loop_mode = AudioStreamWAV.LOOP_FORWARD if enabled else AudioStreamWAV.LOOP_DISABLED
 
 # --- PUBLIC API ---
 

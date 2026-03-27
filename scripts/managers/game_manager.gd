@@ -191,7 +191,13 @@ func _on_boss_fragment_spawn(world_pos: Vector2, value: float) -> void:
 	frag.global_position = world_pos
 	frag.restore_value = value
 	frag.collected.connect(_on_fragment_collected)
-	get_tree().current_scene.add_child(frag)
+	var scene := get_tree().current_scene
+	scene.add_child(frag)
+	# Default add_child appends last → draws on top of everything. Draw before Enemies
+	# so fragments sit under units (same z_index: earlier in tree = behind).
+	var enemies_node := scene.get_node_or_null("Enemies")
+	if enemies_node:
+		scene.move_child(frag, enemies_node.get_index())
 
 func _on_fragment_collected(value: float) -> void:
 	AudioManager.play_sfx("screen_fragment")

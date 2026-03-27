@@ -1,7 +1,7 @@
 extends Control
 
 @onready var classic_label: Label = $MenuContainer/ClassicLabel
-@onready var challenge_label: Label = $MenuContainer/ChallengeLabel
+@onready var challenge_label: Label = $MenuContainer/EndlessLabel
 @onready var settings_label: Label = $MenuContainer/SettingsLabel
 @onready var character_label: Label = $MenuContainer/CharacterLabel
 @onready var quit_label: Label = $MenuContainer/QuitLabel
@@ -20,7 +20,7 @@ func _ready() -> void:
 
 	menu_items = [
 		{"label": classic_label, "text": "CLASSIC MODE", "action": _on_classic},
-		{"label": challenge_label, "text": "CHALLENGE MODE", "action": _on_challenge},
+		{"label": challenge_label, "text": "ENDLESS MODE", "action": _on_challenge},
 		{"label": settings_label, "text": "SETTINGS", "action": _on_settings},
 		{"label": character_label, "text": "CHARACTER", "action": _on_character_shop},
 		{"label": quit_label, "text": "QUIT", "action": _on_quit},
