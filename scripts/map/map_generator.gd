@@ -81,7 +81,7 @@ func _build_navigation() -> void:
 		return
 
 	# Inset vertices that border walls so nav paths stay away from corners
-	const INSET := 20.0
+	const INSET := 38.0
 
 	# First pass: collect all grid corners and compute inset positions
 	var corner_pos := {}  # Vector2i -> Vector2 (world position, possibly inset)

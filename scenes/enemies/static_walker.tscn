@@ -64,7 +64,6 @@ animation = &"walk"
 autoplay = "walk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1797237074]
-scale = Vector2(-1.1223192, 1.086024)
 shape = SubResource("CircleShape2D_body")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=1358356285]
