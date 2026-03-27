@@ -4,6 +4,7 @@ signal all_enemies_dead()
 signal enemy_killed_global(pos: Vector2, type: String)
 
 var enemy_scenes: Dictionary = {}
+var toxic_fly_scene: PackedScene = preload("res://scenes/enemies/toxic_fly.tscn")
 var enemies_alive: int = 0
 var spawn_queue: Array = []
 var spawn_timer: float = 0.0
@@ -21,6 +22,7 @@ func _ready() -> void:
 		"pixel_grunt": preload("res://scenes/enemies/pixel_grunt.tscn"),
 		"static_walker": preload("res://scenes/enemies/static_walker.tscn"),
 		"bit_bug": preload("res://scenes/enemies/bit_bug.tscn"),
+		"toxic_fly": preload("res://scenes/enemies/toxic_fly_egg.tscn"),
 		"bloatware_boss": preload("res://scenes/enemies/bloatware_boss.tscn"),
 	}
 
@@ -46,12 +48,60 @@ func _do_spawn(type: String, count: int) -> void:
 		return
 	for i in range(count):
 		var enemy = enemy_scenes[type].instantiate()
-		enemy.global_position = _get_spawn_position()
+		enemy.global_position = _get_spawn_position(type)
 		enemy.enemy_killed.connect(_on_enemy_killed)
+		if enemy.has_signal("hatch_requested"):
+			enemy.hatch_requested.connect(_on_toxic_fly_egg_hatched)
 		get_parent().get_node("Enemies").add_child(enemy)
 		enemies_alive += 1
 
-func _get_spawn_position() -> Vector2:
+func _on_toxic_fly_egg_hatched(pos: Vector2) -> void:
+	var fly := toxic_fly_scene.instantiate()
+	fly.global_position = pos
+	fly.enemy_killed.connect(_on_enemy_killed)
+	get_parent().get_node("Enemies").add_child(fly)
+
+func _get_spawn_position(type: String = "") -> Vector2:
+	if type == "toxic_fly":
+		return _get_spawn_position_in_player_viewport()
+	return _get_spawn_position_default()
+
+
+func _get_spawn_position_in_player_viewport() -> Vector2:
+	var cam := get_viewport().get_camera_2d()
+	if not cam:
+		return _get_spawn_position_default()
+
+	var vp_size := get_viewport().get_visible_rect().size
+	var half_w := (vp_size.x / cam.zoom.x) * 0.5
+	var half_h := (vp_size.y / cam.zoom.y) * 0.5
+	var inset := 32.0
+	var center := cam.get_screen_center_position()
+	var map_margin := 16.0
+
+	for _attempt in 60:
+		var pos := center + Vector2(
+			randf_range(-half_w + inset, half_w - inset),
+			randf_range(-half_h + inset, half_h - inset)
+		)
+		if map_rect.size != Vector2.ZERO:
+			if not map_rect.grow(-map_margin).has_point(pos):
+				continue
+		if _is_walkable(pos):
+			return pos
+
+	# Fallback: unutra viewporta, clamp na mapu ako postoji
+	var pos := center + Vector2(
+		randf_range(-half_w + inset, half_w - inset),
+		randf_range(-half_h + inset, half_h - inset)
+	)
+	if map_rect.size != Vector2.ZERO:
+		pos.x = clampf(pos.x, map_rect.position.x + map_margin, map_rect.end.x - map_margin)
+		pos.y = clampf(pos.y, map_rect.position.y + map_margin, map_rect.end.y - map_margin)
+	return pos
+
+
+func _get_spawn_position_default() -> Vector2:
 	if map_rect.size == Vector2.ZERO:
 		# Fallback to old viewport-edge spawning
 		var vp = get_viewport_rect().size
