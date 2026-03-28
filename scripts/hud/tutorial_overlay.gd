@@ -3,6 +3,8 @@ extends CanvasLayer
 signal tutorial_finished
 
 @onready var content_label: Label = $Panel/VBox/ContentLabel
+@onready var page_sprite: AnimatedSprite2D = $PageSprite
+@onready var page_sprite_2: AnimatedSprite2D = $PageSprite2
 @onready var prev_button: Button = $Panel/VBox/NavRow/PrevButton
 @onready var next_button: Button = $Panel/VBox/NavRow/NextButton
 @onready var page_indicator: Label = $Panel/VBox/NavRow/PageIndicator
@@ -11,9 +13,12 @@ signal tutorial_finished
 var current_page: int = 0
 var _pause_menu: CanvasLayer = null
 var pages: Array[String] = [
-	"Welcome to the simulation, Pilot.\nWe are testing clone model 417 aka BIOTYPE,\nto see if it can stand up against\nthe real enemy on our homeworld.",
-	"[MOVEMENT & DASH]\nUse W A S D to move around.\nPress SHIFT to dash - it makes you\ninvulnerable for a brief moment.\nDash has a cooldown, use it wisely.",
-	"[COMBAT & DEBRIS]\nAim with your MOUSE and click LMB to shoot.\nKilling enemies leaves debris on screen.\nMore debris = higher score multiplier,\nbut too much makes it hard to see!\nEnemies drop defrag pickups - collect them\nto clear the screen.",
+	"Welcome to the station, Pilot\nYou are our only hope\nThe enemy that destroyed our homeworld\nis already here. Take care of them",
+	"[MOVEMENT & DASH]\nMove with W A S D\nSHIFT to dash\nUse it to dodge, reposition, escape\nDash has a cooldown. Use it wisely",
+	"[COMBAT]\nAim with MOUSE\nLMB to shoot",
+	"[DEBRIS]\nDead enemies leave DEBRIS on screen\nMore debris means a higher\nscore/credit multiplier\nBut debris blocks your view. Stay sharp\n",
+	"[DEFRAG]\nCollect DEFRAG pickups\nUse them with SPACE to clear debirs",
+	"[FAREWELL]\nHope you are ready\n I wish you luck"
 ]
 
 func _ready() -> void:
@@ -36,6 +41,11 @@ func _unhandled_input(event: InputEvent) -> void:
 func _update_page() -> void:
 	content_label.text = pages[current_page]
 	page_indicator.text = str(current_page + 1) + "/" + str(pages.size())
+	page_sprite.visible = current_page == 4
+	page_sprite_2.visible = current_page == 4
+	if current_page == 4:
+		page_sprite.play("default")
+		page_sprite_2.play("default")
 	prev_button.disabled = current_page == 0
 	prev_button.modulate.a = 1.0 if current_page > 0 else 0.3
 	if current_page >= pages.size() - 1:

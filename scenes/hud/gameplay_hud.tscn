@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dwdwa55pubo8x" path="res://scripts/hud/gameplay_hud.gd" id="1_hud_script"]
 [ext_resource type="Texture2D" uid="uid://dfrakdgxalhcc" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/UI/ui x3.png" id="2_ui_atlas"]
+[ext_resource type="Texture2D" path="res://resources/hud/defrag_frame_3.tres" id="3_dxqfe"]
 
 [sub_resource type="AtlasTexture" id="dash_frame_0"]
 atlas = ExtResource("2_ui_atlas")
@@ -62,6 +63,15 @@ scale = Vector2(4.2952194, 3.4011157)
 texture = SubResource("hp_frame_0")
 expand_mode = 3
 stretch_mode = 5
+
+[node name="DefragBar" type="TextureRect" parent="." unique_id=752988288]
+texture_filter = 1
+offset_left = 20.0
+offset_top = 64.0
+offset_right = 116.0
+offset_bottom = 160.0
+scale = Vector2(1.7099619, 1.7099619)
+texture = ExtResource("3_dxqfe")
 
 [node name="HPLabel" type="Label" parent="." unique_id=1960766987]
 texture_filter = 1
@@ -158,9 +168,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -180.0
-offset_top = 280.0
+offset_top = 222.0
 offset_right = 180.0
-offset_bottom = 330.0
+offset_bottom = 272.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 50
 text = "WAVE 1"

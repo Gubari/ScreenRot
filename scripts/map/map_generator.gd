@@ -25,7 +25,11 @@ func get_map_rect() -> Rect2:
 
 
 func get_player_spawn() -> Vector2:
-	return Vector2(_map_rect.size.x / 2.0, _map_rect.size.y / 2.0)
+	var marker := get_node_or_null("PlayerSpawnPoint")
+	if marker:
+		return marker.global_position
+	# Fallback: center of map
+	return _map_rect.position + _map_rect.size / 2.0
 
 func is_walkable(world_pos: Vector2) -> bool:
 	var cell := Vector2i(int(floor(world_pos.x / TILE_SIZE)), int(floor(world_pos.y / TILE_SIZE)))

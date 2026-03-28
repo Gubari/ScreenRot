@@ -28,9 +28,5 @@ func _process(delta: float) -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		collected.emit()
-		# Clear debris on the overlay
-		var overlay = get_tree().get_first_node_in_group("debris_overlay")
-		if overlay and overlay.has_method("defrag_clear"):
-			overlay.defrag_clear(defrag_percent)
 		AudioManager.play_sfx("defrag")
 		queue_free()
