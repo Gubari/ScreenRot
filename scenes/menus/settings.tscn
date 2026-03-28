@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dm7dofrsq7iyy"]
 
-[ext_resource type="Script" path="res://scripts/menus/settings.gd" id="1_settings"]
+[ext_resource type="Script" uid="uid://b2nc6b1jlr60f" path="res://scripts/menus/settings.gd" id="1_settings"]
 
-[node name="Settings" type="Control"]
+[node name="Settings" type="Control" unique_id=1614720615]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_settings")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1921275240]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,157 +20,265 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.03, 0.03, 0.06, 1)
 
-[node name="Title" type="Label" parent="."]
+[node name="Title" type="Label" parent="." unique_id=813699754]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -300.0
-offset_top = 50.0
-offset_right = 300.0
-offset_bottom = 120.0
+offset_left = -291.0
+offset_top = 33.0
+offset_right = 309.0
+offset_bottom = 103.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 67
 text = "SETTINGS"
 horizontal_alignment = 1
 
-[node name="ContentBox" type="VBoxContainer" parent="."]
+[node name="ContentBox" type="VBoxContainer" parent="." unique_id=1581828431]
+texture_filter = 1
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -340.0
-offset_top = -180.0
-offset_right = 340.0
-offset_bottom = 180.0
+offset_left = -353.0
+offset_top = -258.0
+offset_right = 447.0
+offset_bottom = 362.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+scale = Vector2(0.90962696, 0.90962696)
+theme_override_constants/separation = 8
 
-[node name="AudioTitle" type="Label" parent="ContentBox"]
+[node name="AudioTitle" type="Label" parent="ContentBox" unique_id=2045700917]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.45, 0.45, 0.5, 1)
 theme_override_font_sizes/font_size = 28
 text = "-- AUDIO --"
 horizontal_alignment = 1
 
-[node name="MasterRow" type="HBoxContainer" parent="ContentBox"]
+[node name="MasterRow" type="HBoxContainer" parent="ContentBox" unique_id=1287330263]
 layout_mode = 2
 
-[node name="MasterLabel" type="Label" parent="ContentBox/MasterRow"]
-layout_mode = 2
+[node name="MasterLabel" type="Label" parent="ContentBox/MasterRow" unique_id=1415067460]
 custom_minimum_size = Vector2(252, 0)
+layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "Master Volume"
 
-[node name="MasterSlider" type="HSlider" parent="ContentBox/MasterRow"]
+[node name="MasterSlider" type="HSlider" parent="ContentBox/MasterRow" unique_id=2027218730]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = 0.0
-max_value = 100.0
-step = 1.0
 value = 100.0
 
-[node name="MasterValue" type="Label" parent="ContentBox/MasterRow"]
-layout_mode = 2
+[node name="MasterValue" type="Label" parent="ContentBox/MasterRow" unique_id=2091263625]
 custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "100%"
 horizontal_alignment = 2
 
-[node name="MusicRow" type="HBoxContainer" parent="ContentBox"]
+[node name="MusicRow" type="HBoxContainer" parent="ContentBox" unique_id=1307102995]
 layout_mode = 2
 
-[node name="MusicLabel" type="Label" parent="ContentBox/MusicRow"]
-layout_mode = 2
+[node name="MusicLabel" type="Label" parent="ContentBox/MusicRow" unique_id=1745842545]
 custom_minimum_size = Vector2(252, 0)
+layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "Music Volume"
 
-[node name="MusicSlider" type="HSlider" parent="ContentBox/MusicRow"]
+[node name="MusicSlider" type="HSlider" parent="ContentBox/MusicRow" unique_id=1374443578]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = 0.0
-max_value = 100.0
-step = 1.0
 value = 80.0
 
-[node name="MusicValue" type="Label" parent="ContentBox/MusicRow"]
-layout_mode = 2
+[node name="MusicValue" type="Label" parent="ContentBox/MusicRow" unique_id=1758835560]
 custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "80%"
 horizontal_alignment = 2
 
-[node name="SFXRow" type="HBoxContainer" parent="ContentBox"]
+[node name="SFXRow" type="HBoxContainer" parent="ContentBox" unique_id=299599451]
 layout_mode = 2
 
-[node name="SFXLabel" type="Label" parent="ContentBox/SFXRow"]
-layout_mode = 2
+[node name="SFXLabel" type="Label" parent="ContentBox/SFXRow" unique_id=1657020296]
 custom_minimum_size = Vector2(252, 0)
+layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "SFX Volume"
 
-[node name="SFXSlider" type="HSlider" parent="ContentBox/SFXRow"]
+[node name="SFXSlider" type="HSlider" parent="ContentBox/SFXRow" unique_id=1325593202]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = 0.0
-max_value = 100.0
-step = 1.0
 value = 80.0
 
-[node name="SFXValue" type="Label" parent="ContentBox/SFXRow"]
-layout_mode = 2
+[node name="SFXValue" type="Label" parent="ContentBox/SFXRow" unique_id=298811544]
 custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "80%"
 horizontal_alignment = 2
 
-[node name="MuteRow" type="HBoxContainer" parent="ContentBox"]
+[node name="MuteRow" type="HBoxContainer" parent="ContentBox" unique_id=1000994911]
 layout_mode = 2
 
-[node name="MuteLabel" type="Label" parent="ContentBox/MuteRow"]
-layout_mode = 2
+[node name="MuteLabel" type="Label" parent="ContentBox/MuteRow" unique_id=891189349]
 custom_minimum_size = Vector2(252, 0)
+layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "Mute All"
 
-[node name="MuteCheck" type="CheckButton" parent="ContentBox/MuteRow"]
+[node name="MuteCheck" type="CheckButton" parent="ContentBox/MuteRow" unique_id=1643160022]
 layout_mode = 2
 
-[node name="Sep1" type="HSeparator" parent="ContentBox"]
+[node name="Sep1" type="HSeparator" parent="ContentBox" unique_id=1677932833]
 layout_mode = 2
 
-[node name="DisplayTitle" type="Label" parent="ContentBox"]
+[node name="DisplayTitle" type="Label" parent="ContentBox" unique_id=1684097554]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.45, 0.45, 0.5, 1)
 theme_override_font_sizes/font_size = 28
 text = "-- DISPLAY --"
 horizontal_alignment = 1
 
-[node name="FullscreenRow" type="HBoxContainer" parent="ContentBox"]
+[node name="FullscreenRow" type="HBoxContainer" parent="ContentBox" unique_id=692540741]
 layout_mode = 2
 
-[node name="FullscreenLabel" type="Label" parent="ContentBox/FullscreenRow"]
-layout_mode = 2
+[node name="FullscreenLabel" type="Label" parent="ContentBox/FullscreenRow" unique_id=1115933753]
 custom_minimum_size = Vector2(252, 0)
+layout_mode = 2
 theme_override_font_sizes/font_size = 31
 text = "Fullscreen"
 
-[node name="FullscreenCheck" type="CheckButton" parent="ContentBox/FullscreenRow"]
+[node name="FullscreenCheck" type="CheckButton" parent="ContentBox/FullscreenRow" unique_id=1861126347]
 layout_mode = 2
 
-[node name="BackLabel" type="Label" parent="."]
+[node name="Sep2" type="HSeparator" parent="ContentBox" unique_id=1981706686]
+layout_mode = 2
+
+[node name="ControlsTitle" type="Label" parent="ContentBox" unique_id=1063534280]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.45, 0.5, 1)
+theme_override_font_sizes/font_size = 28
+text = "-- CONTROLS --"
+horizontal_alignment = 1
+
+[node name="BindRow_move_up" type="HBoxContainer" parent="ContentBox" unique_id=1504110119]
+layout_mode = 2
+
+[node name="BindLabel_move_up" type="Label" parent="ContentBox/BindRow_move_up" unique_id=387737611]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Move Up"
+
+[node name="BindButton_move_up" type="Button" parent="ContentBox/BindRow_move_up" unique_id=2093577491]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "W"
+
+[node name="BindRow_move_down" type="HBoxContainer" parent="ContentBox" unique_id=1450835729]
+layout_mode = 2
+
+[node name="BindLabel_move_down" type="Label" parent="ContentBox/BindRow_move_down" unique_id=663252214]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Move Down"
+
+[node name="BindButton_move_down" type="Button" parent="ContentBox/BindRow_move_down" unique_id=1555340144]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "S"
+
+[node name="BindRow_move_left" type="HBoxContainer" parent="ContentBox" unique_id=530669487]
+layout_mode = 2
+
+[node name="BindLabel_move_left" type="Label" parent="ContentBox/BindRow_move_left" unique_id=1509048337]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Move Left"
+
+[node name="BindButton_move_left" type="Button" parent="ContentBox/BindRow_move_left" unique_id=1741372603]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "A"
+
+[node name="BindRow_move_right" type="HBoxContainer" parent="ContentBox" unique_id=772799554]
+layout_mode = 2
+
+[node name="BindLabel_move_right" type="Label" parent="ContentBox/BindRow_move_right" unique_id=184497534]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Move Right"
+
+[node name="BindButton_move_right" type="Button" parent="ContentBox/BindRow_move_right" unique_id=1932521665]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "D"
+
+[node name="BindRow_dash" type="HBoxContainer" parent="ContentBox" unique_id=1497895049]
+layout_mode = 2
+
+[node name="BindLabel_dash" type="Label" parent="ContentBox/BindRow_dash" unique_id=1270063967]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Dash"
+
+[node name="BindButton_dash" type="Button" parent="ContentBox/BindRow_dash" unique_id=1183500164]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "SHIFT"
+
+[node name="BindRow_defrag" type="HBoxContainer" parent="ContentBox" unique_id=75830410]
+layout_mode = 2
+
+[node name="BindLabel_defrag" type="Label" parent="ContentBox/BindRow_defrag" unique_id=1292969213]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Use Defrag"
+
+[node name="BindButton_defrag" type="Button" parent="ContentBox/BindRow_defrag" unique_id=23336970]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "SPACE"
+
+[node name="BindRow_shoot" type="HBoxContainer" parent="ContentBox" unique_id=38471029]
+layout_mode = 2
+
+[node name="BindLabel_shoot" type="Label" parent="ContentBox/BindRow_shoot" unique_id=29183746]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Shoot"
+
+[node name="BindButton_shoot" type="Button" parent="ContentBox/BindRow_shoot" unique_id=18274650]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "LMB"
+
+[node name="BackLabel" type="Label" parent="." unique_id=1947958800]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 60.0
-offset_top = -80.0
-offset_right = 300.0
+offset_top = -85.0
+offset_right = 135.0
 offset_bottom = -40.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 45

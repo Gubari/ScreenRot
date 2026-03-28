@@ -14,6 +14,10 @@ func _ready() -> void:
 	collision_mask = 1  # detect player
 	_scale_pickup_radius()
 	_lifetime_timer = lifetime
+	# Connect to game manager immediately so pickup is never missed
+	var gm := get_tree().get_first_node_in_group("game_manager")
+	if gm and gm.has_method("_on_defrag_pickup_collected"):
+		collected.connect(gm._on_defrag_pickup_collected)
 	# Pulse animation
 	var tween = create_tween().set_loops()
 	tween.tween_property(self, "scale", Vector2(1.3, 1.3), 0.5).set_trans(Tween.TRANS_SINE)

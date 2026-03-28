@@ -46,7 +46,7 @@ func _ready() -> void:
 	for i in 4:
 		_defrag_frames.append(load("res://resources/hud/defrag_frame_%d.tres" % i))
 
-	_left_elements = [hp_bar, hp_label, dash_bar, dash_label]
+	_left_elements = [hp_bar, hp_label, dash_bar, dash_label, defrag_bar]
 	_right_elements = [
 		$ScorePanel, $CreditsPanel, debris_bar, debris_label, multiplier_label
 	]

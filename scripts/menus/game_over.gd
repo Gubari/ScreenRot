@@ -66,11 +66,11 @@ func show_game_over(score: int, credits_earned: int, title: String = "GAME OVER"
 
 func _on_retry() -> void:
 	get_tree().paused = false
-	get_tree().reload_current_scene()
+	SceneTransition.change_scene("res://scenes/game.tscn")
 
 func _on_main_menu() -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/menus/main_menu.tscn")
+	SceneTransition.change_scene("res://scenes/menus/main_menu.tscn")
 
 func _on_quit() -> void:
 	get_tree().quit()

@@ -6,6 +6,7 @@ extends Control
 @onready var character_label: Label = $MenuContainer/CharacterLabel
 @onready var quit_label: Label = $MenuContainer/QuitLabel
 @onready var stats_label: Label = $StatsLabel
+@onready var lock_bubble: Control = $LockBubble
 
 const COLOR_NORMAL := Color(0.45, 0.45, 0.5)
 const COLOR_HOVER := Color(0.85, 0.9, 1.0)
@@ -35,6 +36,7 @@ func _ready() -> void:
 		label.mouse_exited.connect(_on_item_unhover.bind(item))
 		label.gui_input.connect(_on_item_input.bind(item))
 
+	lock_bubble.visible = false
 	if _challenge_locked:
 		challenge_label.text = "ENDLESS MODE"
 		challenge_label.add_theme_color_override("font_color", COLOR_LOCKED)
@@ -68,6 +70,8 @@ func _on_item_unhover(item: Dictionary) -> void:
 func _on_item_input(event: InputEvent, item: Dictionary) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if item.label == challenge_label and _challenge_locked:
+			get_viewport().set_input_as_handled()
+			_show_lock_bubble()
 			return
 		get_viewport().set_input_as_handled()
 		Input.action_release("shoot")
@@ -82,14 +86,14 @@ func _on_credits_changed(_amount: int) -> void:
 
 func _on_classic() -> void:
 	GameMode.current_mode = GameMode.Mode.CLASSIC
-	get_tree().change_scene_to_file("res://scenes/game.tscn")
+	SceneTransition.change_scene("res://scenes/game.tscn")
 
 func _on_challenge() -> void:
 	GameMode.current_mode = GameMode.Mode.CHALLENGE
-	get_tree().change_scene_to_file("res://scenes/game.tscn")
+	SceneTransition.change_scene("res://scenes/game.tscn")
 
 func _on_settings() -> void:
-	get_tree().change_scene_to_file("res://scenes/menus/settings.tscn")
+	SceneTransition.change_scene("res://scenes/menus/settings.tscn")
 
 func _on_quit() -> void:
 	get_tree().quit()
@@ -116,4 +120,16 @@ func _update_character_label() -> void:
 	character_label.text = "CHARACTERS"
 
 func _on_character_shop() -> void:
-	get_tree().change_scene_to_file("res://scenes/menus/shop.tscn")
+	SceneTransition.change_scene("res://scenes/menus/shop.tscn")
+
+var _lock_bubble_tween: Tween = null
+
+func _show_lock_bubble() -> void:
+	if _lock_bubble_tween:
+		_lock_bubble_tween.kill()
+	lock_bubble.modulate.a = 1.0
+	lock_bubble.visible = true
+	_lock_bubble_tween = create_tween()
+	_lock_bubble_tween.tween_interval(3.0)
+	_lock_bubble_tween.tween_property(lock_bubble, "modulate:a", 0.0, 0.5)
+	_lock_bubble_tween.tween_callback(func(): lock_bubble.visible = false)
