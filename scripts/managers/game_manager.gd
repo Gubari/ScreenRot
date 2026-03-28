@@ -47,7 +47,9 @@ func _ready() -> void:
 	# Generate dungeon map first
 	if dungeon_map and dungeon_map.has_method("generate"):
 		dungeon_map.generate()
-		var map_rect: Rect2 = dungeon_map.get_map_rect()
+		# get_map_rect() returns coords in DungeonMap local space — offset to world space.
+		var local_rect: Rect2 = dungeon_map.get_map_rect()
+		var map_rect := Rect2(local_rect.position + dungeon_map.global_position, local_rect.size)
 
 		# Pass map bounds to player
 		player.map_rect = map_rect
@@ -133,13 +135,70 @@ func start_next_wave() -> void:
 	current_wave += 1
 	wave_active = true
 	kills_this_wave = 0
-	var wave_name := wave_manager.get_wave_name(current_wave)
-	gameplay_hud.show_wave(wave_name)
-	gameplay_hud.fade_wave_label()
 
 	var queue: Array = get_wave_data(current_wave)
 	enemy_spawner.spawn_margin = wave_manager.get_spawn_radius(current_wave)
+	enemy_spawner.spawn_in_center = wave_manager.get_spawn_in_center(current_wave)
+	enemy_spawner.center_position = wave_manager.get_spawn_center_position(current_wave)
+
+	if wave_manager.get_is_boss_wave(current_wave):
+		await _do_boss_cinematic()
+		return
+
+	var wave_name := wave_manager.get_wave_name(current_wave)
+	gameplay_hud.show_wave(wave_name)
+	gameplay_hud.fade_wave_label()
 	enemy_spawner.start_spawning(queue)
+
+func _do_boss_cinematic() -> void:
+	var cam := player.get_node_or_null("Camera2D") as Camera2D
+	if not cam:
+		return
+
+	# Disable player input during cinematic
+	player.set_physics_process(false)
+
+	var boss_pos := wave_manager.get_spawn_center_position(current_wave)
+	var original_zoom := cam.zoom
+	var cinematic_zoom := Vector2(1.1, 1.1)
+
+	# Reparent camera to scene root so we can freely tween its position
+	var original_parent := cam.get_parent()
+	var original_cam_global_pos := cam.global_position
+	cam.position_smoothing_enabled = false
+	original_parent.remove_child(cam)
+	add_child(cam)
+	cam.global_position = original_cam_global_pos
+
+	# Pan to boss center + zoom in
+	var tween_to := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween_to.set_parallel(true)
+	tween_to.tween_property(cam, "global_position", boss_pos, 1.2)
+	tween_to.tween_property(cam, "zoom", cinematic_zoom, 1.2)
+	await tween_to.finished
+
+	# Show BOSS FIGHT label and spawn boss while camera is at center
+	gameplay_hud.show_wave("BOSS FIGHT!")
+	enemy_spawner.start_spawning(get_wave_data(current_wave))
+	await get_tree().create_timer(1.5).timeout
+	gameplay_hud.fade_wave_label()
+
+	# Pan back to player + zoom out
+	var tween_back := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween_back.set_parallel(true)
+	tween_back.tween_property(cam, "global_position", player.global_position, 1.2)
+	tween_back.tween_property(cam, "zoom", original_zoom, 1.2)
+	await tween_back.finished
+
+	# Return camera back to player
+	remove_child(cam)
+	original_parent.add_child(cam)
+	cam.position = Vector2.ZERO
+	cam.position_smoothing_enabled = true
+	cam.reset_smoothing()
+
+	# Re-enable player input
+	player.set_physics_process(true)
 
 func get_wave_data(wave: int) -> Array:
 	return wave_manager.get_wave_data(wave)
@@ -178,6 +237,8 @@ func _on_boss_wave_requested(queue: Array) -> void:
 	enemy_spawner.add_spawning(queue)
 
 func _on_boss_screen_shrink(rate: float) -> void:
+	if _game_over_started:
+		return
 	if screen_closing:
 		if rate > 0.0:
 			screen_closing.shrink_rate = rate
@@ -186,6 +247,8 @@ func _on_boss_screen_shrink(rate: float) -> void:
 			screen_closing.stop()
 
 func _on_boss_screen_restore(amount: float) -> void:
+	if _game_over_started:
+		return
 	if screen_closing:
 		screen_closing.restore(amount)
 
@@ -209,6 +272,8 @@ func _on_boss_fragment_spawn(world_pos: Vector2, value: float) -> void:
 		scene.move_child(frag, enemies_node.get_index())
 
 func _on_fragment_collected(value: float) -> void:
+	if _game_over_started:
+		return
 	AudioManager.play_sfx("screen_fragment")
 	if screen_closing:
 		screen_closing.restore(value)
@@ -219,12 +284,16 @@ func _on_screen_percent_changed(percent: float) -> void:
 	gameplay_hud.apply_screen_inset(percent)
 
 func _on_screen_fully_closed() -> void:
-	# Screen went fully black — game over
+	# Poraz kad crni okvir stigne do kraja (odvojeno od HP = 0).
 	if not player or not is_instance_valid(player) or not player.visible:
 		return
 	if _game_over_started:
 		return
 	_game_over_started = true
+	if screen_closing:
+		screen_closing.stop()
+	player.current_hp = 0
+	gameplay_hud.update_hp(0, player.max_hp)
 	if not _played_game_lost:
 		AudioManager.stop_music(0.2)
 		AudioManager.play_sfx("game_lost")
@@ -238,8 +307,6 @@ func _on_screen_fully_closed() -> void:
 	# Clean up boss
 	if _active_boss and is_instance_valid(_active_boss):
 		_active_boss = null
-	if screen_closing:
-		screen_closing.stop()
 	gameplay_hud.hide_boss_bar()
 	for frag in get_tree().get_nodes_in_group("screen_fragments"):
 		frag.queue_free()
@@ -337,6 +404,17 @@ func _on_debris_changed(_percent: float) -> void:
 	update_debris_display()
 	update_multiplier()
 
+func _apply_post_wave_heal() -> void:
+	var heal_amount: int = wave_manager.get_post_wave_heal_amount(current_wave)
+	if heal_amount <= 0:
+		return
+	var new_hp: int = mini(player.current_hp + heal_amount, player.max_hp)
+	if new_hp == player.current_hp:
+		return
+	player.current_hp = new_hp
+	_on_player_damaged(player.current_hp)
+	gameplay_hud.show_heal_notification(heal_amount)
+
 func _on_all_enemies_dead() -> void:
 	if not wave_active or _game_over_started:
 		return
@@ -346,6 +424,7 @@ func _on_all_enemies_dead() -> void:
 	# Play wave clear only for non-final waves (i.e. waves before the boss/end).
 	if wave_manager.has_next_wave(current_wave):
 		AudioManager.play_sfx("wave_clear")
+	_apply_post_wave_heal()
 	_update_credits_display()
 
 	await get_tree().create_timer(wave_manager.get_post_wave_delay(current_wave)).timeout
@@ -387,8 +466,8 @@ func _apply_upgrade(upgrade_id: String) -> void:
 			player.max_hp += 1
 			player.current_hp += 1
 			_on_player_damaged(player.current_hp)
-		"scatter_shot":
-			player.upgrade_scatter_shot = true
+		"double_shot":
+			player.upgrade_double_shot = true
 		"lucky_drops":
 			player.upgrade_defrag_drop_bonus += 0.10
 		"extended_pickup":
@@ -486,6 +565,7 @@ func _debug_skip_wave() -> void:
 		return
 	_skip_used = true
 	wave_active = false
+	enemy_spawner.interrupt_scheduled_spawns()
 	enemy_spawner.spawning = false
 	enemy_spawner.spawn_queue.clear()
 	# Clean boss effects before killing enemies

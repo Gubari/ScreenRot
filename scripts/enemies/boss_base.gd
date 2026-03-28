@@ -4,6 +4,7 @@ class_name BossBase
 signal boss_defeated(boss_id: String, score: int)
 signal phase_changed(phase: int)
 signal request_screen_shrink(rate: float)
+@warning_ignore("unused_signal")
 signal request_screen_restore(amount: float)
 signal request_zoom(target_zoom: float)
 signal fragment_spawn_requested(world_pos: Vector2, value: float)
@@ -61,6 +62,8 @@ var fire_timer: float = 0.0
 var fragment_timer: float = 0.0
 var is_dying: bool = false
 var is_transitioning: bool = false
+## Countdown before boss starts shooting (set on spawn to match cinematic return duration).
+var intro_timer: float = 2.5
 var current_zoom: float = 1.0
 var screen_percent: float = 100.0
 var screen_closing: CanvasLayer = null
@@ -105,8 +108,11 @@ func _physics_process(delta: float) -> void:
 		_sync_boss_death_visuals()
 		return
 	super._physics_process(delta)
+	if intro_timer > 0.0:
+		intro_timer -= delta
 	if player and is_instance_valid(player) and player.visible:
-		_handle_shooting(delta)
+		if intro_timer <= 0.0:
+			_handle_shooting(delta)
 		_handle_fragment_spawning(delta)
 		_update_animation()
 	_sync_boss_outline_with_sprite()
@@ -156,7 +162,11 @@ func _enter_phase(phase: int) -> void:
 	if groups.size() > 0:
 		var queue: Array = []
 		for g in groups:
-			queue.append({"type": g.enemy_type, "count": g.count, "delay": g.delay_before_spawn})
+			queue.append({
+				"type": g.enemy_type,
+				"count": g.count,
+				"delay": g.delay_before_spawn,
+			})
 		boss_wave_requested.emit(queue)
 	_sync_nav_agent_max_speed()
 

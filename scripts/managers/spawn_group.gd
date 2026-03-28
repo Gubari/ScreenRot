@@ -5,4 +5,5 @@ extends Resource
 
 @export_enum("pixel_grunt", "static_walker", "bit_bug", "toxic_fly", "bloatware_boss") var enemy_type: String = "pixel_grunt"
 @export_range(1, 50) var count: int = 1
-@export_range(0.0, 30.0, 0.1) var delay_before_spawn: float = 0.0
+## Seconds from wave start until this group spawns.
+@export_range(0.0, 120.0, 0.1) var delay_before_spawn: float = 0.0

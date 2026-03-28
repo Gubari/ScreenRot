@@ -179,8 +179,8 @@ func die() -> void:
 	# Give score to player
 	if player and player.has_method("add_score"):
 		player.add_score(score_value)
-	_try_drop_defrag()
-	_drop_coin()
+	var dropped_defrag := _try_drop_defrag()
+	_drop_coin(dropped_defrag)
 	queue_free()
 
 func _get_drop_rates() -> Dictionary:
@@ -191,7 +191,19 @@ func _get_drop_rates() -> Dictionary:
 		return {"coin": wm.get_coin_drop_rate(wave), "defrag": wm.get_defrag_drop_rate(wave)}
 	return {"coin": 1.0, "defrag": 1.0}
 
-func _try_drop_defrag() -> void:
+func _snap_flyer_drop_to_floor(pos: Vector2) -> Vector2:
+	if enemy_type != "bit_bug" and enemy_type != "toxic_fly":
+		return pos
+	var scene := get_tree().current_scene
+	if not scene:
+		return pos
+	var dm: Variant = scene.get("dungeon_map")
+	if dm and dm.has_method("snap_to_walkable"):
+		return dm.snap_to_walkable(pos)
+	return pos
+
+
+func _try_drop_defrag() -> bool:
 	var chance := defrag_drop_chance
 	if player and "upgrade_defrag_drop_bonus" in player:
 		chance += player.upgrade_defrag_drop_bonus
@@ -199,16 +211,23 @@ func _try_drop_defrag() -> void:
 	if randf() < chance:
 		var scene: PackedScene = preload("res://scenes/effects/defrag_pickup.tscn")
 		var pickup = scene.instantiate()
-		pickup.global_position = global_position
+		pickup.global_position = _snap_flyer_drop_to_floor(global_position)
 		get_tree().current_scene.call_deferred("add_child", pickup)
+		return true
+	return false
 
-func _drop_coin() -> void:
+func _drop_coin(defrag_also_dropped: bool) -> void:
 	if randf() > _get_drop_rates().coin:
 		return
 	var scene: PackedScene = preload("res://scenes/effects/coin_pickup.tscn")
 	var coin = scene.instantiate()
-	var offset := Vector2(randf_range(-50, 50), randf_range(-50, 50))
-	coin.global_position = global_position + offset
+	var raw: Vector2
+	if defrag_also_dropped:
+		# Isti snap često stavi oba u istu ćeliju — odgurni ~jednu polovinu tile-a pre snap-a.
+		raw = global_position + Vector2(52.0, 0.0).rotated(randf() * TAU)
+	else:
+		raw = global_position + Vector2(randf_range(-50, 50), randf_range(-50, 50))
+	coin.global_position = _snap_flyer_drop_to_floor(raw)
 	get_tree().current_scene.call_deferred("add_child", coin)
 
 func _on_hit_player(body: Node2D) -> void:

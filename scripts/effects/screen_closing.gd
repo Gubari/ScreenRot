@@ -23,11 +23,15 @@ func _process(delta: float) -> void:
 	if not _active:
 		return
 	if shrink_rate > 0.0:
-		screen_percent -= shrink_rate * delta
+		# Veliki delta (lag / alt-tab) ne sme u jednom frejmu da "pojede" ceo ekran.
+		var d := minf(delta, 0.12)
+		var before := screen_percent
+		screen_percent -= shrink_rate * d
 		screen_percent = maxf(screen_percent, 0.0)
 		_update_bars()
 		screen_percent_changed.emit(screen_percent)
-		if screen_percent <= 0.0:
+		# Samo prvi put kad stvarno padne ispod 0 — inače ponovni start() na već 0 ponovo pali signal.
+		if before > 0.0 and screen_percent <= 0.0:
 			_active = false
 			screen_fully_closed.emit()
 

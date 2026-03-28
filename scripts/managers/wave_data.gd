@@ -12,5 +12,11 @@ extends Resource
 @export_range(0.0, 2.0, 0.05) var coin_drop_rate: float = 1.0
 ## Multiplier for defrag drop chance this wave. 1.0 = default, 0.6 = 40% less.
 @export_range(0.0, 2.0, 0.05) var defrag_drop_rate: float = 1.0
+## Flat HP amount restored right after this wave is cleared.
+@export_range(0, 20, 1) var post_wave_heal_amount: int = 0
 ## Seconds to wait after this wave is cleared before showing upgrades.
 @export_range(0.0, 30.0, 0.1) var post_wave_delay: float = 1.5
+## If true, plays the boss cinematic intro before spawning this wave.
+@export var is_boss_wave: bool = false
+## If true, enemies spawn at the arena center instead of around the player.
+@export var spawn_in_center: bool = false
