@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://ce78ft6jgs5aa" path="res://scenes/menus/game_over.tscn" id="5_gameover"]
 [ext_resource type="PackedScene" uid="uid://debr1s0verl4y" path="res://scenes/effects/debris_overlay.tscn" id="6_debris_overlay"]
 [ext_resource type="PackedScene" uid="uid://dom7chcv6feqq" path="res://scenes/menus/pause_menu.tscn" id="6_pausemenu"]
+[ext_resource type="PackedScene" path="res://scenes/hud/gameplay_hud.tscn" id="13_gameplay_hud"]
 [ext_resource type="Script" uid="uid://cfdwc1asb32m2" path="res://scripts/managers/wave_data.gd" id="7_kvuet"]
 [ext_resource type="PackedScene" uid="uid://beff53ikalm77" path="res://scenes/menus/upgrade_select.tscn" id="7_upgrade"]
 [ext_resource type="PackedScene" uid="uid://dwp4bu4c432oh" path="res://scenes/map/dungeon_map.tscn" id="8_dungeon_map"]
@@ -53,96 +54,7 @@ waves = Array[ExtResource("7_kvuet")]([ExtResource("9_wave1"), ExtResource("10_w
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1007073227]
 
-[node name="HPLabel" type="Label" parent="HUD" unique_id=1437619140]
-offset_left = 16.0
-offset_top = 16.0
-offset_right = 200.0
-offset_bottom = 40.0
-text = "HP: 5/5"
-
-[node name="DashLabel" type="Label" parent="HUD" unique_id=765826155]
-offset_left = 16.0
-offset_top = 40.0
-offset_right = 160.0
-offset_bottom = 56.0
-text = "DASH"
-
-[node name="DashBar" type="ProgressBar" parent="HUD" unique_id=1720269616]
-offset_left = 16.0
-offset_top = 56.0
-offset_right = 160.0
-offset_bottom = 68.0
-value = 100.0
-show_percentage = false
-
-[node name="ScoreLabel" type="Label" parent="HUD" unique_id=125865353]
-offset_left = 1080.0
-offset_top = 16.0
-offset_right = 1264.0
-offset_bottom = 40.0
-text = "Score: 0"
-horizontal_alignment = 2
-
-[node name="MultiplierLabel" type="Label" parent="HUD" unique_id=1711093777]
-offset_left = 1080.0
-offset_top = 40.0
-offset_right = 1264.0
-offset_bottom = 64.0
-text = "x1"
-horizontal_alignment = 2
-
-[node name="CreditsLabel" type="Label" parent="HUD" unique_id=1919347428]
-offset_left = 1080.0
-offset_top = 64.0
-offset_right = 1264.0
-offset_bottom = 84.0
-text = "Credits: 0"
-horizontal_alignment = 2
-
-[node name="DebrisBar" type="ProgressBar" parent="HUD" unique_id=743095431]
-offset_left = 1080.0
-offset_top = 88.0
-offset_right = 1264.0
-offset_bottom = 102.0
-show_percentage = false
-
-[node name="DebrisLabel" type="Label" parent="HUD" unique_id=1244837134]
-offset_left = 1080.0
-offset_top = 104.0
-offset_right = 1264.0
-offset_bottom = 124.0
-text = "CLEAN"
-horizontal_alignment = 2
-
-[node name="BossBarContainer" type="VBoxContainer" parent="HUD" unique_id=1198356650]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -200.0
-offset_top = 12.0
-offset_right = 200.0
-offset_bottom = 52.0
-grow_horizontal = 2
-
-[node name="BossNameLabel" type="Label" parent="HUD/BossBarContainer" unique_id=585165214]
-layout_mode = 2
-text = "BOSS"
-horizontal_alignment = 1
-
-[node name="BossHealthBar" type="ProgressBar" parent="HUD/BossBarContainer" unique_id=661850877]
-custom_minimum_size = Vector2(400, 20)
-layout_mode = 2
-value = 100.0
-show_percentage = false
-
-[node name="WaveLabel" type="Label" parent="HUD" unique_id=692091030]
-offset_left = 490.0
-offset_top = 300.0
-offset_right = 790.0
-offset_bottom = 340.0
-text = "WAVE 1"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="GameplayHUD" parent="HUD" instance=ExtResource("13_gameplay_hud")]
 
 [node name="GameOver" parent="." unique_id=1562961081 instance=ExtResource("5_gameover")]
 
