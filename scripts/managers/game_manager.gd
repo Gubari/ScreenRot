@@ -1,25 +1,14 @@
 extends Node2D
 
 @onready var player: CharacterBody2D = $Player
-@onready var hud: CanvasLayer = $HUD
-@onready var hp_label: Label = $HUD/HPLabel
-@onready var score_label: Label = $HUD/ScoreLabel
-@onready var dash_bar: ProgressBar = $HUD/DashBar
-@onready var multiplier_label: Label = $HUD/MultiplierLabel
-@onready var debris_bar: ProgressBar = $HUD/DebrisBar
-@onready var debris_label: Label = $HUD/DebrisLabel
+@onready var gameplay_hud = $HUD/GameplayHUD
 @onready var enemy_spawner: Node2D = $EnemySpawner
 @onready var wave_manager: WaveManager = $WaveManager
-@onready var wave_label: Label = $HUD/WaveLabel
-@onready var credits_label: Label = $HUD/CreditsLabel
 @onready var game_over_screen: CanvasLayer = $GameOver
 @onready var upgrade_select: CanvasLayer = $UpgradeSelect
 @onready var debris_overlay: CanvasLayer = $DebrisOverlay
 @onready var dungeon_map: Node2D = $DungeonMap
 @onready var screen_closing: CanvasLayer = $ScreenClosing
-@onready var boss_bar_container: VBoxContainer = $HUD/BossBarContainer
-@onready var boss_name_label: Label = $HUD/BossBarContainer/BossNameLabel
-@onready var boss_health_bar: ProgressBar = $HUD/BossBarContainer/BossHealthBar
 
 const PLAYER_SCENES: Dictionary = {
 	"red_small": preload("res://scenes/player/player.tscn"),
@@ -86,8 +75,8 @@ func _ready() -> void:
 	if screen_closing and screen_closing.has_signal("screen_fully_closed"):
 		screen_closing.screen_fully_closed.connect(_on_screen_fully_closed)
 	update_hud()
-	boss_bar_container.visible = false
-	wave_label.visible = false
+	gameplay_hud.hide_boss_bar()
+	gameplay_hud.hide_wave_label()
 	AudioManager.play_music("gameplay")
 	if force_tutorial or not SaveManager.get_setting("tutorial_seen", false):
 		_show_tutorial()
@@ -127,13 +116,14 @@ func _swap_player_if_needed() -> void:
 	player = new_player
 
 func _process(_delta: float) -> void:
-	dash_bar.value = player.get_dash_percent() * 100.0
+	gameplay_hud.update_dash(player.get_dash_percent())
 	# Auto-detect boss if not connected yet
 	if not _active_boss or not is_instance_valid(_active_boss):
 		_try_connect_boss()
 	# Update boss health bar
 	if _active_boss and is_instance_valid(_active_boss):
-		boss_health_bar.value = (float(_active_boss.current_hp) / float(_active_boss.max_hp)) * 100.0
+		var hp_pct := (float(_active_boss.current_hp) / float(_active_boss.max_hp)) * 100.0
+		gameplay_hud.update_boss_hp(hp_pct)
 		_update_boss_bar_color()
 	if OS.is_debug_build() and Input.is_key_pressed(KEY_U):
 		_debug_skip_wave()
@@ -143,12 +133,8 @@ func start_next_wave() -> void:
 	wave_active = true
 	kills_this_wave = 0
 	var wave_name := wave_manager.get_wave_name(current_wave)
-	wave_label.text = wave_name
-	wave_label.visible = true
-	wave_label.modulate.a = 1.0
-
-	var tween = create_tween()
-	tween.tween_property(wave_label, "modulate:a", 0.0, 1.5).set_delay(1.0)
+	gameplay_hud.show_wave(wave_name)
+	gameplay_hud.fade_wave_label()
 
 	var queue: Array = get_wave_data(current_wave)
 	enemy_spawner.spawn_margin = wave_manager.get_spawn_radius(current_wave)
@@ -177,9 +163,7 @@ func _connect_boss(boss: BossBase) -> void:
 	boss.boss_wave_requested.connect(_on_boss_wave_requested)
 	boss.boss_defeated.connect(_on_boss_defeated)
 	# Show boss health bar
-	boss_name_label.text = boss.boss_id.to_upper()
-	boss_health_bar.value = 100.0
-	boss_bar_container.visible = true
+	gameplay_hud.show_boss_bar(boss.boss_id.to_upper())
 	# Start screen shrink for whatever phase boss is already in
 	match boss.current_phase:
 		1: _on_boss_screen_shrink(boss.p1_shrink_rate)
@@ -254,7 +238,7 @@ func _on_screen_fully_closed() -> void:
 		_active_boss = null
 	if screen_closing:
 		screen_closing.stop()
-	boss_bar_container.visible = false
+	gameplay_hud.hide_boss_bar()
 	for frag in get_tree().get_nodes_in_group("screen_fragments"):
 		frag.queue_free()
 	SaveManager.add_credits(run_credits)
@@ -267,7 +251,7 @@ func _on_boss_defeated(_boss_id: String, _score: int) -> void:
 		_game_won_sfx_player = AudioManager.play_sfx_with_player("game_won")
 		_played_game_won = true
 	_active_boss = null
-	boss_bar_container.visible = false
+	gameplay_hud.hide_boss_bar()
 	# Don't delay sound here; boss_defeated is emitted after the boss death animation.
 	# Delay (if any) should happen before showing the win screen UI.
 	_game_over_started = true
@@ -287,12 +271,14 @@ func _update_boss_bar_color() -> void:
 	if not _active_boss or not is_instance_valid(_active_boss):
 		return
 	var hp_pct := float(_active_boss.current_hp) / float(_active_boss.max_hp)
+	var color: Color
 	if hp_pct > 0.6:
-		boss_health_bar.modulate = Color.GREEN
+		color = Color.GREEN
 	elif hp_pct > 0.3:
-		boss_health_bar.modulate = Color.ORANGE
+		color = Color.ORANGE
 	else:
-		boss_health_bar.modulate = Color.RED
+		color = Color.RED
+	gameplay_hud.update_boss_bar_color(color)
 
 # ── Standard wave/enemy handling ──────────────────────────────
 
@@ -311,34 +297,34 @@ func _on_enemy_killed(pos: Vector2, type: String) -> void:
 func update_multiplier() -> void:
 	var debris_percent := _get_debris_percent()
 	var new_mult: int
-	if debris_percent < 25.0:
+	if debris_percent < 10.0:
 		new_mult = 1
-	elif debris_percent < 50.0:
+	elif debris_percent < 25.0:
 		new_mult = 2
-	elif debris_percent < 75.0:
+	elif debris_percent < 40.0:
 		new_mult = 3
 	else:
 		new_mult = 5
 	player.set_multiplier(new_mult)
+	gameplay_hud.update_multiplier(new_mult)
 
 func update_debris_display() -> void:
 	var debris_percent := _get_debris_percent()
-	debris_bar.value = debris_percent
 	var color: Color
-	if debris_percent < 25.0:
+	var label_text: String
+	if debris_percent < 10.0:
 		color = Color.GREEN
-		debris_label.text = "CLEAN"
-	elif debris_percent < 50.0:
+		label_text = "CLEAN"
+	elif debris_percent < 25.0:
 		color = Color.YELLOW
-		debris_label.text = "MESSY"
-	elif debris_percent < 75.0:
+		label_text = "MESSY"
+	elif debris_percent < 40.0:
 		color = Color.ORANGE
-		debris_label.text = "CHAOTIC"
+		label_text = "CHAOTIC"
 	else:
 		color = Color.RED
-		debris_label.text = "CRITICAL"
-	debris_bar.modulate = color
-	debris_label.modulate = color
+		label_text = "CRITICAL"
+	gameplay_hud.update_debris(debris_percent, label_text, color)
 
 func _get_debris_percent() -> float:
 	if debris_overlay and debris_overlay.has_method("get_debris_percent"):
@@ -353,9 +339,7 @@ func _on_all_enemies_dead() -> void:
 	if not wave_active or _game_over_started:
 		return
 	wave_active = false
-	wave_label.text = wave_manager.get_wave_name(current_wave) + " CLEARED!"
-	wave_label.modulate.a = 1.0
-	wave_label.visible = true
+	gameplay_hud.show_wave(wave_manager.get_wave_name(current_wave) + " CLEARED!")
 	run_credits += 10
 	# Play wave clear only for non-final waves (i.e. waves before the boss/end).
 	if wave_manager.has_next_wave(current_wave):
@@ -370,9 +354,7 @@ func _on_all_enemies_dead() -> void:
 		_on_all_waves_completed()
 
 func _on_all_waves_completed() -> void:
-	wave_label.text = "ALL WAVES CLEARED!"
-	wave_label.modulate.a = 1.0
-	wave_label.visible = true
+	gameplay_hud.show_wave("ALL WAVES CLEARED!")
 	SaveManager.add_credits(run_credits)
 	SaveManager.update_high_score(player.score)
 	if GameMode.is_classic() and not SaveManager.is_challenge_unlocked():
@@ -418,20 +400,19 @@ func _apply_upgrade(upgrade_id: String) -> void:
 
 
 func update_hud() -> void:
-	hp_label.text = "HP: " + str(player.current_hp) + "/" + str(player.max_hp)
-	score_label.text = "Score: " + str(player.score)
-	multiplier_label.text = "x" + str(player.multiplier)
-	debris_bar.value = 0
-	debris_label.text = "CLEAN"
-	_update_credits_display()
+	gameplay_hud.update_hp(player.current_hp, player.max_hp)
+	gameplay_hud.update_score(player.score)
+	gameplay_hud.update_multiplier(player.multiplier)
+	gameplay_hud.update_debris(0, "CLEAN", Color.GREEN)
+	gameplay_hud.update_credits(run_credits)
 
 func _on_player_damaged(current_hp: int) -> void:
-	hp_label.text = "HP: " + str(current_hp) + "/" + str(player.max_hp)
+	gameplay_hud.update_hp(current_hp, player.max_hp)
 
 func _on_score_changed(score: int, multiplier: int) -> void:
-	score_label.text = "Score: " + str(score)
-	multiplier_label.text = "x" + str(multiplier)
-	_update_credits_display()
+	gameplay_hud.update_score(score)
+	gameplay_hud.update_multiplier(multiplier)
+	gameplay_hud.update_credits(run_credits)
 
 func _on_player_died(final_score: int, _credits: int) -> void:
 	if _game_over_started:
@@ -454,7 +435,7 @@ func _on_player_died(final_score: int, _credits: int) -> void:
 	if cam:
 		var tw := create_tween()
 		tw.tween_property(cam, "zoom", Vector2(1.0, 1.0), 0.5)
-	boss_bar_container.visible = false
+	gameplay_hud.hide_boss_bar()
 	for frag in get_tree().get_nodes_in_group("screen_fragments"):
 		frag.queue_free()
 	SaveManager.add_credits(run_credits)
@@ -465,7 +446,7 @@ func _on_player_died(final_score: int, _credits: int) -> void:
 		game_over_screen.show_game_over(final_score, run_credits)
 
 func _update_credits_display() -> void:
-	credits_label.text = "Credits: " + str(run_credits)
+	gameplay_hud.update_credits(run_credits)
 
 func _connect_defrag_pickups() -> void:
 	for pickup in get_tree().get_nodes_in_group("defrag_pickups"):
@@ -487,7 +468,7 @@ func _connect_coin_pickups() -> void:
 			coin.collected.connect(_on_coin_pickup_collected)
 
 func _on_coin_pickup_collected() -> void:
-	run_credits += 1
+	run_credits += player.multiplier
 	AudioManager.play_sfx("coin_collect")
 	_update_credits_display()
 
@@ -508,15 +489,13 @@ func _debug_skip_wave() -> void:
 	var cam := player.get_node_or_null("Camera2D") as Camera2D
 	if cam:
 		cam.zoom = Vector2(1.0, 1.0)
-	boss_bar_container.visible = false
+	gameplay_hud.hide_boss_bar()
 	for frag in get_tree().get_nodes_in_group("screen_fragments"):
 		frag.queue_free()
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		enemy.queue_free()
 	enemy_spawner.enemies_alive = 0
-	wave_label.text = wave_manager.get_wave_name(current_wave) + " SKIPPED"
-	wave_label.modulate.a = 1.0
-	wave_label.visible = true
+	gameplay_hud.show_wave(wave_manager.get_wave_name(current_wave) + " SKIPPED")
 	await get_tree().create_timer(0.5).timeout
 	_skip_used = false
 	upgrade_select.show_upgrades(current_wave)

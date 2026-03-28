@@ -36,7 +36,7 @@ func _ready() -> void:
 		label.gui_input.connect(_on_item_input.bind(item))
 
 	if _challenge_locked:
-		challenge_label.text = "CHALLENGE MODE [LOCKED]"
+		challenge_label.text = "ENDLESS MODE"
 		challenge_label.add_theme_color_override("font_color", COLOR_LOCKED)
 		challenge_label.mouse_default_cursor_shape = Control.CURSOR_ARROW
 
