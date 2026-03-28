@@ -5,6 +5,13 @@ signal debris_changed(percent: float)
 ## Pixel size of one debris piece on screen (matches _spawn_glitch_block scaling).
 ## Base 80; +120% (tj. 220% od baze) = 80 * 2.2.
 @export var block_size: int = 110
+## Nasumični pomeraj oko mesta ubistva da se više komada ne talože potpuno isto (0 / max<=min = isključeno).
+@export var debris_spread_min_px: float = 10.0
+@export var debris_spread_max_px: float = 64.0
+## Deo površine komada koji mora da bude u viewport-u; ispod toga minimalno vučemo ka ivici ekrana (ne ka centru), pa ceo unutra.
+@export var debris_viewport_min_fraction: float = 0.5
+## Korak za probne pozicije oko ubistva (popunjavanje praznog grid-a); obično tracker_cell_size ili ~polovina block_size.
+@export var debris_place_search_step_px: float = 0.0
 ## Grid cell size in pixels for coverage tracking (smaller = more accurate, slightly more work).
 @export var tracker_cell_size: int = 16
 @export var glitch_anim_texture_path: String = "res://scenes/effects/glitch_animation.png"
@@ -107,8 +114,9 @@ func get_debris_percent() -> float:
 func add_debris(world_pos: Vector2, _enemy_type: String) -> void:
 	# Convert world position to screen position (CanvasLayer uses screen coords)
 	var screen_pos := _world_to_screen(world_pos)
-	_spawn_glitch_block(screen_pos)
-	_mark_debris_coverage(screen_pos)
+	var placed := _spread_debris_screen_pos(screen_pos)
+	_spawn_glitch_block(placed)
+	_mark_debris_coverage(placed)
 	debris_changed.emit(debris_percent)
 
 func _world_to_screen(world_pos: Vector2) -> Vector2:
@@ -117,6 +125,139 @@ func _world_to_screen(world_pos: Vector2) -> Vector2:
 		var vp_size := get_viewport().get_visible_rect().size
 		return world_pos - camera.global_position + vp_size / 2.0
 	return world_pos
+
+
+func _debris_rect_at_center(center: Vector2) -> Rect2:
+	var half := float(block_size) * 0.5
+	return Rect2(center.x - half, center.y - half, float(block_size), float(block_size))
+
+
+func _debris_viewport_overlap_fraction(center: Vector2, view: Rect2) -> float:
+	var inter := _debris_rect_at_center(center).intersection(view)
+	if inter.size.x <= 0.0 or inter.size.y <= 0.0:
+		return 0.0
+	var total := float(block_size * block_size)
+	return (inter.size.x * inter.size.y) / total
+
+
+func _rect_closest_point(rect: Rect2, p: Vector2) -> Vector2:
+	var ax := clampf(p.x, rect.position.x, rect.position.x + rect.size.x)
+	var ay := clampf(p.y, rect.position.y, rect.position.y + rect.size.y)
+	return Vector2(ax, ay)
+
+
+func _count_empty_cells_under_debris_center(center: Vector2) -> int:
+	if _grid_cols < 1 or _grid_rows < 1:
+		return 0
+	var half := float(block_size) * 0.5
+	var r := Rect2(center.x - half, center.y - half, float(block_size), float(block_size))
+	var cs := float(maxi(tracker_cell_size, 1))
+	var x0: int = clampi(int(floor(r.position.x / cs)), 0, _grid_cols - 1)
+	var y0: int = clampi(int(floor(r.position.y / cs)), 0, _grid_rows - 1)
+	var x1: int = clampi(int(floor((r.position.x + r.size.x - 0.001) / cs)), 0, _grid_cols - 1)
+	var y1: int = clampi(int(floor((r.position.y + r.size.y - 0.001) / cs)), 0, _grid_rows - 1)
+	var n: int = 0
+	for gy in range(y0, y1 + 1):
+		var row_off: int = gy * _grid_cols
+		for gx in range(x0, x1 + 1):
+			if _grid[row_off + gx] == 0:
+				n += 1
+	return n
+
+
+func _clamp_debris_center_fully_inside(p: Vector2, view: Rect2, edge_margin: float) -> Vector2:
+	var half := float(block_size) * 0.5
+	var min_x := view.position.x + half + edge_margin
+	var max_x := view.position.x + view.size.x - half - edge_margin
+	var min_y := view.position.y + half + edge_margin
+	var max_y := view.position.y + view.size.y - half - edge_margin
+	var out := p
+	if max_x >= min_x:
+		out.x = clampf(out.x, min_x, max_x)
+	else:
+		out.x = view.position.x + view.size.x * 0.5
+	if max_y >= min_y:
+		out.y = clampf(out.y, min_y, max_y)
+	else:
+		out.y = view.position.y + view.size.y * 0.5
+	return out
+
+
+func _minimal_fit_to_viewport(candidate: Vector2, view: Rect2) -> Vector2:
+	var need := clampf(debris_viewport_min_fraction, 0.0, 1.0)
+	if _debris_viewport_overlap_fraction(candidate, view) >= need:
+		return candidate
+	var anchor := _rect_closest_point(view, candidate)
+	const NUDGE_STEPS: int = 40
+	for i in range(1, NUDGE_STEPS + 1):
+		var t := float(i) / float(NUDGE_STEPS)
+		var p_try := candidate.lerp(anchor, t)
+		if _debris_viewport_overlap_fraction(p_try, view) >= need:
+			return p_try
+	return _clamp_debris_center_fully_inside(candidate, view, 4.0)
+
+
+func _ensure_viewport_overlap(p: Vector2, view: Rect2) -> Vector2:
+	var need := clampf(debris_viewport_min_fraction, 0.0, 1.0)
+	var fitted := _minimal_fit_to_viewport(p, view)
+	if _debris_viewport_overlap_fraction(fitted, view) >= need:
+		return fitted
+	return _clamp_debris_center_fully_inside(p, view, 4.0)
+
+
+func _spread_debris_screen_pos(base: Vector2) -> Vector2:
+	var vr := get_viewport().get_visible_rect()
+	var view := Rect2(vr.position, vr.size)
+	var need := clampf(debris_viewport_min_fraction, 0.0, 1.0)
+	var step := debris_place_search_step_px
+	if step <= 0.0:
+		step = float(maxi(tracker_cell_size, 8))
+
+	var candidates: Array[Vector2] = []
+	candidates.append(base)
+
+	var r_max := maxf(debris_spread_max_px, 0.0)
+	var r_min := clampf(debris_spread_min_px, 0.0, r_max)
+	if r_max > 0.001:
+		for _k in range(5):
+			var ang := randf() * TAU
+			var rad := randf_range(r_min, r_max)
+			candidates.append(base + Vector2(cos(ang), sin(ang)) * rad)
+		for j in range(8):
+			var a := float(j) * TAU / 8.0
+			var d := Vector2(cos(a), sin(a))
+			if r_min > 0.5:
+				candidates.append(base + d * r_min)
+			candidates.append(base + d * r_max)
+
+	var card8: Array[Vector2] = [
+		Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1),
+		Vector2(1, 1).normalized(), Vector2(1, -1).normalized(),
+		Vector2(-1, 1).normalized(), Vector2(-1, -1).normalized(),
+	]
+	for mult in [1.0, 2.0, 3.0]:
+		var s: float = step * float(mult)
+		for d in card8:
+			candidates.append(base + d * s)
+
+	var best_pos: Vector2 = base
+	var best_empty: int = -1
+	var best_d2: float = INF
+
+	for raw in candidates:
+		var fitted := _ensure_viewport_overlap(raw, view)
+		if _debris_viewport_overlap_fraction(fitted, view) < need:
+			continue
+		var ec := _count_empty_cells_under_debris_center(fitted)
+		var d2 := base.distance_squared_to(fitted)
+		if ec > best_empty or (ec == best_empty and d2 < best_d2):
+			best_empty = ec
+			best_d2 = d2
+			best_pos = fitted
+
+	if best_empty < 0:
+		return _clamp_debris_center_fully_inside(base, view, 4.0)
+	return best_pos
 
 func defrag_clear(percent_to_clear: float = 35.0) -> void:
 	var children := debris_root.get_children()
