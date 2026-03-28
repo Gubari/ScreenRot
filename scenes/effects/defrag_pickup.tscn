@@ -10,7 +10,8 @@ radius = 16.0
 texture_filter = 1
 collision_layer = 0
 script = ExtResource("1_defrag")
-defrag_percent = 15.0
+lifetime = 10.0
+defrag_percent = 25.0
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1370503782]
 texture_filter = 1

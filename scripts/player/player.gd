@@ -28,19 +28,25 @@ var multiplier: int = 1
 @export var dash_speed: float = 600.0
 @export var dash_duration: float = 0.15
 @export var dash_cooldown: float = 3.0
+@export var dash_pickup_radius: float = 56.0
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var can_dash: bool = true
 var is_dashing: bool = false
 var dash_direction: Vector2 = Vector2.ZERO
+var _enemy_collision_enabled_before_dash: bool = true
+var _terrain_collision_enabled_before_dash: bool = true
 
 # Shooting state
 var fire_timer: float = 0.0
 var can_shoot: bool = true
 var shoot_anim_timer: float = 0.0
+@export var double_shot_delay: float = 0.05
+var _double_shot_timer: float = 0.0
+var _double_shot_queue: Array[Vector2] = []
 
 # Upgrade stats
-var upgrade_scatter_shot: bool = false
+var upgrade_double_shot: bool = false
 var upgrade_clean_kill_chance: float = 0.0
 var upgrade_defrag_drop_bonus: float = 0.0
 var upgrade_defrag_lifetime_bonus: float = 0.0
@@ -71,6 +77,7 @@ func _ready() -> void:
 	CursorManager.set_crosshair()
 
 func _physics_process(delta: float) -> void:
+	var prev_pos := global_position
 	handle_dash(delta)
 	if not is_dashing:
 		handle_movement()
@@ -79,6 +86,8 @@ func _physics_process(delta: float) -> void:
 	update_animation_state()
 	handle_invincibility(delta)
 	move_and_slide()
+	if is_dashing:
+		_collect_pickups_along_path(prev_pos, global_position)
 	clamp_to_arena()
 
 func handle_movement() -> void:
@@ -107,6 +116,15 @@ func handle_shooting(delta: float) -> void:
 	shoot_anim_timer = max(shoot_anim_timer - delta, 0.0)
 	if fire_timer < 0:
 		fire_timer = 0
+	if not _double_shot_queue.is_empty():
+		_double_shot_timer -= delta
+		while _double_shot_timer <= 0.0 and not _double_shot_queue.is_empty():
+			var queued_dir: Vector2 = _double_shot_queue.pop_front()
+			_spawn_bullet_with_direction(queued_dir)
+			if not _double_shot_queue.is_empty():
+				_double_shot_timer += double_shot_delay
+			else:
+				_double_shot_timer = 0.0
 	if Input.is_action_pressed("shoot") and fire_timer <= 0 and can_shoot:
 		shoot()
 		fire_timer = fire_rate
@@ -127,18 +145,21 @@ func update_animation_state() -> void:
 		sprite.play("idle")
 
 func shoot() -> void:
-	_spawn_bullet(Vector2.ZERO)
-	if upgrade_scatter_shot:
-		_spawn_bullet(Vector2.ZERO, deg_to_rad(15.0))
-		_spawn_bullet(Vector2.ZERO, deg_to_rad(-15.0))
+	var aim_dir := _get_aim_direction()
+	_spawn_bullet_with_direction(aim_dir)
+	if upgrade_double_shot:
+		_double_shot_queue.append(aim_dir)
+		if _double_shot_queue.size() == 1:
+			_double_shot_timer = double_shot_delay
 	AudioManager.play_sfx("shoot")
 
-func _spawn_bullet(offset: Vector2, angle_offset: float = 0.0) -> void:
+func _get_aim_direction() -> Vector2:
+	return (get_global_mouse_position() - muzzle.global_position).normalized()
+
+
+func _spawn_bullet_with_direction(aim_dir: Vector2) -> void:
 	var bullet = bullet_scene.instantiate()
-	bullet.global_position = muzzle.global_position + offset
-	var aim_dir: Vector2 = (get_global_mouse_position() - bullet.global_position).normalized()
-	if angle_offset != 0.0:
-		aim_dir = aim_dir.rotated(angle_offset)
+	bullet.global_position = muzzle.global_position
 	bullet.rotation = aim_dir.angle()
 	bullet.direction = aim_dir
 	bullet.speed = bullet_speed
@@ -161,6 +182,7 @@ func handle_dash(delta: float) -> void:
 		if dash_timer <= 0:
 			is_dashing = false
 			invincible = false
+			_restore_enemy_collision_after_dash()
 			sprite.visible = true
 
 	# Start dash
@@ -176,6 +198,7 @@ func handle_dash(delta: float) -> void:
 		dash_direction = input_dir
 		is_dashing = true
 		invincible = true
+		_disable_enemy_collision_for_dash()
 		dash_timer = dash_duration
 		can_dash = false
 		dash_cooldown_timer = dash_cooldown
@@ -220,6 +243,7 @@ func take_damage(amount: int = 1) -> void:
 		invincible_timer = invincible_duration
 
 func die() -> void:
+	_restore_enemy_collision_after_dash()
 	player_died.emit(score, int(score / 100.0))
 	set_physics_process(false)
 	velocity = Vector2.ZERO
@@ -259,3 +283,40 @@ func get_dash_percent() -> float:
 	if can_dash:
 		return 1.0
 	return 1.0 - (dash_cooldown_timer / dash_cooldown)
+
+
+func _disable_enemy_collision_for_dash() -> void:
+	_enemy_collision_enabled_before_dash = get_collision_mask_value(2)
+	_terrain_collision_enabled_before_dash = get_collision_mask_value(5)
+	set_collision_mask_value(2, false)
+	set_collision_mask_value(5, false)
+
+
+func _restore_enemy_collision_after_dash() -> void:
+	set_collision_mask_value(2, _enemy_collision_enabled_before_dash)
+	set_collision_mask_value(5, _terrain_collision_enabled_before_dash)
+
+
+func _collect_pickups_along_path(from_pos: Vector2, to_pos: Vector2) -> void:
+	var r2 := dash_pickup_radius * dash_pickup_radius
+	var groups := ["coin_pickups", "defrag_pickups", "screen_fragments"]
+	for g in groups:
+		for n in get_tree().get_nodes_in_group(g):
+			if not (n is Area2D):
+				continue
+			var area := n as Area2D
+			if area.is_queued_for_deletion():
+				continue
+			var p := area.global_position
+			var c := _closest_point_on_segment(p, from_pos, to_pos)
+			if p.distance_squared_to(c) <= r2:
+				area.call("_on_body_entered", self)
+
+
+func _closest_point_on_segment(point: Vector2, a: Vector2, b: Vector2) -> Vector2:
+	var ab := b - a
+	var ab_len2 := ab.length_squared()
+	if ab_len2 <= 0.000001:
+		return a
+	var t := clampf((point - a).dot(ab) / ab_len2, 0.0, 1.0)
+	return a + ab * t
