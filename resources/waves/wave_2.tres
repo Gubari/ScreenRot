@@ -5,14 +5,50 @@
 
 [sub_resource type="Resource" id="sg1"]
 script = ExtResource("2_group")
-enemy_type = "bit_bug"
+count = 8
 
 [sub_resource type="Resource" id="Resource_hhrcn"]
 script = ExtResource("2_group")
-enemy_type = "toxic_fly"
+enemy_type = "static_walker"
+count = 5
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_m5487"]
+script = ExtResource("2_group")
+count = 10
+delay_before_spawn = 10.0
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_6wjg4"]
+script = ExtResource("2_group")
+count = 3
+delay_before_spawn = 10.0
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_8rwxo"]
+script = ExtResource("2_group")
+enemy_type = "bit_bug"
+count = 5
+delay_before_spawn = 10.0
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_wu8k0"]
+script = ExtResource("2_group")
+enemy_type = "static_walker"
+count = 5
+delay_before_spawn = 20.0
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_txfia"]
+script = ExtResource("2_group")
+enemy_type = "bit_bug"
+count = 10
+delay_before_spawn = 20.0
 metadata/_custom_type_script = "uid://bilot01blr3po"
 
 [resource]
 script = ExtResource("1_wave")
 wave_name = ""
-spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1"), SubResource("Resource_hhrcn")])
+spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1"), SubResource("Resource_hhrcn"), SubResource("Resource_m5487"), SubResource("Resource_6wjg4"), SubResource("Resource_8rwxo"), SubResource("Resource_wu8k0"), SubResource("Resource_txfia")])
+defrag_drop_rate = 1.5
+post_wave_heal_amount = 6

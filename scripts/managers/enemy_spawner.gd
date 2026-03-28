@@ -7,8 +7,11 @@ var enemy_scenes: Dictionary = {}
 var toxic_fly_scene: PackedScene = preload("res://scenes/enemies/toxic_fly.tscn")
 var enemies_alive: int = 0
 var spawn_queue: Array = []
-var spawn_timer: float = 0.0
 var spawning: bool = false
+## Clock for comparing against absolute spawn timestamps.
+var _wave_elapsed: float = 0.0
+## Absolute timestamp (seconds from wave start) for the next queued group.
+var _next_spawn_at: float = 0.0
 
 # Map bounds (set by game_manager after map generation)
 var map_rect: Rect2 = Rect2()
@@ -16,6 +19,10 @@ var map_rect: Rect2 = Rect2()
 var spawn_margin: float = 96.0
 # Reference to dungeon map for walkability checks
 var dungeon_map: Node2D = null
+# If true, spawn enemies at center_position instead of around the camera
+var spawn_in_center: bool = false
+# World position used as spawn origin when spawn_in_center is true
+var center_position: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	enemy_scenes = {
@@ -26,42 +33,97 @@ func _ready() -> void:
 		"bloatware_boss": preload("res://scenes/enemies/bloatware_boss.tscn"),
 	}
 
+
+func _spawn_burst(entry: Dictionary) -> void:
+	var t: String = entry["type"]
+	var n: int = int(entry["count"])
+	for _i in n:
+		_spawn_one(t)
+
+
+func _sort_spawn_queue_by_time() -> void:
+	if spawn_queue.is_empty():
+		return
+	for i in range(spawn_queue.size()):
+		(spawn_queue[i] as Dictionary)["_spawn_ix"] = i
+	spawn_queue.sort_custom(func(a: Variant, b: Variant) -> bool:
+		var da: float = float((a as Dictionary).get("delay", 0.0))
+		var db: float = float((b as Dictionary).get("delay", 0.0))
+		if da != db:
+			return da < db
+		return int((a as Dictionary)["_spawn_ix"]) < int((b as Dictionary)["_spawn_ix"])
+		)
+	for e in spawn_queue:
+		(e as Dictionary).erase("_spawn_ix")
+
+
+func _append_queue_with_offset(queue: Array, offset_seconds: float) -> void:
+	for raw in queue:
+		var e: Dictionary = (raw as Dictionary).duplicate(true)
+		e["delay"] = float(e.get("delay", 0.0)) + offset_seconds
+		spawn_queue.append(e)
+
+
 func _process(delta: float) -> void:
-	if spawning and spawn_queue.size() > 0:
-		spawn_timer -= delta
-		if spawn_timer <= 0:
-			var next = spawn_queue.pop_front()
-			_do_spawn(next.type, next.count)
-			if spawn_queue.size() > 0:
-				spawn_timer = spawn_queue[0].delay if spawn_queue[0].has("delay") else 1.0
-			else:
-				spawning = false
+	if not spawning:
+		return
+	if spawn_queue.is_empty():
+		spawning = false
+		return
+
+	_wave_elapsed += delta
+
+	while spawning and not spawn_queue.is_empty():
+		var head: Dictionary = spawn_queue[0]
+		var t_fire: float = float(head.get("delay", 0.0))
+		if _wave_elapsed < t_fire:
+			break
+		spawn_queue.pop_front()
+		_spawn_burst(head)
+
+	if spawn_queue.is_empty():
+		spawning = false
+	else:
+		_next_spawn_at = float((spawn_queue[0] as Dictionary).get("delay", 0.0))
+
 
 func start_spawning(queue: Array) -> void:
 	enemies_alive = 0
-	spawn_queue = queue.duplicate(true)
+	spawn_queue.clear()
+	_append_queue_with_offset(queue, 0.0)
+	_sort_spawn_queue_by_time()
+	_wave_elapsed = 0.0
+	_next_spawn_at = 0.0
+	if spawn_queue.is_empty():
+		spawning = false
+		return
+	_next_spawn_at = float((spawn_queue[0] as Dictionary).get("delay", 0.0))
 	spawning = true
-	if spawn_queue.size() > 0:
-		spawn_timer = spawn_queue[0].get("delay", 0.0)
+
 
 func add_spawning(queue: Array) -> void:
-	spawn_queue.append_array(queue.duplicate(true))
-	if not spawning:
-		spawning = true
-		if spawn_queue.size() > 0:
-			spawn_timer = spawn_queue[0].get("delay", 0.0)
+	var was_idle: bool = not spawning
+	if was_idle:
+		_wave_elapsed = 0.0
+		_next_spawn_at = 0.0
+	_append_queue_with_offset(queue, _wave_elapsed)
+	_sort_spawn_queue_by_time()
+	if spawn_queue.is_empty():
+		spawning = false
+		return
+	spawning = true
+	_next_spawn_at = float((spawn_queue[0] as Dictionary).get("delay", 0.0))
 
-func _do_spawn(type: String, count: int) -> void:
+func _spawn_one(type: String) -> void:
 	if not enemy_scenes.has(type):
 		return
-	for i in range(count):
-		var enemy = enemy_scenes[type].instantiate()
-		enemy.global_position = _get_spawn_position(type)
-		enemy.enemy_killed.connect(_on_enemy_killed)
-		if enemy.has_signal("hatch_requested"):
-			enemy.hatch_requested.connect(_on_toxic_fly_egg_hatched)
-		get_parent().get_node("Enemies").add_child(enemy)
-		enemies_alive += 1
+	var enemy = enemy_scenes[type].instantiate()
+	enemy.global_position = _get_spawn_position(type)
+	enemy.enemy_killed.connect(_on_enemy_killed)
+	if enemy.has_signal("hatch_requested"):
+		enemy.hatch_requested.connect(_on_toxic_fly_egg_hatched)
+	get_parent().get_node("Enemies").add_child(enemy)
+	enemies_alive += 1
 
 func _on_toxic_fly_egg_hatched(pos: Vector2) -> void:
 	var fly := toxic_fly_scene.instantiate()
@@ -115,11 +177,14 @@ func _get_spawn_position_default() -> Vector2:
 			3: return Vector2(vp.x + margin, randf_range(margin, vp.y - margin))
 		return Vector2(-margin, -margin)
 
-	# Spawn at spawn_margin distance from camera center, on walkable tiles
+	# If spawn_in_center is set, spawn exactly at the center position.
+	if spawn_in_center:
+		return center_position
+
+	# Spawn at spawn_margin distance from camera center, on walkable tiles.
 	var camera := get_viewport().get_camera_2d()
 	if not camera:
 		return map_rect.get_center()
-
 	var center := camera.global_position
 	var map_margin := 16.0
 
@@ -148,11 +213,35 @@ func _is_walkable(pos: Vector2) -> bool:
 		return dungeon_map.is_walkable(pos)
 	return true
 
+func _living_boss_blocks_wave_clear() -> bool:
+	var enemies_node := get_parent().get_node_or_null("Enemies")
+	if enemies_node == null:
+		return false
+	for n in enemies_node.get_children():
+		if n is BossBase:
+			var b := n as BossBase
+			if b.is_dying:
+				continue
+			if b.current_hp > 0:
+				return true
+	return false
+
+
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	enemy_killed_global.emit(pos, type)
 	enemies_alive = maxi(enemies_alive - 1, 0)
 	if enemies_alive == 0 and not spawning and spawn_queue.size() == 0:
+		# Brojač može biti 0 dok boss još živi (npr. toxic jaje → muha bez enemy_killed na hatch).
+		# Na boss talasu to je inače odmah "wave cleared" + game over jer nema sledećeg talasa.
+		if _living_boss_blocks_wave_clear():
+			return
 		all_enemies_dead.emit()
 
 func get_enemy_count() -> int:
 	return enemies_alive
+
+
+func interrupt_scheduled_spawns() -> void:
+	spawning = false
+	_wave_elapsed = 0.0
+	_next_spawn_at = 0.0

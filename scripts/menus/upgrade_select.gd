@@ -11,7 +11,7 @@ const UPGRADE_POOL: Array = [
 	{"id": "heavy_rounds", "name": "Heavy Rounds", "desc": "Bullet damage +1", "category": "combat"},
 	{"id": "velocity_boost", "name": "Velocity Boost", "desc": "Move speed +20%", "category": "combat"},
 	{"id": "armor_plating", "name": "Armor Plating", "desc": "Max HP +1 i odmah heal", "category": "combat"},
-	{"id": "scatter_shot", "name": "Scatter Shot", "desc": "+2 metka pod uglom", "category": "combat"},
+	{"id": "double_shot", "name": "Double Shot", "desc": "Ispaljuje 2 metka jedan za drugim", "category": "combat"},
 	# Debris / Defrag upgrades
 	{"id": "lucky_drops", "name": "Lucky Drops", "desc": "Defrag drop sansa +10%", "category": "defrag"},
 	{"id": "extended_pickup", "name": "Extended Pickup", "desc": "Pickup traje 8s umesto 5s", "category": "defrag"},
@@ -81,7 +81,7 @@ func _on_card_input(event: InputEvent, index: int) -> void:
 		Input.action_release("shoot")
 		_on_upgrade_picked(index)
 
-func show_upgrades(wave_number: int) -> void:
+func show_upgrades(_wave_number: int) -> void:
 	title_label.text = "CHOOSE UPGRADE"
 
 	var available: Array = UPGRADE_POOL.filter(

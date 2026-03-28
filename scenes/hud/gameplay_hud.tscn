@@ -176,3 +176,15 @@ theme_override_font_sizes/font_size = 50
 text = "WAVE 1"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="HealLabel" type="Label" parent="." unique_id=421337801]
+z_index = 1
+texture_filter = 1
+offset_left = 280.0
+offset_top = 18.0
+offset_right = 380.0
+offset_bottom = 55.0
+modulate = Color(0.2, 1, 0.3, 0)
+theme_override_font_sizes/font_size = 26
+text = "+6 HP"
+vertical_alignment = 1

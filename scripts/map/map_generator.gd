@@ -30,9 +30,22 @@ func get_player_spawn() -> Vector2:
 		return marker.global_position
 	# Fallback: center of map
 	return _map_rect.position + _map_rect.size / 2.0
+	# Return world position: map center offset by this node's global position
+	return global_position + Vector2(_map_rect.size.x / 2.0, _map_rect.size.y / 2.0)
+
+
+func _cell_from_world(world_pos: Vector2) -> Vector2i:
+	# Mora lokalno za TileMapLayer — DungeonMap može biti pomeren u sceni.
+	var local := floor_layer.to_local(world_pos)
+	return Vector2i(int(floor(local.x / float(TILE_SIZE))), int(floor(local.y / float(TILE_SIZE))))
+
+func _cell_center_global(cell: Vector2i) -> Vector2:
+	var local := Vector2((float(cell.x) + 0.5) * float(TILE_SIZE), (float(cell.y) + 0.5) * float(TILE_SIZE))
+	return floor_layer.to_global(local)
+
 
 func is_walkable(world_pos: Vector2) -> bool:
-	var cell := Vector2i(int(floor(world_pos.x / TILE_SIZE)), int(floor(world_pos.y / TILE_SIZE)))
+	var cell := _cell_from_world(world_pos)
 	# Not walkable if there's a wall tile here
 	if wall_layer.get_cell_source_id(cell) != -1:
 		return false
@@ -41,6 +54,26 @@ func is_walkable(world_pos: Vector2) -> bool:
 		return false
 	# Must be on a floor tile
 	return floor_layer.get_cell_source_id(cell) != -1
+
+
+## Najbliže walkable polje (centar ćelije) — za pickupe koji bi inače pali na reku / zid.
+func snap_to_walkable(world_pos: Vector2, max_radius_cells: int = 56) -> Vector2:
+	if is_walkable(world_pos):
+		return world_pos
+	var origin := _cell_from_world(world_pos)
+	var cx := origin.x
+	var cy := origin.y
+	var max_r := maxi(max_radius_cells, 1)
+	for r in range(1, max_r + 1):
+		for dx in range(-r, r + 1):
+			for dy in range(-r, r + 1):
+				if maxi(abs(dx), abs(dy)) != r:
+					continue
+				var c := Vector2i(cx + dx, cy + dy)
+				var wp := _cell_center_global(c)
+				if is_walkable(wp):
+					return wp
+	return world_pos
 
 
 func _calc_map_rect() -> Rect2:
@@ -57,7 +90,8 @@ func _calc_map_rect() -> Rect2:
 
 func _build_collision() -> void:
 	var body := StaticBody2D.new()
-	body.collision_layer = 1 | 2
+	# Samo terrain (layer 5) — leteći neprijatelji nemaju terrain u maski, prolaze preko zelenih reka / zidova.
+	body.collision_layer = 1 << 4
 	body.collision_mask = 0
 	add_child(body)
 
