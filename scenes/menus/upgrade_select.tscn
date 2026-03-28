@@ -1,7 +1,94 @@
-[gd_scene load_steps=4 format=3 uid="uid://beff53ikalm77"]
+[gd_scene format=3 uid="uid://beff53ikalm77"]
 
-[ext_resource type="Script" path="res://scripts/menus/upgrade_select.gd" id="1_upgrade"]
-[ext_resource type="Shader" path="res://shaders/card_background.gdshader" id="2_shader"]
+[ext_resource type="Script" uid="uid://cry0xctjlkjv7" path="res://scripts/menus/upgrade_select.gd" id="1_upgrade"]
+[ext_resource type="Shader" uid="uid://dx7clpa5ej20" path="res://shaders/card_background.gdshader" id="2_shader"]
+[ext_resource type="Texture2D" uid="uid://c3d51qtukrqtf" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/NPC/npc x3.png" id="2_so05b"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3uh1s"]
+atlas = ExtResource("2_so05b")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vba1g"]
+atlas = ExtResource("2_so05b")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ug36"]
+atlas = ExtResource("2_so05b")
+region = Rect2(192, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qwt4m"]
+atlas = ExtResource("2_so05b")
+region = Rect2(288, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4opln"]
+atlas = ExtResource("2_so05b")
+region = Rect2(384, 0, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_80xwy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3uh1s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vba1g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ug36")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qwt4m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4opln")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bwu8f"]
+atlas = ExtResource("2_so05b")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mfuwx"]
+atlas = ExtResource("2_so05b")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ekn4v"]
+atlas = ExtResource("2_so05b")
+region = Rect2(192, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rqfmm"]
+atlas = ExtResource("2_so05b")
+region = Rect2(288, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8q5uw"]
+atlas = ExtResource("2_so05b")
+region = Rect2(384, 0, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rtn54"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwu8f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mfuwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ekn4v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rqfmm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8q5uw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_card"]
 shader = ExtResource("2_shader")
@@ -12,19 +99,19 @@ shader_parameter/glow_intensity = 0.3
 shader_parameter/scanline_strength = 0.08
 shader_parameter/time_speed = 0.8
 
-[node name="UpgradeSelect" type="CanvasLayer"]
-layer = 9
+[node name="UpgradeSelect" type="CanvasLayer" unique_id=1489504415]
 process_mode = 3
+layer = 9
 script = ExtResource("1_upgrade")
 
-[node name="Overlay" type="ColorRect" parent="."]
+[node name="Overlay" type="ColorRect" parent="." unique_id=116680250]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0, 0, 0.06, 0.85)
 
-[node name="ContentBox" type="VBoxContainer" parent="."]
+[node name="ContentBox" type="VBoxContainer" parent="." unique_id=2004541785]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -35,23 +122,44 @@ offset_bottom = -40.0
 theme_override_constants/separation = 24
 alignment = 1
 
-[node name="Title" type="Label" parent="ContentBox"]
+[node name="NPCLeft" type="AnimatedSprite2D" parent="ContentBox" unique_id=884256495]
+texture_filter = 1
+position = Vector2(358.00003, 132)
+scale = Vector2(1.3, 1.2968092)
+sprite_frames = SubResource("SpriteFrames_80xwy")
+autoplay = "default"
+frame_progress = 0.17048813
+
+[node name="NPCRight" type="AnimatedSprite2D" parent="ContentBox" unique_id=58024201]
+texture_filter = 1
+position = Vector2(762, 133)
+scale = Vector2(-1.3, 1.3)
+sprite_frames = SubResource("SpriteFrames_rtn54")
+autoplay = "default"
+frame_progress = 0.2557654
+
+[node name="Title" type="Label" parent="ContentBox" unique_id=2018515583]
+texture_filter = 1
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
-theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 46
 text = "CHOOSE UPGRADE"
 horizontal_alignment = 1
 
-[node name="CardContainer" type="HBoxContainer" parent="ContentBox"]
+[node name="CardContainer" type="HBoxContainer" parent="ContentBox" unique_id=1451405187]
+texture_filter = 1
 layout_mode = 2
 theme_override_constants/separation = 40
 alignment = 1
 
-[node name="Card1" type="Control" parent="ContentBox/CardContainer"]
-layout_mode = 2
+[node name="Card1" type="Control" parent="ContentBox/CardContainer" unique_id=835732838]
+texture_filter = 1
 custom_minimum_size = Vector2(280, 320)
+layout_mode = 2
 
-[node name="CardBG" type="ColorRect" parent="ContentBox/CardContainer/Card1"]
+[node name="CardBG" type="ColorRect" parent="ContentBox/CardContainer/Card1" unique_id=357231842]
+texture_filter = 1
+material = SubResource("ShaderMaterial_card")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -59,10 +167,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-material = SubResource("ShaderMaterial_card")
-color = Color(1, 1, 1, 1)
 
-[node name="VBox" type="VBoxContainer" parent="ContentBox/CardContainer/Card1"]
+[node name="VBox" type="VBoxContainer" parent="ContentBox/CardContainer/Card1" unique_id=2010517602]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -70,62 +176,63 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorBar" type="ColorRect" parent="ContentBox/CardContainer/Card1/VBox"]
-layout_mode = 2
+[node name="ColorBar" type="ColorRect" parent="ContentBox/CardContainer/Card1/VBox" unique_id=1101329948]
 custom_minimum_size = Vector2(0, 3)
-
-[node name="Spacer" type="Control" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 16)
 
-[node name="Category" type="Label" parent="ContentBox/CardContainer/Card1/VBox"]
+[node name="Spacer" type="Control" parent="ContentBox/CardContainer/Card1/VBox" unique_id=1619216388]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="Category" type="Label" parent="ContentBox/CardContainer/Card1/VBox" unique_id=1526807148]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 horizontal_alignment = 1
 
-[node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card1/VBox"]
-layout_mode = 2
+[node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card1/VBox" unique_id=661308171]
 custom_minimum_size = Vector2(0, 4)
-
-[node name="Name" type="Label" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+
+[node name="Name" type="Label" parent="ContentBox/CardContainer/Card1/VBox" unique_id=2089728955]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 28
 horizontal_alignment = 1
 
-[node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card1/VBox"]
-layout_mode = 2
+[node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card1/VBox" unique_id=1015358029]
 custom_minimum_size = Vector2(0, 8)
-
-[node name="Desc" type="Label" parent="ContentBox/CardContainer/Card1/VBox"]
 layout_mode = 2
+
+[node name="Desc" type="Label" parent="ContentBox/CardContainer/Card1/VBox" unique_id=1847251816]
 custom_minimum_size = Vector2(260, 60)
+layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
 theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Spacer3" type="Control" parent="ContentBox/CardContainer/Card1/VBox"]
+[node name="Spacer3" type="Control" parent="ContentBox/CardContainer/Card1/VBox" unique_id=1378083996]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card1/VBox"]
+[node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card1/VBox" unique_id=2079700391]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 text = "[ CHOOSE ]"
 horizontal_alignment = 1
 
-[node name="BottomBar" type="ColorRect" parent="ContentBox/CardContainer/Card1/VBox"]
-layout_mode = 2
+[node name="BottomBar" type="ColorRect" parent="ContentBox/CardContainer/Card1/VBox" unique_id=618043032]
 custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
 color = Color(0.15, 0.15, 0.2, 1)
 
-[node name="Card2" type="Control" parent="ContentBox/CardContainer"]
-layout_mode = 2
+[node name="Card2" type="Control" parent="ContentBox/CardContainer" unique_id=720145626]
 custom_minimum_size = Vector2(280, 320)
+layout_mode = 2
 
-[node name="CardBG" type="ColorRect" parent="ContentBox/CardContainer/Card2"]
+[node name="CardBG" type="ColorRect" parent="ContentBox/CardContainer/Card2" unique_id=873709892]
+material = SubResource("ShaderMaterial_card")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -133,10 +240,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-material = SubResource("ShaderMaterial_card")
-color = Color(1, 1, 1, 1)
 
-[node name="VBox" type="VBoxContainer" parent="ContentBox/CardContainer/Card2"]
+[node name="VBox" type="VBoxContainer" parent="ContentBox/CardContainer/Card2" unique_id=262656029]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -144,62 +249,63 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorBar" type="ColorRect" parent="ContentBox/CardContainer/Card2/VBox"]
-layout_mode = 2
+[node name="ColorBar" type="ColorRect" parent="ContentBox/CardContainer/Card2/VBox" unique_id=972075143]
 custom_minimum_size = Vector2(0, 3)
-
-[node name="Spacer" type="Control" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 16)
 
-[node name="Category" type="Label" parent="ContentBox/CardContainer/Card2/VBox"]
+[node name="Spacer" type="Control" parent="ContentBox/CardContainer/Card2/VBox" unique_id=344357354]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="Category" type="Label" parent="ContentBox/CardContainer/Card2/VBox" unique_id=1290184558]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 horizontal_alignment = 1
 
-[node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card2/VBox"]
-layout_mode = 2
+[node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card2/VBox" unique_id=366095703]
 custom_minimum_size = Vector2(0, 4)
-
-[node name="Name" type="Label" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+
+[node name="Name" type="Label" parent="ContentBox/CardContainer/Card2/VBox" unique_id=362500157]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 28
 horizontal_alignment = 1
 
-[node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card2/VBox"]
-layout_mode = 2
+[node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card2/VBox" unique_id=691755206]
 custom_minimum_size = Vector2(0, 8)
-
-[node name="Desc" type="Label" parent="ContentBox/CardContainer/Card2/VBox"]
 layout_mode = 2
+
+[node name="Desc" type="Label" parent="ContentBox/CardContainer/Card2/VBox" unique_id=1326335221]
 custom_minimum_size = Vector2(260, 60)
+layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
 theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Spacer3" type="Control" parent="ContentBox/CardContainer/Card2/VBox"]
+[node name="Spacer3" type="Control" parent="ContentBox/CardContainer/Card2/VBox" unique_id=886719190]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card2/VBox"]
+[node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card2/VBox" unique_id=1819252251]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 text = "[ CHOOSE ]"
 horizontal_alignment = 1
 
-[node name="BottomBar" type="ColorRect" parent="ContentBox/CardContainer/Card2/VBox"]
-layout_mode = 2
+[node name="BottomBar" type="ColorRect" parent="ContentBox/CardContainer/Card2/VBox" unique_id=776954784]
 custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
 color = Color(0.15, 0.15, 0.2, 1)
 
-[node name="Card3" type="Control" parent="ContentBox/CardContainer"]
-layout_mode = 2
+[node name="Card3" type="Control" parent="ContentBox/CardContainer" unique_id=1500668743]
 custom_minimum_size = Vector2(280, 320)
+layout_mode = 2
 
-[node name="CardBG" type="ColorRect" parent="ContentBox/CardContainer/Card3"]
+[node name="CardBG" type="ColorRect" parent="ContentBox/CardContainer/Card3" unique_id=1795405316]
+material = SubResource("ShaderMaterial_card")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -207,10 +313,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-material = SubResource("ShaderMaterial_card")
-color = Color(1, 1, 1, 1)
 
-[node name="VBox" type="VBoxContainer" parent="ContentBox/CardContainer/Card3"]
+[node name="VBox" type="VBoxContainer" parent="ContentBox/CardContainer/Card3" unique_id=237231220]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -218,53 +322,53 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorBar" type="ColorRect" parent="ContentBox/CardContainer/Card3/VBox"]
-layout_mode = 2
+[node name="ColorBar" type="ColorRect" parent="ContentBox/CardContainer/Card3/VBox" unique_id=1632390556]
 custom_minimum_size = Vector2(0, 3)
-
-[node name="Spacer" type="Control" parent="ContentBox/CardContainer/Card3/VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 16)
 
-[node name="Category" type="Label" parent="ContentBox/CardContainer/Card3/VBox"]
+[node name="Spacer" type="Control" parent="ContentBox/CardContainer/Card3/VBox" unique_id=653978380]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="Category" type="Label" parent="ContentBox/CardContainer/Card3/VBox" unique_id=605303910]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 horizontal_alignment = 1
 
-[node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card3/VBox"]
-layout_mode = 2
+[node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card3/VBox" unique_id=1011774242]
 custom_minimum_size = Vector2(0, 4)
-
-[node name="Name" type="Label" parent="ContentBox/CardContainer/Card3/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 1.0, 1)
+
+[node name="Name" type="Label" parent="ContentBox/CardContainer/Card3/VBox" unique_id=1455639862]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 28
 horizontal_alignment = 1
 
-[node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card3/VBox"]
-layout_mode = 2
+[node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card3/VBox" unique_id=624496276]
 custom_minimum_size = Vector2(0, 8)
-
-[node name="Desc" type="Label" parent="ContentBox/CardContainer/Card3/VBox"]
 layout_mode = 2
+
+[node name="Desc" type="Label" parent="ContentBox/CardContainer/Card3/VBox" unique_id=537728256]
 custom_minimum_size = Vector2(260, 60)
+layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
 theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Spacer3" type="Control" parent="ContentBox/CardContainer/Card3/VBox"]
+[node name="Spacer3" type="Control" parent="ContentBox/CardContainer/Card3/VBox" unique_id=1790904413]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card3/VBox"]
+[node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card3/VBox" unique_id=1745976227]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 text = "[ CHOOSE ]"
 horizontal_alignment = 1
 
-[node name="BottomBar" type="ColorRect" parent="ContentBox/CardContainer/Card3/VBox"]
-layout_mode = 2
+[node name="BottomBar" type="ColorRect" parent="ContentBox/CardContainer/Card3/VBox" unique_id=307334739]
 custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
 color = Color(0.15, 0.15, 0.2, 1)

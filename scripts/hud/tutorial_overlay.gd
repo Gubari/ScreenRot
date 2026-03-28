@@ -28,6 +28,11 @@ func _ready() -> void:
 		_pause_menu.process_mode = Node.PROCESS_MODE_DISABLED
 	get_tree().paused = true
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		_close_tutorial()
+
 func _update_page() -> void:
 	content_label.text = pages[current_page]
 	page_indicator.text = str(current_page + 1) + "/" + str(pages.size())

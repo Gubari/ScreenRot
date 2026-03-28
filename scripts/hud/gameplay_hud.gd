@@ -23,12 +23,26 @@ var _hp_frames: Array[AtlasTexture] = []
 # Frame 0 = empty (just dashed), frame 26 = full (dash ready).
 var _dash_frames: Array[AtlasTexture] = []
 
+# Tracks the last applied inset so we can apply deltas to offsets.
+var _last_inset := Vector2.ZERO
+
+# Elements grouped by which screen edge they sit on.
+var _left_elements: Array[Control] = []
+var _right_elements: Array[Control] = []
+var _top_elements: Array[Control] = []
+
 
 func _ready() -> void:
 	for i in 10:
 		_hp_frames.append(load("res://resources/hud/hp_frame_%d.tres" % i))
 	for i in 27:
 		_dash_frames.append(load("res://resources/hud/dash_frame_%d.tres" % i))
+
+	_left_elements = [hp_bar, hp_label, dash_bar, dash_label]
+	_right_elements = [
+		$ScorePanel, $CreditsPanel, debris_bar, debris_label, multiplier_label
+	]
+	_top_elements = [boss_bar_container]
 
 
 func update_hp(current: int, max_hp: int) -> void:
@@ -100,3 +114,28 @@ func update_boss_bar_color(color: Color) -> void:
 
 func hide_boss_bar() -> void:
 	boss_bar_container.visible = false
+
+
+## Push HUD elements inward to follow the black bars during the first 25% of
+## screen shrink (screen_percent 100→75).  After that the bars overlay the HUD.
+func apply_screen_inset(screen_percent: float) -> void:
+	var t := clampf((100.0 - screen_percent) / 25.0, 0.0, 1.0)
+	var vp_size := get_viewport().get_visible_rect().size
+	var new_inset := Vector2(vp_size.x * 0.125 * t, vp_size.y * 0.125 * t)
+	var dx := new_inset.x - _last_inset.x
+	var dy := new_inset.y - _last_inset.y
+	_last_inset = new_inset
+
+	for node in _left_elements:
+		node.offset_left += dx
+		node.offset_right += dx
+		node.offset_top += dy
+		node.offset_bottom += dy
+	for node in _right_elements:
+		node.offset_left -= dx
+		node.offset_right -= dx
+		node.offset_top += dy
+		node.offset_bottom += dy
+	for node in _top_elements:
+		node.offset_top += dy
+		node.offset_bottom += dy

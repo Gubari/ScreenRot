@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://w4bpgwlx0ryp"]
 
-[ext_resource type="Script" path="res://scripts/hud/tutorial_overlay.gd" id="1_tutorial"]
-[ext_resource type="FontFile" path="res://assets/fonts/VT323-Regular.ttf" id="2_font"]
+[ext_resource type="Script" uid="uid://dj6kvukehuy7" path="res://scripts/hud/tutorial_overlay.gd" id="1_tutorial"]
+[ext_resource type="FontFile" uid="uid://cbhcwkkni8tv3" path="res://assets/fonts/VT323-Regular.ttf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.9, 0.9, 0.88, 1)
@@ -17,18 +17,18 @@ corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_btn"]
 
-[node name="TutorialOverlay" type="CanvasLayer"]
-layer = 120
+[node name="TutorialOverlay" type="CanvasLayer" unique_id=922942247]
 process_mode = 3
+layer = 120
 script = ExtResource("1_tutorial")
 
-[node name="Overlay" type="ColorRect" parent="."]
+[node name="Overlay" type="ColorRect" parent="." unique_id=916727232]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0, 0, 0.05, 0.5)
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="." unique_id=2078578678]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -41,86 +41,86 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="VBox" type="VBoxContainer" parent="Panel"]
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=693965614]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TopRow" type="HBoxContainer" parent="Panel/VBox"]
+[node name="TopRow" type="HBoxContainer" parent="Panel/VBox" unique_id=668426521]
 layout_mode = 2
 
-[node name="TopSpacer" type="Control" parent="Panel/VBox/TopRow"]
+[node name="TopSpacer" type="Control" parent="Panel/VBox/TopRow" unique_id=319828806]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CloseButton" type="Button" parent="Panel/VBox/TopRow"]
+[node name="CloseButton" type="Button" parent="Panel/VBox/TopRow" unique_id=997985554]
+custom_minimum_size = Vector2(39, 20)
 layout_mode = 2
-custom_minimum_size = Vector2(32, 20)
 theme_override_colors/font_color = Color(0.15, 0.15, 0.3, 1)
 theme_override_colors/font_hover_color = Color(0.8, 0.1, 0.1, 1)
-theme_override_font_sizes/font_size = 22
 theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxEmpty_btn")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_btn")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_btn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_btn")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_btn")
 text = "X"
 flat = true
 
-[node name="ContentLabel" type="Label" parent="Panel/VBox"]
+[node name="ContentLabel" type="Label" parent="Panel/VBox" unique_id=1065489911]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.1, 0.1, 0.15, 1)
-theme_override_font_sizes/font_size = 26
 theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
 text = "Welcome to the simulation, Pilot."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="NavRow" type="HBoxContainer" parent="Panel/VBox"]
+[node name="NavRow" type="HBoxContainer" parent="Panel/VBox" unique_id=180868724]
 layout_mode = 2
 
-[node name="PrevButton" type="Button" parent="Panel/VBox/NavRow"]
-layout_mode = 2
+[node name="PrevButton" type="Button" parent="Panel/VBox/NavRow" unique_id=1146684458]
 custom_minimum_size = Vector2(80, 0)
-theme_override_colors/font_color = Color(0.0, 0.4, 0.15, 1)
-theme_override_colors/font_hover_color = Color(0.0, 0.6, 0.2, 1)
-theme_override_font_sizes/font_size = 32
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.4, 0.15, 1)
+theme_override_colors/font_hover_color = Color(0, 0.6, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxEmpty_btn")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_btn")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_btn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_btn")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_btn")
 text = "<"
 flat = true
 
-[node name="Spacer1" type="Control" parent="Panel/VBox/NavRow"]
+[node name="Spacer1" type="Control" parent="Panel/VBox/NavRow" unique_id=90812289]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PageIndicator" type="Label" parent="Panel/VBox/NavRow"]
+[node name="PageIndicator" type="Label" parent="Panel/VBox/NavRow" unique_id=206719754]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.3, 0.35, 1)
-theme_override_font_sizes/font_size = 22
 theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
 text = "1/3"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer2" type="Control" parent="Panel/VBox/NavRow"]
+[node name="Spacer2" type="Control" parent="Panel/VBox/NavRow" unique_id=617173433]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NextButton" type="Button" parent="Panel/VBox/NavRow"]
-layout_mode = 2
+[node name="NextButton" type="Button" parent="Panel/VBox/NavRow" unique_id=410483538]
 custom_minimum_size = Vector2(80, 0)
-theme_override_colors/font_color = Color(0.0, 0.4, 0.15, 1)
-theme_override_colors/font_hover_color = Color(0.0, 0.6, 0.2, 1)
-theme_override_font_sizes/font_size = 32
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.4, 0.15, 1)
+theme_override_colors/font_hover_color = Color(0, 0.6, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxEmpty_btn")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_btn")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_btn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_btn")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_btn")
 text = ">"
 flat = true
