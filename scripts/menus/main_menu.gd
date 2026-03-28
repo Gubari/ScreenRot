@@ -7,6 +7,7 @@ extends Control
 @onready var quit_label: Label = $MenuContainer/QuitLabel
 @onready var stats_label: Label = $StatsLabel
 @onready var lock_bubble: Control = $LockBubble
+@onready var lock_bubble2: Control = $LockBubble2
 
 const COLOR_NORMAL := Color(0.45, 0.45, 0.5)
 const COLOR_HOVER := Color(0.85, 0.9, 1.0)
@@ -37,6 +38,9 @@ func _ready() -> void:
 		label.gui_input.connect(_on_item_input.bind(item))
 
 	lock_bubble.visible = false
+	lock_bubble2.modulate.a = 0.0
+	lock_bubble2.visible = true
+	_schedule_lock_bubble2()
 	if _challenge_locked:
 		challenge_label.text = "ENDLESS MODE"
 		challenge_label.add_theme_color_override("font_color", COLOR_LOCKED)
@@ -123,6 +127,16 @@ func _on_character_shop() -> void:
 	SceneTransition.change_scene("res://scenes/menus/shop.tscn")
 
 var _lock_bubble_tween: Tween = null
+var _lock_bubble2_tween: Tween = null
+
+func _schedule_lock_bubble2() -> void:
+	if _lock_bubble2_tween:
+		_lock_bubble2_tween.kill()
+	_lock_bubble2_tween = create_tween()
+	_lock_bubble2_tween.tween_interval(2.0)
+	_lock_bubble2_tween.tween_property(lock_bubble2, "modulate:a", 1.0, 0.3)
+	_lock_bubble2_tween.tween_interval(3.0)
+	_lock_bubble2_tween.tween_property(lock_bubble2, "modulate:a", 0.0, 0.5)
 
 func _show_lock_bubble() -> void:
 	if _lock_bubble_tween:

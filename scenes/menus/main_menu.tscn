@@ -143,3 +143,38 @@ scale = Vector2(0.81667185, 0.81667185)
 theme_override_colors/font_color = Color(0.18, 0.6, 0.6, 1)
 theme_override_font_sizes/font_size = 24
 text = "▼"
+
+[node name="LockBubble2" type="Control" parent="." unique_id=1953526085]
+anchors_preset = 0
+offset_left = 502.00003
+offset_top = 494.0
+offset_right = 802.0001
+offset_bottom = 614.0
+scale = Vector2(0.7094156, 0.7094156)
+
+[node name="BubblePanel" type="PanelContainer" parent="LockBubble2" unique_id=768080533]
+layout_mode = 0
+offset_right = 408.0
+offset_bottom = 85.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_lockbubble")
+
+[node name="LockBubbleLabel" type="Label" parent="LockBubble2/BubblePanel" unique_id=495225124]
+texture_filter = 1
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.91, 0.91, 1)
+theme_override_font_sizes/font_size = 30
+text = "Try clicking the enviroment
+you might find something valuable"
+horizontal_alignment = 1
+
+[node name="Spike" type="Label" parent="LockBubble2" unique_id=399921123]
+layout_mode = 0
+offset_left = 4.8693604
+offset_top = 68.25397
+offset_right = 36.86936
+offset_bottom = 101.25399
+rotation = 0.74775136
+scale = Vector2(0.81667185, 0.81667185)
+theme_override_colors/font_color = Color(0.18, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 24
+text = "▼"
