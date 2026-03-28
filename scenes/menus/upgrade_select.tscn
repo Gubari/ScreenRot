@@ -186,7 +186,7 @@ layout_mode = 2
 
 [node name="Category" type="Label" parent="ContentBox/CardContainer/Card1/VBox" unique_id=1526807148]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 
 [node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card1/VBox" unique_id=661308171]
@@ -196,7 +196,7 @@ layout_mode = 2
 [node name="Name" type="Label" parent="ContentBox/CardContainer/Card1/VBox" unique_id=2089728955]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 36
 horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card1/VBox" unique_id=1015358029]
@@ -207,7 +207,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(260, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -218,7 +218,7 @@ size_flags_vertical = 3
 [node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card1/VBox" unique_id=2079700391]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 36
 text = "[ CHOOSE ]"
 horizontal_alignment = 1
 
@@ -259,7 +259,7 @@ layout_mode = 2
 
 [node name="Category" type="Label" parent="ContentBox/CardContainer/Card2/VBox" unique_id=1290184558]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 
 [node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card2/VBox" unique_id=366095703]
@@ -269,7 +269,7 @@ layout_mode = 2
 [node name="Name" type="Label" parent="ContentBox/CardContainer/Card2/VBox" unique_id=362500157]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 36
 horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card2/VBox" unique_id=691755206]
@@ -280,7 +280,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(260, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -291,7 +291,7 @@ size_flags_vertical = 3
 [node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card2/VBox" unique_id=1819252251]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 36
 text = "[ CHOOSE ]"
 horizontal_alignment = 1
 
@@ -332,7 +332,7 @@ layout_mode = 2
 
 [node name="Category" type="Label" parent="ContentBox/CardContainer/Card3/VBox" unique_id=605303910]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 
 [node name="Spacer1b" type="Control" parent="ContentBox/CardContainer/Card3/VBox" unique_id=1011774242]
@@ -342,7 +342,7 @@ layout_mode = 2
 [node name="Name" type="Label" parent="ContentBox/CardContainer/Card3/VBox" unique_id=1455639862]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 36
 horizontal_alignment = 1
 
 [node name="Spacer2" type="Control" parent="ContentBox/CardContainer/Card3/VBox" unique_id=624496276]
@@ -353,7 +353,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(260, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.55, 0.6, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -364,7 +364,7 @@ size_flags_vertical = 3
 [node name="ChooseLabel" type="Label" parent="ContentBox/CardContainer/Card3/VBox" unique_id=1745976227]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 36
 text = "[ CHOOSE ]"
 horizontal_alignment = 1
 

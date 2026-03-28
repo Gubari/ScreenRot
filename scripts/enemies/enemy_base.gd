@@ -204,10 +204,9 @@ func _snap_flyer_drop_to_floor(pos: Vector2) -> Vector2:
 
 
 func _try_drop_defrag() -> bool:
-	var chance := defrag_drop_chance
+	var chance: float = _get_drop_rates().defrag
 	if player and "upgrade_defrag_drop_bonus" in player:
 		chance += player.upgrade_defrag_drop_bonus
-	chance *= _get_drop_rates().defrag
 	if randf() < chance:
 		var scene: PackedScene = preload("res://scenes/effects/defrag_pickup.tscn")
 		var pickup = scene.instantiate()
