@@ -448,7 +448,7 @@ func _on_all_waves_completed() -> void:
 		# Wait until the actual game_won sound finishes (no fixed timer).
 		if _game_won_sfx_player and _game_won_sfx_player.playing:
 			await _game_won_sfx_player.finished
-		game_over_screen.show_game_over(player.score, run_credits, "GAME WON", "BOSS DEFEATED!")
+		game_over_screen.show_game_over(player.score, run_credits, "GAME WON", "BOSS DEFEATED!", true)
 	else:
 		game_over_screen.show_game_over(player.score, run_credits)
 

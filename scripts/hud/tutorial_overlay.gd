@@ -26,7 +26,7 @@ const PAGE_TEMPLATES: Array[String] = [
 func _get_binding_display(action: String) -> String:
 	for event in InputMap.action_get_events(action):
 		if event is InputEventKey:
-			return OS.get_keycode_string(event.physical_keycode)
+			return OS.get_keycode_string(event.physical_keycode).to_upper()
 		if event is InputEventMouseButton:
 			match event.button_index:
 				MOUSE_BUTTON_LEFT:   return "LMB"

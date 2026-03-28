@@ -49,8 +49,9 @@ func _on_item_input(event: InputEvent, item: Dictionary) -> void:
 		AudioManager.play_sfx("ui_click")
 		item.action.call()
 
-func show_game_over(score: int, credits_earned: int, title: String = "GAME OVER", subtitle: String = "") -> void:
+func show_game_over(score: int, credits_earned: int, title: String = "GAME OVER", subtitle: String = "", won: bool = false) -> void:
 	title_label.text = title
+	title_label.add_theme_color_override("font_color", Color(0.2, 0.9, 0.3) if won else Color(0.9, 0.2, 0.2))
 	if subtitle != "":
 		subtitle_label.text = subtitle
 		subtitle_label.visible = true
