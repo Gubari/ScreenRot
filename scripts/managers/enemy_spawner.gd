@@ -148,10 +148,28 @@ func _is_walkable(pos: Vector2) -> bool:
 		return dungeon_map.is_walkable(pos)
 	return true
 
+func _living_boss_blocks_wave_clear() -> bool:
+	var enemies_node := get_parent().get_node_or_null("Enemies")
+	if enemies_node == null:
+		return false
+	for n in enemies_node.get_children():
+		if n is BossBase:
+			var b := n as BossBase
+			if b.is_dying:
+				continue
+			if b.current_hp > 0:
+				return true
+	return false
+
+
 func _on_enemy_killed(pos: Vector2, type: String) -> void:
 	enemy_killed_global.emit(pos, type)
 	enemies_alive = maxi(enemies_alive - 1, 0)
 	if enemies_alive == 0 and not spawning and spawn_queue.size() == 0:
+		# Brojač može biti 0 dok boss još živi (npr. toxic jaje → muha bez enemy_killed na hatch).
+		# Na boss talasu to je inače odmah "wave cleared" + game over jer nema sledećeg talasa.
+		if _living_boss_blocks_wave_clear():
+			return
 		all_enemies_dead.emit()
 
 func get_enemy_count() -> int:

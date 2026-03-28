@@ -177,6 +177,8 @@ func _on_boss_wave_requested(queue: Array) -> void:
 	enemy_spawner.add_spawning(queue)
 
 func _on_boss_screen_shrink(rate: float) -> void:
+	if _game_over_started:
+		return
 	if screen_closing:
 		if rate > 0.0:
 			screen_closing.shrink_rate = rate
@@ -185,6 +187,8 @@ func _on_boss_screen_shrink(rate: float) -> void:
 			screen_closing.stop()
 
 func _on_boss_screen_restore(amount: float) -> void:
+	if _game_over_started:
+		return
 	if screen_closing:
 		screen_closing.restore(amount)
 
@@ -208,6 +212,8 @@ func _on_boss_fragment_spawn(world_pos: Vector2, value: float) -> void:
 		scene.move_child(frag, enemies_node.get_index())
 
 func _on_fragment_collected(value: float) -> void:
+	if _game_over_started:
+		return
 	AudioManager.play_sfx("screen_fragment")
 	if screen_closing:
 		screen_closing.restore(value)
@@ -218,12 +224,16 @@ func _on_screen_percent_changed(percent: float) -> void:
 	gameplay_hud.apply_screen_inset(percent)
 
 func _on_screen_fully_closed() -> void:
-	# Screen went fully black — game over
+	# Poraz kad crni okvir stigne do kraja (odvojeno od HP = 0).
 	if not player or not is_instance_valid(player) or not player.visible:
 		return
 	if _game_over_started:
 		return
 	_game_over_started = true
+	if screen_closing:
+		screen_closing.stop()
+	player.current_hp = 0
+	gameplay_hud.update_hp(0, player.max_hp)
 	if not _played_game_lost:
 		AudioManager.stop_music(0.2)
 		AudioManager.play_sfx("game_lost")
@@ -237,8 +247,6 @@ func _on_screen_fully_closed() -> void:
 	# Clean up boss
 	if _active_boss and is_instance_valid(_active_boss):
 		_active_boss = null
-	if screen_closing:
-		screen_closing.stop()
 	gameplay_hud.hide_boss_bar()
 	for frag in get_tree().get_nodes_in_group("screen_fragments"):
 		frag.queue_free()
