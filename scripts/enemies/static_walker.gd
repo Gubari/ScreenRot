@@ -22,7 +22,7 @@ func do_movement(delta: float) -> void:
 	var to_player := get_nav_direction()
 	var perpendicular := Vector2(-to_player.y, to_player.x)
 	var dir := (to_player + perpendicular * zig_zag_dir * 0.6).normalized()
-	var desired_velocity := dir * move_speed
+	var desired_velocity := MovementFormula.velocity(dir, move_speed)
 	if nav_agent and nav_agent.avoidance_enabled:
 		nav_agent.set_velocity(desired_velocity)
 	else:

@@ -11,7 +11,7 @@ func _ready() -> void:
 	area_entered.connect(_on_area_entered)
 
 func _physics_process(delta: float) -> void:
-	position += direction * speed * delta
+	position += MovementFormula.velocity(direction, speed) * delta
 	# Remove if too far from camera
 	var camera := get_viewport().get_camera_2d()
 	if camera:

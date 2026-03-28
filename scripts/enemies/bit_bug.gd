@@ -70,17 +70,18 @@ func do_movement(delta: float) -> void:
 
 	var desired_velocity: Vector2
 	if dist < keep_distance:
-		# Preblizu — odmakni se od igraca
+		# Preblizu — odmakni se od igrača
 		var away := (global_position - player.global_position).normalized()
-		desired_velocity = (away + jitter_offset).normalized() * move_speed
+		var dir_away := (away + jitter_offset).normalized()
+		desired_velocity = MovementFormula.velocity(dir_away, move_speed)
 	elif dist > shoot_range:
-		# Predaleko — pridjji u range
+		# Predaleko — priđi u range
 		var toward := get_nav_direction()
-		desired_velocity = (toward + jitter_offset).normalized() * move_speed
+		var dir_in := (toward + jitter_offset).normalized()
+		desired_velocity = MovementFormula.velocity(dir_in, move_speed)
 	else:
-		# U sweet spotu — lagano kruzi/stoji
-		desired_velocity = jitter_offset.normalized() * move_speed * 0.3
-
+		# U sweet spotu — lagano kruži / drift
+		desired_velocity = MovementFormula.velocity(jitter_offset, move_speed, 0.3)
 	if nav_agent and nav_agent.avoidance_enabled:
 		nav_agent.set_velocity(desired_velocity)
 	else:

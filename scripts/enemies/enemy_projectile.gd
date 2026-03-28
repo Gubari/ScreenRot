@@ -14,7 +14,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if _hit:
 		return
-	global_position += direction * speed * delta
+	global_position += MovementFormula.velocity(direction, speed) * delta
 	var cam := get_viewport().get_camera_2d()
 	if cam and global_position.distance_to(cam.global_position) > 1600.0:
 		queue_free()

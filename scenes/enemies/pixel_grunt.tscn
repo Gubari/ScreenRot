@@ -173,6 +173,7 @@ collision_mask = 2
 script = ExtResource("1_script")
 shoot_range = 400.0
 max_hp = 3
+move_speed = 210.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=189877093]
 texture_filter = 1
