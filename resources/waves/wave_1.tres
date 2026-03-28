@@ -37,4 +37,4 @@ script = ExtResource("1_wave")
 wave_name = ""
 spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1"), SubResource("sg11"), SubResource("Resource_jvv86"), SubResource("Resource_oslit"), SubResource("Resource_dcgi8")])
 defrag_drop_rate = 1.5
-post_wave_heal_percent = 30.0
+post_wave_heal_amount = 6

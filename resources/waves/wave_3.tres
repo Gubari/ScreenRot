@@ -49,4 +49,4 @@ script = ExtResource("1_wave")
 wave_name = "Wave 3"
 spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1"), SubResource("sg2"), SubResource("sg3"), SubResource("Resource_pn4d1"), SubResource("Resource_ecy8v"), SubResource("Resource_rnfa1"), SubResource("Resource_mt0n0")])
 defrag_drop_rate = 1.5
-post_wave_heal_percent = 30.0
+post_wave_heal_amount = 6

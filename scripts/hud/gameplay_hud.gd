@@ -10,6 +10,7 @@ extends CanvasLayer
 @onready var debris_bar: ProgressBar = $DebrisBar
 @onready var debris_label: Label = $DebrisLabel
 @onready var wave_label: Label = $WaveLabel
+@onready var heal_label: Label = $HealLabel
 @onready var boss_bar_container: VBoxContainer = $BossBarContainer
 @onready var boss_name_label: Label = $BossBarContainer/BossNameLabel
 @onready var boss_health_bar: ProgressBar = $BossBarContainer/BossHealthBar
@@ -96,6 +97,13 @@ func fade_wave_label() -> Tween:
 
 func hide_wave_label() -> void:
 	wave_label.visible = false
+
+
+func show_heal_notification(amount: int) -> void:
+	heal_label.text = "+" + str(amount) + " HP"
+	heal_label.modulate = Color(0.2, 1.0, 0.3, 1.0)
+	var tween := create_tween()
+	tween.tween_property(heal_label, "modulate:a", 0.0, 1.5).set_delay(1.2)
 
 
 func show_boss_bar(boss_name: String) -> void:
