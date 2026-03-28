@@ -165,11 +165,11 @@ func reset_save() -> void:
 		"purchased_upgrades": [],
 		"unlocked_characters": ["red_small"],
 		"selected_character": "red_small",
-		"master_volume": 1.0,
+		"master_volume": 0.2,
 		"music_volume": 0.8,
 		"sfx_volume": 0.8,
 		"muted": false,
-			"fullscreen": false,
+		"fullscreen": false,
 		"challenge_unlocked": false,
 	}
 	save_game()

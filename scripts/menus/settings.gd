@@ -13,6 +13,10 @@ const HOVER_PREFIX := "> "
 @onready var mute_check: CheckButton = $ContentBox/MuteRow/MuteCheck
 @onready var fullscreen_check: CheckButton = $ContentBox/FullscreenRow/FullscreenCheck
 @onready var back_label: Label = $BackLabel
+@onready var reset_button: Button = $ContentBox/ResetButton
+@onready var confirm_popup: Control = $ConfirmPopup
+@onready var confirm_label: Label = $ConfirmPopup/PopupBox/PopupButtons/ConfirmLabel
+@onready var cancel_label: Label = $ConfirmPopup/PopupBox/PopupButtons/CancelLabel
 
 const BINDABLE_ACTIONS: Array = [
 	{"action": "move_up",    "button_path": "ContentBox/BindRow_move_up/BindButton_move_up"},
@@ -45,6 +49,14 @@ func _ready() -> void:
 		var btn := get_node(entry.button_path) as Button
 		btn.pressed.connect(_on_bind_button_pressed.bind(entry.action, btn))
 		_update_bind_button(entry.action, btn)
+
+	reset_button.pressed.connect(_on_reset_pressed)
+	confirm_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	confirm_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	confirm_label.gui_input.connect(_on_confirm_input)
+	cancel_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	cancel_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	cancel_label.gui_input.connect(_on_cancel_input)
 
 	back_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	back_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -151,3 +163,18 @@ func _mouse_button_name(index: int) -> String:
 		MOUSE_BUTTON_RIGHT:  return "RMB"
 		MOUSE_BUTTON_MIDDLE: return "MMB"
 		_: return "Mouse " + str(index)
+
+func _on_reset_pressed() -> void:
+	confirm_popup.visible = true
+
+func _on_confirm_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		confirm_popup.visible = false
+		SaveManager.reset_save()
+		SceneTransition.change_scene("res://scenes/menus/main_menu.tscn")
+
+func _on_cancel_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		confirm_popup.visible = false
