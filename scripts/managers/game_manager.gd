@@ -33,6 +33,9 @@ var _played_game_won: bool = false
 var _game_over_started: bool = false
 var _game_won_sfx_player: AudioStreamPlayer = null
 
+const TUTORIAL_SCENE := preload("res://scenes/hud/tutorial_overlay.tscn")
+@export var force_tutorial: bool = false
+
 # Boss tracking
 var _active_boss: BossBase = null
 var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
@@ -75,6 +78,23 @@ func _ready() -> void:
 	gameplay_hud.hide_boss_bar()
 	gameplay_hud.hide_wave_label()
 	AudioManager.play_music("gameplay")
+	if force_tutorial or not SaveManager.get_setting("tutorial_seen", false):
+		_show_tutorial()
+	else:
+		await get_tree().create_timer(1.0).timeout
+		start_next_wave()
+
+func _show_tutorial() -> void:
+	await get_tree().process_frame
+	var cam := player.get_node_or_null("Camera2D") as Camera2D
+	if cam:
+		cam.reset_smoothing()
+		cam.force_update_scroll()
+	var tutorial = TUTORIAL_SCENE.instantiate()
+	add_child(tutorial)
+	tutorial.tutorial_finished.connect(_on_tutorial_finished)
+
+func _on_tutorial_finished() -> void:
 	await get_tree().create_timer(1.0).timeout
 	start_next_wave()
 
@@ -140,6 +160,7 @@ func _connect_boss(boss: BossBase) -> void:
 	boss.request_screen_restore.connect(_on_boss_screen_restore)
 	boss.request_zoom.connect(_on_boss_zoom)
 	boss.fragment_spawn_requested.connect(_on_boss_fragment_spawn)
+	boss.boss_wave_requested.connect(_on_boss_wave_requested)
 	boss.boss_defeated.connect(_on_boss_defeated)
 	# Show boss health bar
 	gameplay_hud.show_boss_bar(boss.boss_id.to_upper())
@@ -151,6 +172,9 @@ func _connect_boss(boss: BossBase) -> void:
 
 func _on_boss_phase_changed(_phase: int) -> void:
 	_update_boss_bar_color()
+
+func _on_boss_wave_requested(queue: Array) -> void:
+	enemy_spawner.add_spawning(queue)
 
 func _on_boss_screen_shrink(rate: float) -> void:
 	if screen_closing:
@@ -312,7 +336,7 @@ func _on_debris_changed(_percent: float) -> void:
 	update_multiplier()
 
 func _on_all_enemies_dead() -> void:
-	if not wave_active:
+	if not wave_active or _game_over_started:
 		return
 	wave_active = false
 	gameplay_hud.show_wave(wave_manager.get_wave_name(current_wave) + " CLEARED!")
@@ -322,7 +346,7 @@ func _on_all_enemies_dead() -> void:
 		AudioManager.play_sfx("wave_clear")
 	_update_credits_display()
 
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(wave_manager.get_post_wave_delay(current_wave)).timeout
 
 	if wave_manager.has_next_wave(current_wave):
 		upgrade_select.show_upgrades(current_wave)
@@ -429,7 +453,7 @@ func _connect_defrag_pickups() -> void:
 		if not pickup.collected.is_connected(_on_defrag_pickup_collected):
 			# Apply upgrade bonuses to pickup
 			pickup.lifetime = 5.0 + player.upgrade_defrag_lifetime_bonus
-			pickup.defrag_percent = 35.0 + player.upgrade_defrag_strength_bonus
+			pickup.defrag_percent = pickup.defrag_percent + player.upgrade_defrag_strength_bonus
 			pickup.collected.connect(_on_defrag_pickup_collected.bind(pickup.defrag_percent))
 
 func _on_defrag_pickup_collected(clear_percent: float) -> void:

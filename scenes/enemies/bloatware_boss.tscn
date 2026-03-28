@@ -2,7 +2,12 @@
 
 [ext_resource type="Script" uid="uid://dqbcsococ0r35" path="res://scripts/enemies/boss_base.gd" id="1_boss"]
 [ext_resource type="Texture2D" uid="uid://c3texnfjx5rfn" path="res://assets/sprites/enemies/BloatwareBoss/boss_x3.png" id="2_boss_atlas"]
+[ext_resource type="Script" uid="uid://bilot01blr3po" path="res://scripts/managers/spawn_group.gd" id="2_xrgsd"]
 [ext_resource type="Texture2D" uid="uid://c8wmq7fnqlwf2" path="res://assets/sprites/enemies/BloatwareBoss/boss_outline_x3.png" id="3_outline_atlas"]
+
+[sub_resource type="Resource" id="Resource_xrgsd"]
+script = ExtResource("2_xrgsd")
+metadata/_custom_type_script = "uid://bilot01blr3po"
 
 [sub_resource type="AtlasTexture" id="ol_run_legs_0"]
 atlas = ExtResource("3_outline_atlas")
@@ -278,6 +283,7 @@ p2_fragment_value = 7.0
 p3_shrink_rate = 12.0
 p3_fragment_rate = 1.0
 p3_fragment_value = 9.0
+p2_wave = Array[ExtResource("2_xrgsd")]([SubResource("Resource_xrgsd")])
 max_hp = 200
 move_speed = 40.0
 contact_damage = 2

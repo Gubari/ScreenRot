@@ -32,6 +32,9 @@ func is_walkable(world_pos: Vector2) -> bool:
 	# Not walkable if there's a wall tile here
 	if wall_layer.get_cell_source_id(cell) != -1:
 		return false
+	# Not walkable if there's a prop with collision here
+	if props_collision_layer.get_cell_source_id(cell) != -1:
+		return false
 	# Must be on a floor tile
 	return floor_layer.get_cell_source_id(cell) != -1
 
@@ -49,32 +52,71 @@ func _calc_map_rect() -> Rect2:
 
 
 func _build_collision() -> void:
-	# Create a StaticBody2D with collision for every tile on the WallLayer.
 	var body := StaticBody2D.new()
 	body.collision_layer = 1 | 2
 	body.collision_mask = 0
 	add_child(body)
 
-	for cell in wall_layer.get_used_cells() + props_collision_layer.get_used_cells():
+	# Merge adjacent tiles into larger rectangles to avoid seam-snagging
+	var all_cells := {}
+	for cell in wall_layer.get_used_cells():
+		all_cells[cell] = true
+	for cell in props_collision_layer.get_used_cells():
+		all_cells[cell] = true
+
+	var used := {}
+	# Sort cells by y then x for row-first greedy merge
+	var sorted_cells := all_cells.keys()
+	sorted_cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		if a.y != b.y:
+			return a.y < b.y
+		return a.x < b.x
+	)
+
+	for cell in sorted_cells:
+		if used.has(cell):
+			continue
+		# Expand right as far as possible
+		var w := 1
+		while all_cells.has(Vector2i(cell.x + w, cell.y)) and not used.has(Vector2i(cell.x + w, cell.y)):
+			w += 1
+		# Expand down as far as possible
+		var h := 1
+		var can_expand := true
+		while can_expand:
+			for dx in range(w):
+				var check := Vector2i(cell.x + dx, cell.y + h)
+				if not all_cells.has(check) or used.has(check):
+					can_expand = false
+					break
+			if can_expand:
+				h += 1
+		# Mark all cells in this rect as used
+		for dy in range(h):
+			for dx in range(w):
+				used[Vector2i(cell.x + dx, cell.y + dy)] = true
+		# Create merged collision shape
 		var shape := CollisionShape2D.new()
 		var rect := RectangleShape2D.new()
-		rect.size = Vector2(TILE_SIZE, TILE_SIZE)
+		rect.size = Vector2(w * TILE_SIZE, h * TILE_SIZE)
 		shape.shape = rect
 		shape.position = Vector2(
-			cell.x * TILE_SIZE + TILE_SIZE / 2.0,
-			cell.y * TILE_SIZE + TILE_SIZE / 2.0
+			cell.x * TILE_SIZE + w * TILE_SIZE / 2.0,
+			cell.y * TILE_SIZE + h * TILE_SIZE / 2.0
 		)
 		body.add_child(shape)
 
 
 func _build_navigation() -> void:
-	var wall_cells := {}
+	var blocked_cells := {}
 	for cell in wall_layer.get_used_cells():
-		wall_cells[cell] = true
+		blocked_cells[cell] = true
+	for cell in props_collision_layer.get_used_cells():
+		blocked_cells[cell] = true
 
 	var walkable_set := {}
 	for cell in floor_layer.get_used_cells():
-		if not wall_cells.has(cell):
+		if not blocked_cells.has(cell):
 			walkable_set[cell] = true
 
 	if walkable_set.is_empty():
