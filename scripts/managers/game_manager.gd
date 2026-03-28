@@ -41,6 +41,7 @@ var _active_boss: BossBase = null
 var _fragment_scene: PackedScene = preload("res://scenes/effects/screen_fragment.tscn")
 
 func _ready() -> void:
+	add_to_group("game_manager")
 	_swap_player_if_needed()
 	# Configure wave manager based on selected game mode
 	wave_manager.is_endless_mode = GameMode.is_challenge()
@@ -364,8 +365,6 @@ func _on_enemy_killed(pos: Vector2, type: String) -> void:
 		debris_overlay.add_debris(pos, type)
 	update_debris_display()
 	update_multiplier()
-	# Connect any new pickups spawned by enemy death
-	_connect_defrag_pickups()
 	_connect_coin_pickups()
 
 func update_multiplier() -> void:

@@ -10,7 +10,7 @@ signal request_zoom(target_zoom: float)
 signal fragment_spawn_requested(world_pos: Vector2, value: float)
 signal boss_wave_requested(queue: Array)
 
-@export var boss_id: String = "bloatware"
+@export var boss_id: String = "annihilator"
 @export var bullet_damage: int = 1
 @export var fire_rate: float = 1.0
 @export var bullet_speed: float = 600.0

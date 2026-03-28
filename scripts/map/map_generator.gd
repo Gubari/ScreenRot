@@ -37,7 +37,6 @@ func _cell_from_world(world_pos: Vector2) -> Vector2i:
 	var local := floor_layer.to_local(world_pos)
 	return Vector2i(int(floor(local.x / float(TILE_SIZE))), int(floor(local.y / float(TILE_SIZE))))
 
-
 func _cell_center_global(cell: Vector2i) -> Vector2:
 	var local := Vector2((float(cell.x) + 0.5) * float(TILE_SIZE), (float(cell.y) + 0.5) * float(TILE_SIZE))
 	return floor_layer.to_global(local)

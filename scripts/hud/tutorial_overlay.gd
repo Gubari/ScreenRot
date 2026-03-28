@@ -12,16 +12,51 @@ signal tutorial_finished
 
 var current_page: int = 0
 var _pause_menu: CanvasLayer = null
-var pages: Array[String] = [
+var pages: Array[String] = []
+
+const PAGE_TEMPLATES: Array[String] = [
 	"Welcome to the station, Pilot\nYou are our only hope\nThe enemy that destroyed our homeworld\nis already here. Take care of them",
-	"[MOVEMENT & DASH]\nMove with W A S D\nSHIFT to dash\nUse it to dodge, reposition, escape\nDash has a cooldown. Use it wisely",
-	"[COMBAT]\nAim with MOUSE\nLMB to shoot",
-	"[DEBRIS]\nDead enemies leave DEBRIS on screen\nMore debris means a higher\nscore/credit multiplier\nBut debris blocks your view. Stay sharp\n",
-	"[DEFRAG]\nCollect DEFRAG pickups\nUse them with SPACE to clear debirs",
-	"[FAREWELL]\nHope you are ready\n I wish you luck"
+	"[MOVEMENT & DASH]\nMove with {move_up} {move_left} {move_down} {move_right}\n{dash} to dash\nUse it to dodge, reposition, escape\nDash has a cooldown. Use it wisely",
+	"[COMBAT]\nAim with MOUSE\n{shoot} to shoot",
+	"[DEBRIS]\nDead enemies leave DEBRIS on screen\nMore debris means a higher\nscore/credit multiplier\nBut debris blocks your view. Stay sharp",
+	"[DEFRAG]\nCollect DEFRAG pickups\nUse them with {defrag} to clear debris",
+	"[FAREWELL]\nHope you are ready\nI wish you luck"
 ]
 
+func _get_binding_display(action: String) -> String:
+	for event in InputMap.action_get_events(action):
+		if event is InputEventKey:
+			return OS.get_keycode_string(event.physical_keycode)
+		if event is InputEventMouseButton:
+			match event.button_index:
+				MOUSE_BUTTON_LEFT:   return "LMB"
+				MOUSE_BUTTON_RIGHT:  return "RMB"
+				MOUSE_BUTTON_MIDDLE: return "MMB"
+				_: return "Mouse " + str(event.button_index)
+	return "?"
+
+func _get_key(action: String) -> String:
+	return _get_binding_display(action)
+
+func _build_pages() -> void:
+	var keys := {
+		"{move_up}":    _get_binding_display("move_up"),
+		"{move_down}":  _get_binding_display("move_down"),
+		"{move_left}":  _get_binding_display("move_left"),
+		"{move_right}": _get_binding_display("move_right"),
+		"{dash}":       _get_binding_display("dash"),
+		"{defrag}":     _get_binding_display("defrag"),
+		"{shoot}":      _get_binding_display("shoot"),
+	}
+	pages.clear()
+	for template in PAGE_TEMPLATES:
+		var page := template
+		for token in keys:
+			page = page.replace(token, keys[token])
+		pages.append(page)
+
 func _ready() -> void:
+	_build_pages()
 	layer = 120
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	close_button.pressed.connect(_close_tutorial)

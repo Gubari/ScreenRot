@@ -3,6 +3,22 @@
 [ext_resource type="Script" uid="uid://xjpkf24yixjk" path="res://scripts/menus/main_menu.gd" id="1_mainmenu"]
 [ext_resource type="PackedScene" uid="uid://cyl1w1lb5k8oy" path="res://scenes/menus/menu_background.tscn" id="2_menubg"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lockbubble"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.18, 0.19, 0.29, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.6, 0.6, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [node name="MainMenu" type="Control" unique_id=224075841]
 layout_mode = 3
 anchors_preset = 15
@@ -92,3 +108,38 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "Credits: 0  |  High Score: 0"
 horizontal_alignment = 2
+
+[node name="LockBubble" type="Control" parent="." unique_id=333261743]
+anchors_preset = 0
+offset_left = 504.00003
+offset_top = 497.00003
+offset_right = 700.0
+offset_bottom = 577.0
+scale = Vector2(0.7094156, 0.7094156)
+
+[node name="BubblePanel" type="PanelContainer" parent="LockBubble" unique_id=991234561]
+layout_mode = 0
+offset_right = 196.0
+offset_bottom = 72.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_lockbubble")
+
+[node name="LockBubbleLabel" type="Label" parent="LockBubble/BubblePanel" unique_id=1416210002]
+texture_filter = 1
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.91, 0.91, 1)
+theme_override_font_sizes/font_size = 30
+text = "Beat classic first to
+unlock endless mode"
+horizontal_alignment = 1
+
+[node name="Spike" type="Label" parent="LockBubble" unique_id=777340021]
+layout_mode = 0
+offset_left = 5.6384344
+offset_top = 62.02291
+offset_right = 37.638435
+offset_bottom = 95.02292
+rotation = 0.74775136
+scale = Vector2(0.81667185, 0.81667185)
+theme_override_colors/font_color = Color(0.18, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 24
+text = "▼"

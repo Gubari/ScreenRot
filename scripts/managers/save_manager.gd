@@ -10,18 +10,48 @@ var data: Dictionary = {
 	"purchased_upgrades": [],
 	"unlocked_characters": ["red_small"],
 	"selected_character": "red_small",
-	"master_volume": 1.0,
+	"master_volume": 0.2,
 	"music_volume": 0.8,
 	"sfx_volume": 0.8,
 	"muted": false,
 	"fullscreen": false,
 	"challenge_unlocked": false,
+	"keybindings": {},
 }
 
 func _ready() -> void:
 	load_game()
 	apply_audio_settings()
 	apply_display_settings()
+	apply_keybindings()
+
+func apply_keybindings() -> void:
+	var bindings: Dictionary = data.get("keybindings", {})
+	for action in bindings:
+		if not InputMap.has_action(action):
+			continue
+		var entry = bindings[action]
+		InputMap.action_erase_events(action)
+		if entry is Dictionary:
+			if entry.get("type") == "mouse":
+				var ev := InputEventMouseButton.new()
+				ev.button_index = entry.get("code", MOUSE_BUTTON_LEFT)
+				InputMap.action_add_event(action, ev)
+			else:
+				var ev := InputEventKey.new()
+				ev.physical_keycode = entry.get("code", 0)
+				InputMap.action_add_event(action, ev)
+		else:
+			# Legacy: plain int scancode
+			var ev := InputEventKey.new()
+			ev.physical_keycode = int(entry)
+			InputMap.action_add_event(action, ev)
+
+func save_keybinding(action: String, binding: Variant) -> void:
+	var bindings: Dictionary = data.get("keybindings", {})
+	bindings[action] = binding
+	data["keybindings"] = bindings
+	save_game()
 
 func get_credits() -> int:
 	return data.credits

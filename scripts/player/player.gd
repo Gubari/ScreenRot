@@ -97,7 +97,7 @@ func _physics_process(delta: float) -> void:
 	clamp_to_arena()
 
 func handle_defrag() -> void:
-	if Input.is_action_just_pressed("ui_accept") and defrag_count > 0:
+	if Input.is_action_just_pressed("defrag") and defrag_count > 0:
 		defrag_count -= 1
 		defrag_used.emit()
 
