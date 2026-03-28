@@ -2,6 +2,7 @@ extends EnemyBase
 
 func _ready() -> void:
 	enemy_type = "toxic_fly"
+	is_flying = true
 	max_hp = 1
 	score_value = 14
 	super._ready()

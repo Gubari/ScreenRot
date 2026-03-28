@@ -89,7 +89,7 @@ func get_total_waves() -> int:
 ## Returns the coin drop rate multiplier for the given wave.
 func get_coin_drop_rate(wave_number: int) -> float:
 	if is_endless_mode:
-		return 0.3  # 70% reduction in endless mode
+		return 0.3
 	if waves.is_empty():
 		return 1.0
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
@@ -98,9 +98,9 @@ func get_coin_drop_rate(wave_number: int) -> float:
 ## Returns the defrag drop rate multiplier for the given wave.
 func get_defrag_drop_rate(wave_number: int) -> float:
 	if is_endless_mode:
-		if wave_number > 9:
-			return 0.6  # 40% reduction after wave 9
-		return 1.0
+		if wave_number > 10:
+			return 0.07
+		return 0.15
 	if waves.is_empty():
 		return 1.0
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
@@ -145,7 +145,7 @@ func get_is_boss_wave(wave_number: int) -> bool:
 ## Returns the flat HP amount restored when this wave is cleared.
 func get_post_wave_heal_amount(wave_number: int) -> int:
 	if is_endless_mode:
-		return 0
+		return 6
 	if waves.is_empty():
 		return 0
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
