@@ -16,6 +16,7 @@ var contact_tick_timer: float = 0.0
 @export var contact_tick_rate: float = 0.5  # damage every 0.5s while touching
 
 # Navigation
+var is_flying: bool = false
 var nav_agent: NavigationAgent2D = null
 var _nav_update_timer: float = 0.0
 const NAV_UPDATE_INTERVAL: float = 0.15
@@ -33,7 +34,7 @@ func _ready() -> void:
 	nav_agent.path_desired_distance = 6.0
 	nav_agent.target_desired_distance = 6.0
 	nav_agent.radius = 40.0
-	nav_agent.avoidance_enabled = true
+	nav_agent.avoidance_enabled = not is_flying
 	nav_agent.max_neighbors = 6
 	nav_agent.neighbor_distance = 120.0
 	nav_agent.velocity_computed.connect(_on_velocity_computed)
@@ -71,6 +72,11 @@ func _update_nav_target() -> void:
 		nav_agent.target_position = player.global_position
 
 func get_nav_direction() -> Vector2:
+	# Flying enemies go directly toward player, ignoring nav mesh and walls.
+	if is_flying:
+		if player and is_instance_valid(player):
+			return (player.global_position - global_position).normalized()
+		return Vector2.ZERO
 	if not nav_agent:
 		if player and is_instance_valid(player):
 			return (player.global_position - global_position).normalized()
@@ -87,15 +93,15 @@ func get_nav_direction() -> Vector2:
 	var space_state := get_world_2d().direct_space_state
 	var best_target := nav_agent.get_next_path_position()
 
-	if space_state and path.size() > 0:
-		# Check from furthest waypoint backwards — only test against walls (layer 1)
+	if not is_flying and space_state and path.size() > 0:
+		# Check from furthest waypoint backwards — only test against walls (layer 5)
 		# Use a margin so the shortcut doesn't hug walls too closely
 		var margin := 16.0
 		for i in range(path.size() - 1, path_idx, -1):
 			var dir_to_wp := (path[i] - global_position).normalized()
 			var perp_offset := Vector2(-dir_to_wp.y, dir_to_wp.x) * margin
-			var query_l := PhysicsRayQueryParameters2D.create(global_position + perp_offset, path[i] + perp_offset, 1)
-			var query_r := PhysicsRayQueryParameters2D.create(global_position - perp_offset, path[i] - perp_offset, 1)
+			var query_l := PhysicsRayQueryParameters2D.create(global_position + perp_offset, path[i] + perp_offset, 1 << 4)
+			var query_r := PhysicsRayQueryParameters2D.create(global_position - perp_offset, path[i] - perp_offset, 1 << 4)
 			var result_l := space_state.intersect_ray(query_l)
 			var result_r := space_state.intersect_ray(query_r)
 			if result_l.is_empty() and result_r.is_empty():
@@ -115,9 +121,9 @@ func do_movement(delta: float) -> void:
 		_nav_update_timer = NAV_UPDATE_INTERVAL
 		_update_nav_target()
 
-	# Stuck detection: if barely moved in 0.5s, try wall-aware escape
+	# Stuck detection: if barely moved in 0.5s, try wall-aware escape (skip for flying enemies)
 	_stuck_timer += delta
-	if _stuck_timer >= 0.5:
+	if not is_flying and _stuck_timer >= 0.5:
 		var dist_moved := global_position.distance_to(_last_pos)
 		if dist_moved < 5.0 and player and global_position.distance_to(player.global_position) > 50.0:
 			var to_player := (player.global_position - global_position).normalized()
@@ -125,8 +131,8 @@ func do_movement(delta: float) -> void:
 			# Test both perpendicular directions — pick the one without a wall
 			var space_state := get_world_2d().direct_space_state
 			var probe_dist := 60.0
-			var query_pos := PhysicsRayQueryParameters2D.create(global_position, global_position + perp * probe_dist, 1)
-			var query_neg := PhysicsRayQueryParameters2D.create(global_position, global_position - perp * probe_dist, 1)
+			var query_pos := PhysicsRayQueryParameters2D.create(global_position, global_position + perp * probe_dist, 1 << 4)
+			var query_neg := PhysicsRayQueryParameters2D.create(global_position, global_position - perp * probe_dist, 1 << 4)
 			var hit_pos := space_state.intersect_ray(query_pos)
 			var hit_neg := space_state.intersect_ray(query_neg)
 			var escape_dir: Vector2

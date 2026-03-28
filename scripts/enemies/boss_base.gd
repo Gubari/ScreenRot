@@ -258,10 +258,12 @@ func _shoot() -> void:
 		await spr.animation_finished
 		if not is_instance_valid(self):
 			return
+		if is_dying:
+			return
 		if spr.sprite_frames.has_animation("run"):
 			spr.play("run")
 
-	if not player or not is_instance_valid(player):
+	if is_dying or not player or not is_instance_valid(player):
 		return
 
 	match current_phase:
