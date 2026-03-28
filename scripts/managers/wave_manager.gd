@@ -112,14 +112,14 @@ func get_post_wave_delay(wave_number: int) -> float:
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
 	return waves[index].post_wave_delay
 
-## Returns how much HP (in % of max HP) is restored when this wave is cleared.
-func get_post_wave_heal_percent(wave_number: int) -> float:
+## Returns the flat HP amount restored when this wave is cleared.
+func get_post_wave_heal_amount(wave_number: int) -> int:
 	if is_endless_mode:
-		return 0.0
+		return 0
 	if waves.is_empty():
-		return 0.0
+		return 0
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
-	return waves[index].post_wave_heal_percent
+	return waves[index].post_wave_heal_amount
 
 ## Generates a procedural wave for challenge/endless mode.
 ## Enemies scale up incrementally each wave. New enemy types unlock gradually.
