@@ -14,6 +14,7 @@ extends CanvasLayer
 @onready var boss_bar_container: VBoxContainer = $BossBarContainer
 @onready var boss_name_label: Label = $BossBarContainer/BossNameLabel
 @onready var boss_health_bar: ProgressBar = $BossBarContainer/BossHealthBar
+@onready var defrag_bar: TextureRect = $DefragBar
 
 # HP frames: 10 AtlasTexture resources loaded from res://resources/hud/hp_frame_0..9.tres
 # Edit each .tres in the Godot editor to pick the exact sprite region you want.
@@ -23,6 +24,10 @@ var _hp_frames: Array[AtlasTexture] = []
 # Dash frames: 27 AtlasTexture resources from res://resources/hud/dash_frame_0..26.tres
 # Frame 0 = empty (just dashed), frame 26 = full (dash ready).
 var _dash_frames: Array[AtlasTexture] = []
+
+# Defrag frames: 4 AtlasTexture resources from res://resources/hud/defrag_frame_0..3.tres
+# Frame 0 = empty, frame 3 = full (3 charges).
+var _defrag_frames: Array[AtlasTexture] = []
 
 # Tracks the last applied inset so we can apply deltas to offsets.
 var _last_inset := Vector2.ZERO
@@ -38,6 +43,8 @@ func _ready() -> void:
 		_hp_frames.append(load("res://resources/hud/hp_frame_%d.tres" % i))
 	for i in 27:
 		_dash_frames.append(load("res://resources/hud/dash_frame_%d.tres" % i))
+	for i in 4:
+		_defrag_frames.append(load("res://resources/hud/defrag_frame_%d.tres" % i))
 
 	_left_elements = [hp_bar, hp_label, dash_bar, dash_label]
 	_right_elements = [
@@ -71,6 +78,9 @@ func update_dash(percent: float) -> void:
 	var frame := clampi(roundi(percent * (_dash_frames.size() - 1)), 0, _dash_frames.size() - 1)
 	dash_bar.texture = _dash_frames[frame]
 
+
+func update_defrag(count: int) -> void:
+	defrag_bar.texture = _defrag_frames[clampi(count, 0, 3)]
 
 func update_debris(percent: float, label_text: String, color: Color) -> void:
 	debris_bar.value = percent

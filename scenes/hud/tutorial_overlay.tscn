@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://dj6kvukehuy7" path="res://scripts/hud/tutorial_overlay.gd" id="1_tutorial"]
 [ext_resource type="FontFile" uid="uid://cbhcwkkni8tv3" path="res://assets/fonts/VT323-Regular.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://n3ncr62kdhis" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Props and Items/props and items x3.png" id="3_fkxt4"]
+[ext_resource type="Texture2D" uid="uid://c3d51qtukrqtf" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/NPC/npc x3.png" id="3_w2p03"]
+[ext_resource type="Texture2D" uid="uid://dfrakdgxalhcc" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/UI/ui x3.png" id="4_psuii"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.9, 0.9, 0.88, 1)
@@ -17,18 +20,100 @@ corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_btn"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_we4uv"]
+atlas = ExtResource("3_fkxt4")
+region = Rect2(768, 768, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_w2p03"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_we4uv")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sktan"]
+atlas = ExtResource("4_psuii")
+region = Rect2(288, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h0rpl"]
+atlas = ExtResource("4_psuii")
+region = Rect2(192, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tcgoy"]
+atlas = ExtResource("4_psuii")
+region = Rect2(192, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1bpls"]
+atlas = ExtResource("4_psuii")
+region = Rect2(96, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rjufu"]
+atlas = ExtResource("4_psuii")
+region = Rect2(0, 96, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sktan"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sktan")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h0rpl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tcgoy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1bpls")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rjufu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 1.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fkxt4"]
+atlas = ExtResource("3_w2p03")
+region = Rect2(0, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_psuii"]
+atlas = ExtResource("3_w2p03")
+region = Rect2(96, 192, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_we4uv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fkxt4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_psuii")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
+
 [node name="TutorialOverlay" type="CanvasLayer" unique_id=922942247]
 process_mode = 3
 layer = 120
 script = ExtResource("1_tutorial")
 
 [node name="Overlay" type="ColorRect" parent="." unique_id=916727232]
+texture_filter = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0, 0, 0.05, 0.5)
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=2078578678]
+texture_filter = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -124,3 +209,23 @@ theme_override_styles/hover = SubResource("StyleBoxEmpty_btn")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_btn")
 text = ">"
 flat = true
+
+[node name="PageSprite" type="AnimatedSprite2D" parent="." unique_id=1300774124]
+texture_filter = 1
+position = Vector2(882, 584)
+scale = Vector2(1.4479166, 1.4479166)
+sprite_frames = SubResource("SpriteFrames_w2p03")
+frame_progress = 0.42809713
+
+[node name="PageSprite2" type="AnimatedSprite2D" parent="." unique_id=1895207247]
+position = Vector2(883, 621)
+sprite_frames = SubResource("SpriteFrames_sktan")
+frame_progress = 0.98850316
+
+[node name="NPC" type="AnimatedSprite2D" parent="." unique_id=1828445836]
+texture_filter = 1
+position = Vector2(369.99997, 566)
+scale = Vector2(1.4479166, 1.4479166)
+sprite_frames = SubResource("SpriteFrames_we4uv")
+autoplay = "default"
+frame_progress = 0.71540755

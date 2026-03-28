@@ -67,6 +67,7 @@ func _ready() -> void:
 	player.player_damaged.connect(_on_player_damaged)
 	player.score_changed.connect(_on_score_changed)
 	player.player_died.connect(_on_player_died)
+	player.defrag_used.connect(_on_player_defrag_used)
 	enemy_spawner.all_enemies_dead.connect(_on_all_enemies_dead)
 	enemy_spawner.enemy_killed_global.connect(_on_enemy_killed)
 	upgrade_select.upgrade_chosen.connect(_on_upgrade_chosen)
@@ -485,6 +486,7 @@ func update_hud() -> void:
 	gameplay_hud.update_multiplier(player.multiplier)
 	gameplay_hud.update_debris(0, "CLEAN", Color.GREEN)
 	gameplay_hud.update_credits(run_credits)
+	gameplay_hud.update_defrag(player.defrag_count)
 
 func _on_player_damaged(current_hp: int) -> void:
 	gameplay_hud.update_hp(current_hp, player.max_hp)
@@ -531,14 +533,18 @@ func _update_credits_display() -> void:
 func _connect_defrag_pickups() -> void:
 	for pickup in get_tree().get_nodes_in_group("defrag_pickups"):
 		if not pickup.collected.is_connected(_on_defrag_pickup_collected):
-			# Apply upgrade bonuses to pickup
 			pickup.lifetime = 5.0 + player.upgrade_defrag_lifetime_bonus
-			pickup.defrag_percent = pickup.defrag_percent + player.upgrade_defrag_strength_bonus
-			pickup.collected.connect(_on_defrag_pickup_collected.bind(pickup.defrag_percent))
+			pickup.collected.connect(_on_defrag_pickup_collected)
 
-func _on_defrag_pickup_collected(clear_percent: float) -> void:
+func _on_defrag_pickup_collected() -> void:
+	player.defrag_count = mini(player.defrag_count + 1, player.MAX_DEFRAG)
+	gameplay_hud.update_defrag(player.defrag_count)
+
+func _on_player_defrag_used() -> void:
+	var clear_percent: float = 35.0 + player.upgrade_defrag_strength_bonus
 	if debris_overlay and debris_overlay.has_method("defrag_clear"):
 		debris_overlay.defrag_clear(clear_percent)
+	gameplay_hud.update_defrag(player.defrag_count)
 	update_debris_display()
 	update_multiplier()
 

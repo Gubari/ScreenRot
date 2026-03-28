@@ -25,6 +25,11 @@ func get_map_rect() -> Rect2:
 
 
 func get_player_spawn() -> Vector2:
+	var marker := get_node_or_null("PlayerSpawnPoint")
+	if marker:
+		return marker.global_position
+	# Fallback: center of map
+	return _map_rect.position + _map_rect.size / 2.0
 	# Return world position: map center offset by this node's global position
 	return global_position + Vector2(_map_rect.size.x / 2.0, _map_rect.size.y / 2.0)
 

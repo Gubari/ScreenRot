@@ -3,6 +3,7 @@ extends CharacterBody2D
 signal player_died(score: int, credits: int)
 signal player_damaged(current_hp: int)
 signal score_changed(score: int, multiplier: int)
+signal defrag_used()
 
 # Movement
 @export var move_speed: float = 250.0
@@ -45,6 +46,10 @@ var shoot_anim_timer: float = 0.0
 var _double_shot_timer: float = 0.0
 var _double_shot_queue: Array[Vector2] = []
 
+# Defrag inventory
+const MAX_DEFRAG: int = 3
+var defrag_count: int = 0
+
 # Upgrade stats
 var upgrade_double_shot: bool = false
 var upgrade_clean_kill_chance: float = 0.0
@@ -85,10 +90,16 @@ func _physics_process(delta: float) -> void:
 	handle_shooting(delta)
 	update_animation_state()
 	handle_invincibility(delta)
+	handle_defrag()
 	move_and_slide()
 	if is_dashing:
 		_collect_pickups_along_path(prev_pos, global_position)
 	clamp_to_arena()
+
+func handle_defrag() -> void:
+	if Input.is_action_just_pressed("ui_accept") and defrag_count > 0:
+		defrag_count -= 1
+		defrag_used.emit()
 
 func handle_movement() -> void:
 	var input_dir := Vector2.ZERO
