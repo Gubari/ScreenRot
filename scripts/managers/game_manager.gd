@@ -332,9 +332,14 @@ func _on_boss_defeated(_boss_id: String, _score: int) -> void:
 	if cam:
 		var tw := create_tween()
 		tw.tween_property(cam, "zoom", Vector2(1.0, 1.0), 0.8).set_trans(Tween.TRANS_QUAD)
-	# Clean up remaining fragments
+	# Clean up remaining enemies and fragments
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		enemy.queue_free()
+	enemy_spawner.enemies_alive = 0
+	enemy_spawner.interrupt_scheduled_spawns()
 	for frag in get_tree().get_nodes_in_group("screen_fragments"):
 		frag.queue_free()
+	_on_all_waves_completed()
 
 func _update_boss_bar_color() -> void:
 	if not _active_boss or not is_instance_valid(_active_boss):

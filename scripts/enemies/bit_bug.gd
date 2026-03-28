@@ -25,6 +25,7 @@ var _reengage_timer: float = 0.0
 
 func _ready() -> void:
 	enemy_type = "bit_bug"
+	is_flying = true
 	super._ready()
 
 func _physics_process(delta: float) -> void:
@@ -115,10 +116,11 @@ func do_movement(delta: float) -> void:
 			desired_velocity = Vector2.ZERO
 
 	var holding_still := desired_velocity.length_squared() < 1.0
+	var is_retreating := _retreat_latched
 	if nav_agent:
-		if holding_still:
+		if holding_still or is_retreating:
 			nav_agent.avoidance_enabled = false
-			velocity = Vector2.ZERO
+			velocity = desired_velocity
 		else:
 			nav_agent.avoidance_enabled = true
 			nav_agent.set_velocity(desired_velocity)
