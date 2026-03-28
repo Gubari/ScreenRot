@@ -215,6 +215,7 @@ func _on_fragment_collected(value: float) -> void:
 func _on_screen_percent_changed(percent: float) -> void:
 	if _active_boss and is_instance_valid(_active_boss):
 		_active_boss.set_screen_percent(percent)
+	gameplay_hud.apply_screen_inset(percent)
 
 func _on_screen_fully_closed() -> void:
 	# Screen went fully black — game over

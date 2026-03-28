@@ -69,9 +69,10 @@ func _on_card_unhover(index: int) -> void:
 	choose_label.add_theme_color_override("font_color", COLOR_NORMAL)
 	var color_bar: ColorRect = cards[index].get_node("VBox/ColorBar")
 	color_bar.custom_minimum_size.y = 3
-	# Reset shader to default
+	# Reset shader to pre-hover state (category color with original alpha)
 	var card_bg: ColorRect = cards[index].get_node("CardBG")
-	card_bg.material.set_shader_parameter("border_color", Color(0.3, 0.3, 0.4, 0.6))
+	var cat_color: Color = color_bar.color
+	card_bg.material.set_shader_parameter("border_color", Color(cat_color.r, cat_color.g, cat_color.b, 0.4))
 	card_bg.material.set_shader_parameter("glow_intensity", 0.3)
 
 func _on_card_input(event: InputEvent, index: int) -> void:
@@ -81,7 +82,7 @@ func _on_card_input(event: InputEvent, index: int) -> void:
 		_on_upgrade_picked(index)
 
 func show_upgrades(wave_number: int) -> void:
-	title_label.text = "WAVE %d CLEARED - CHOOSE UPGRADE" % wave_number
+	title_label.text = "CHOOSE UPGRADE"
 
 	var available: Array = UPGRADE_POOL.filter(
 		func(u): return u.id not in chosen_upgrades
