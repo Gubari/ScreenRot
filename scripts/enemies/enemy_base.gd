@@ -38,6 +38,7 @@ func _ready() -> void:
 	nav_agent.neighbor_distance = 120.0
 	nav_agent.velocity_computed.connect(_on_velocity_computed)
 	add_child(nav_agent)
+	_sync_nav_agent_max_speed()
 	await get_tree().process_frame
 	var spr := get_node_or_null("Sprite") as AnimatedSprite2D
 	if spr:
@@ -57,6 +58,13 @@ func _physics_process(delta: float) -> void:
 				contact_tick_timer = contact_tick_rate
 				if player.has_method("take_damage"):
 					player.take_damage(contact_damage)
+
+func _sync_nav_agent_max_speed() -> void:
+	if not nav_agent:
+		return
+	# Mora biti = move_speed da RVO ne može izaći brže od igrača sa istim move_speed u inspektoru.
+	nav_agent.max_speed = maxf(MovementFormula.scalar(move_speed), 1.0)
+
 
 func _update_nav_target() -> void:
 	if nav_agent and player and is_instance_valid(player):
@@ -94,7 +102,12 @@ func get_nav_direction() -> Vector2:
 				best_target = path[i]
 				break
 
-	return (best_target - global_position).normalized()
+	var toward := best_target - global_position
+	if toward.length_squared() < 1e-8 and player and is_instance_valid(player):
+		toward = player.global_position - global_position
+	if toward.length_squared() < 1e-8:
+		return Vector2.ZERO
+	return toward.normalized()
 
 func do_movement(delta: float) -> void:
 	_nav_update_timer -= delta
@@ -127,20 +140,25 @@ func do_movement(delta: float) -> void:
 			else:
 				# Both blocked — back away from player
 				escape_dir = -to_player
-			velocity = (to_player * 0.3 + escape_dir * 0.7).normalized() * move_speed * 1.5
+			var stuck_dir := (to_player * 0.3 + escape_dir * 0.7).normalized()
+			velocity = MovementFormula.velocity(stuck_dir, move_speed)
 			_nav_update_timer = 0.0
 		_last_pos = global_position
 		_stuck_timer = 0.0
 
 	var dir := get_nav_direction()
-	var desired_velocity := dir * move_speed
+	var desired_velocity := MovementFormula.velocity(dir, move_speed)
 	if nav_agent and nav_agent.avoidance_enabled:
 		nav_agent.set_velocity(desired_velocity)
 	else:
 		velocity = desired_velocity
 
 func _on_velocity_computed(safe_velocity: Vector2) -> void:
-	velocity = safe_velocity
+	var cap := MovementFormula.scalar(move_speed)
+	if safe_velocity.length() > cap:
+		velocity = safe_velocity.normalized() * cap
+	else:
+		velocity = safe_velocity
 
 
 func take_damage(amount: int) -> void:

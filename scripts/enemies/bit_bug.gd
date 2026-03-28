@@ -15,7 +15,7 @@ func do_movement(delta: float) -> void:
 	jitter_offset = Vector2(randf_range(-0.3, 0.3), randf_range(-0.3, 0.3))
 	var to_player := get_nav_direction()
 	var dir := (to_player + jitter_offset).normalized()
-	var desired_velocity := dir * move_speed
+	var desired_velocity := MovementFormula.velocity(dir, move_speed)
 	if nav_agent and nav_agent.avoidance_enabled:
 		nav_agent.set_velocity(desired_velocity)
 	else:
