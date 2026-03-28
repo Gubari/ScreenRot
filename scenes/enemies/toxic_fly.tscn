@@ -50,6 +50,7 @@ scale = Vector2(1.7200003, 1.7200003)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_fly")
+move_speed = 350.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=722398910]
 scale = Vector2(0.42, 0.42)

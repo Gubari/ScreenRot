@@ -86,10 +86,8 @@ func handle_movement() -> void:
 	input_dir.x = Input.get_axis("move_left", "move_right")
 	input_dir.y = Input.get_axis("move_up", "move_down")
 	input_dir = input_dir.normalized()
-	var speed := move_speed
-	if upgrade_adrenaline and current_hp <= max_hp / 2.0:
-		speed *= 1.15
-	velocity = input_dir * speed
+	var mult := 1.15 if upgrade_adrenaline and current_hp <= max_hp / 2.0 else 1.0
+	velocity = MovementFormula.velocity(input_dir, move_speed, mult)
 
 func handle_rotation() -> void:
 	var mouse_pos := get_global_mouse_position()
@@ -158,7 +156,7 @@ func handle_dash(delta: float) -> void:
 	# During dash
 	if is_dashing:
 		dash_timer -= delta
-		velocity = dash_direction * dash_speed
+		velocity = MovementFormula.velocity(dash_direction, dash_speed)
 		sprite.visible = true
 		if dash_timer <= 0:
 			is_dashing = false

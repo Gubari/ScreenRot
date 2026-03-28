@@ -158,6 +158,7 @@ func _enter_phase(phase: int) -> void:
 		for g in groups:
 			queue.append({"type": g.enemy_type, "count": g.count, "delay": g.delay_before_spawn})
 		boss_wave_requested.emit(queue)
+	_sync_nav_agent_max_speed()
 
 func take_damage(amount: int) -> void:
 	if is_dying or is_transitioning:

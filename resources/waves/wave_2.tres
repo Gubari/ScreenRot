@@ -5,6 +5,7 @@
 
 [sub_resource type="Resource" id="sg1"]
 script = ExtResource("2_group")
+enemy_type = "bit_bug"
 
 [sub_resource type="Resource" id="Resource_hhrcn"]
 script = ExtResource("2_group")
