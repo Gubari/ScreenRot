@@ -62,6 +62,8 @@ var fire_timer: float = 0.0
 var fragment_timer: float = 0.0
 var is_dying: bool = false
 var is_transitioning: bool = false
+## Countdown before boss starts shooting (set on spawn to match cinematic return duration).
+var intro_timer: float = 2.5
 var current_zoom: float = 1.0
 var screen_percent: float = 100.0
 var screen_closing: CanvasLayer = null
@@ -106,8 +108,11 @@ func _physics_process(delta: float) -> void:
 		_sync_boss_death_visuals()
 		return
 	super._physics_process(delta)
+	if intro_timer > 0.0:
+		intro_timer -= delta
 	if player and is_instance_valid(player) and player.visible:
-		_handle_shooting(delta)
+		if intro_timer <= 0.0:
+			_handle_shooting(delta)
 		_handle_fragment_spawning(delta)
 		_update_animation()
 	_sync_boss_outline_with_sprite()

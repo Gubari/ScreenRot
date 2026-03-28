@@ -273,11 +273,22 @@ func clamp_to_arena() -> void:
 
 func setup_camera_limits(rect: Rect2) -> void:
 	var cam := $Camera2D as Camera2D
-	if cam:
-		cam.limit_left = int(rect.position.x)
-		cam.limit_top = int(rect.position.y)
-		cam.limit_right = int(rect.end.x)
-		cam.limit_bottom = int(rect.end.y)
+	if not cam:
+		return
+	var vp := get_viewport_rect().size / cam.zoom
+	cam.limit_left = int(rect.position.x)
+	cam.limit_top = int(rect.position.y)
+	cam.limit_right = int(rect.end.x)
+	cam.limit_bottom = int(rect.end.y)
+	# Prevent camera from showing empty space when map is smaller than viewport
+	if rect.size.x < vp.x:
+		var cx := int(rect.get_center().x)
+		cam.limit_left = cx - int(vp.x / 2.0)
+		cam.limit_right = cx + int(vp.x / 2.0)
+	if rect.size.y < vp.y:
+		var cy := int(rect.get_center().y)
+		cam.limit_top = cy - int(vp.y / 2.0)
+		cam.limit_bottom = cy + int(vp.y / 2.0)
 
 func get_dash_percent() -> float:
 	if can_dash:

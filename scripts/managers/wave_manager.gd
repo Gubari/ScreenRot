@@ -12,6 +12,9 @@ extends Node
 ## Default distance from camera center at which enemies spawn (in pixels).
 ## Used when a WaveData doesn't set its own spawn_radius.
 @export var default_spawn_radius: float = 600.0
+## Node2D whose position is used as the arena center for boss/center spawning.
+## Drop BossCenter node here directly from the Scene panel.
+@export var spawn_center_node: Node2D = null
 
 ## Enemy types available for challenge mode procedural waves (no boss).
 const CHALLENGE_ENEMY_TYPES: Array[String] = ["pixel_grunt", "static_walker", "bit_bug", "toxic_fly"]
@@ -111,6 +114,33 @@ func get_post_wave_delay(wave_number: int) -> float:
 		return 1.5
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
 	return waves[index].post_wave_delay
+
+## Returns how much HP (in % of max HP) is restored when this wave is cleared.
+## Returns whether this wave spawns enemies at a fixed center point.
+func get_spawn_in_center(wave_number: int) -> bool:
+	if is_endless_mode or waves.is_empty():
+		return false
+	var index := clampi(wave_number - 1, 0, waves.size() - 1)
+	return waves[index].spawn_in_center
+
+## Returns the world position to use as spawn center for the given wave, or Vector2.ZERO if not set.
+func get_spawn_center_position(wave_number: int) -> Vector2:
+	if is_endless_mode or waves.is_empty():
+		return Vector2.ZERO
+	var index := clampi(wave_number - 1, 0, waves.size() - 1)
+	var wave: WaveData = waves[index]
+	if not wave.spawn_in_center:
+		return Vector2.ZERO
+	if spawn_center_node and is_instance_valid(spawn_center_node):
+		return spawn_center_node.global_position
+	return Vector2.ZERO
+
+## Returns whether this wave triggers the boss cinematic intro.
+func get_is_boss_wave(wave_number: int) -> bool:
+	if is_endless_mode or waves.is_empty():
+		return false
+	var index := clampi(wave_number - 1, 0, waves.size() - 1)
+	return waves[index].is_boss_wave
 
 ## Returns the flat HP amount restored when this wave is cleared.
 func get_post_wave_heal_amount(wave_number: int) -> int:
