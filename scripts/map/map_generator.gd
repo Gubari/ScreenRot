@@ -25,7 +25,8 @@ func get_map_rect() -> Rect2:
 
 
 func get_player_spawn() -> Vector2:
-	return Vector2(_map_rect.size.x / 2.0, _map_rect.size.y / 2.0)
+	# Return world position: map center offset by this node's global position
+	return global_position + Vector2(_map_rect.size.x / 2.0, _map_rect.size.y / 2.0)
 
 
 func _cell_from_world(world_pos: Vector2) -> Vector2i:

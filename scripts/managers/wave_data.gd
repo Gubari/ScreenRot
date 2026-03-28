@@ -16,3 +16,7 @@ extends Resource
 @export_range(0.0, 100.0, 1.0) var post_wave_heal_percent: float = 0.0
 ## Seconds to wait after this wave is cleared before showing upgrades.
 @export_range(0.0, 30.0, 0.1) var post_wave_delay: float = 1.5
+## If true, plays the boss cinematic intro before spawning this wave.
+@export var is_boss_wave: bool = false
+## If true, enemies spawn at the arena center instead of around the player.
+@export var spawn_in_center: bool = false

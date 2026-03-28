@@ -19,6 +19,10 @@ var map_rect: Rect2 = Rect2()
 var spawn_margin: float = 96.0
 # Reference to dungeon map for walkability checks
 var dungeon_map: Node2D = null
+# If true, spawn enemies at center_position instead of around the camera
+var spawn_in_center: bool = false
+# World position used as spawn origin when spawn_in_center is true
+var center_position: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	enemy_scenes = {
@@ -173,11 +177,14 @@ func _get_spawn_position_default() -> Vector2:
 			3: return Vector2(vp.x + margin, randf_range(margin, vp.y - margin))
 		return Vector2(-margin, -margin)
 
-	# Spawn at spawn_margin distance from camera center, on walkable tiles
+	# If spawn_in_center is set, spawn exactly at the center position.
+	if spawn_in_center:
+		return center_position
+
+	# Spawn at spawn_margin distance from camera center, on walkable tiles.
 	var camera := get_viewport().get_camera_2d()
 	if not camera:
 		return map_rect.get_center()
-
 	var center := camera.global_position
 	var map_margin := 16.0
 
