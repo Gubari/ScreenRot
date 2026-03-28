@@ -9,9 +9,9 @@ extends Resource
 ## Low values (e.g. 5) = spawn right on the player. 0 = use default (600).
 @export var spawn_radius: float = 0.0
 ## Multiplier for coin drop chance this wave. 1.0 = default, 0.3 = 70% less.
-@export_range(0.0, 2.0, 0.05) var coin_drop_rate: float = 1.0
-## Multiplier for defrag drop chance this wave. 1.0 = default, 0.6 = 40% less.
-@export_range(0.0, 2.0, 0.05) var defrag_drop_rate: float = 1.0
+@export_range(0.0, 1.0, 0.05) var coin_drop_rate: float = 1.0
+## Chance for defrag drop this wave. 1.0 = 100%, 0.0 = never.
+@export_range(0.0, 1.0, 0.05) var defrag_drop_rate: float = 1.0
 ## Flat HP amount restored right after this wave is cleared.
 @export_range(0, 20, 1) var post_wave_heal_amount: int = 0
 ## Seconds to wait after this wave is cleared before showing upgrades.
