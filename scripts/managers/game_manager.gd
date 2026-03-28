@@ -404,17 +404,15 @@ func _on_debris_changed(_percent: float) -> void:
 	update_multiplier()
 
 func _apply_post_wave_heal() -> void:
-	var heal_pct: float = wave_manager.get_post_wave_heal_percent(current_wave)
-	if heal_pct <= 0.0:
-		return
-	var heal_amount: int = int(ceili(float(player.max_hp) * heal_pct * 0.01))
+	var heal_amount: int = wave_manager.get_post_wave_heal_amount(current_wave)
 	if heal_amount <= 0:
-		heal_amount = 1
+		return
 	var new_hp: int = mini(player.current_hp + heal_amount, player.max_hp)
 	if new_hp == player.current_hp:
 		return
 	player.current_hp = new_hp
 	_on_player_damaged(player.current_hp)
+	gameplay_hud.show_heal_notification(heal_amount)
 
 func _on_all_enemies_dead() -> void:
 	if not wave_active or _game_over_started:

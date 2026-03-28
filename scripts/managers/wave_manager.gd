@@ -142,13 +142,14 @@ func get_is_boss_wave(wave_number: int) -> bool:
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
 	return waves[index].is_boss_wave
 
-func get_post_wave_heal_percent(wave_number: int) -> float:
+## Returns the flat HP amount restored when this wave is cleared.
+func get_post_wave_heal_amount(wave_number: int) -> int:
 	if is_endless_mode:
-		return 0.0
+		return 0
 	if waves.is_empty():
-		return 0.0
+		return 0
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
-	return waves[index].post_wave_heal_percent
+	return waves[index].post_wave_heal_amount
 
 ## Generates a procedural wave for challenge/endless mode.
 ## Enemies scale up incrementally each wave. New enemy types unlock gradually.
