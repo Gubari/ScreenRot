@@ -35,7 +35,7 @@ script = ExtResource("2_game_manager")
 force_tutorial = true
 
 [node name="DungeonMap" parent="." unique_id=1555452792 instance=ExtResource("8_dungeon_map")]
-position = Vector2(-173, 8)
+position = Vector2(-225, -216)
 
 [node name="DebrisOverlay" parent="." unique_id=421083988 instance=ExtResource("6_debris_overlay")]
 

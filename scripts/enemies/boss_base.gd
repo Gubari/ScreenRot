@@ -4,6 +4,7 @@ class_name BossBase
 signal boss_defeated(boss_id: String, score: int)
 signal phase_changed(phase: int)
 signal request_screen_shrink(rate: float)
+@warning_ignore("unused_signal")
 signal request_screen_restore(amount: float)
 signal request_zoom(target_zoom: float)
 signal fragment_spawn_requested(world_pos: Vector2, value: float)
@@ -156,7 +157,11 @@ func _enter_phase(phase: int) -> void:
 	if groups.size() > 0:
 		var queue: Array = []
 		for g in groups:
-			queue.append({"type": g.enemy_type, "count": g.count, "delay": g.delay_before_spawn})
+			queue.append({
+				"type": g.enemy_type,
+				"count": g.count,
+				"delay": g.delay_before_spawn,
+			})
 		boss_wave_requested.emit(queue)
 	_sync_nav_agent_max_speed()
 

@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://gwq3a35tl5fy"]
 
 [ext_resource type="Script" uid="uid://bf3hcv0kr376p" path="res://scripts/player/player.gd" id="1_player"]
-[ext_resource type="Texture2D" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players grey x3.png" id="2_spritesheet"]
+[ext_resource type="Texture2D" uid="uid://cv1sjjwxqu1vv" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players grey x3.png" id="2_spritesheet"]
 
 [sub_resource type="AtlasTexture" id="death_0"]
 atlas = ExtResource("2_spritesheet")
@@ -281,10 +281,9 @@ collision_mask = 18
 script = ExtResource("1_player")
 fire_rate = 0.3
 bullet_damage = 2
-max_hp = 10
+max_hp = 20
 dash_speed = 1000.0
 dash_duration = 0.2
-dash_cooldown = 4.0
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=268205600]
 scale = Vector2(0.85, 0.85)

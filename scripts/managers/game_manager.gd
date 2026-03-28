@@ -344,6 +344,19 @@ func _on_debris_changed(_percent: float) -> void:
 	update_debris_display()
 	update_multiplier()
 
+func _apply_post_wave_heal() -> void:
+	var heal_pct: float = wave_manager.get_post_wave_heal_percent(current_wave)
+	if heal_pct <= 0.0:
+		return
+	var heal_amount: int = int(ceili(float(player.max_hp) * heal_pct * 0.01))
+	if heal_amount <= 0:
+		heal_amount = 1
+	var new_hp: int = mini(player.current_hp + heal_amount, player.max_hp)
+	if new_hp == player.current_hp:
+		return
+	player.current_hp = new_hp
+	_on_player_damaged(player.current_hp)
+
 func _on_all_enemies_dead() -> void:
 	if not wave_active or _game_over_started:
 		return
@@ -353,6 +366,7 @@ func _on_all_enemies_dead() -> void:
 	# Play wave clear only for non-final waves (i.e. waves before the boss/end).
 	if wave_manager.has_next_wave(current_wave):
 		AudioManager.play_sfx("wave_clear")
+	_apply_post_wave_heal()
 	_update_credits_display()
 
 	await get_tree().create_timer(wave_manager.get_post_wave_delay(current_wave)).timeout
@@ -394,8 +408,8 @@ func _apply_upgrade(upgrade_id: String) -> void:
 			player.max_hp += 1
 			player.current_hp += 1
 			_on_player_damaged(player.current_hp)
-		"scatter_shot":
-			player.upgrade_scatter_shot = true
+		"double_shot":
+			player.upgrade_double_shot = true
 		"lucky_drops":
 			player.upgrade_defrag_drop_bonus += 0.10
 		"extended_pickup":
@@ -488,6 +502,7 @@ func _debug_skip_wave() -> void:
 		return
 	_skip_used = true
 	wave_active = false
+	enemy_spawner.interrupt_scheduled_spawns()
 	enemy_spawner.spawning = false
 	enemy_spawner.spawn_queue.clear()
 	# Clean boss effects before killing enemies

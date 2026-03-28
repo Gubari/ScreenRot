@@ -7,6 +7,34 @@
 
 [sub_resource type="Resource" id="Resource_xrgsd"]
 script = ExtResource("2_xrgsd")
+enemy_type = "static_walker"
+count = 3
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_4d0b2"]
+script = ExtResource("2_xrgsd")
+enemy_type = "bit_bug"
+count = 2
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_qcf5e"]
+script = ExtResource("2_xrgsd")
+enemy_type = "toxic_fly"
+count = 3
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_g00ar"]
+script = ExtResource("2_xrgsd")
+enemy_type = "toxic_fly"
+count = 3
+delay_before_spawn = 5.0
+metadata/_custom_type_script = "uid://bilot01blr3po"
+
+[sub_resource type="Resource" id="Resource_tj36y"]
+script = ExtResource("2_xrgsd")
+enemy_type = "toxic_fly"
+count = 3
+delay_before_spawn = 10.0
 metadata/_custom_type_script = "uid://bilot01blr3po"
 
 [sub_resource type="AtlasTexture" id="ol_run_legs_0"]
@@ -271,20 +299,20 @@ collision_layer = 2
 collision_mask = 18
 script = ExtResource("1_boss")
 bullet_damage = 2
-p1_shrink_rate = 4.0
-p1_fire_rate = 1.5
+fire_rate = 2.0
 p1_move_speed = 45.0
-p1_fragment_rate = 1.5
-p1_fragment_value = 6.0
-p2_shrink_rate = 5.0
+p1_fragment_rate = 2.5
+p1_fragment_value = 3.0
 p2_fire_rate = 2.0
-p2_fragment_rate = 2.0
-p2_fragment_value = 7.0
-p3_shrink_rate = 12.0
+p2_fragment_rate = 1.5
+p2_fragment_value = 8.5
+p3_shrink_rate = 4.5
+p3_fire_rate = 2.5
 p3_fragment_rate = 1.0
-p3_fragment_value = 9.0
-p2_wave = Array[ExtResource("2_xrgsd")]([SubResource("Resource_xrgsd")])
-max_hp = 200
+p3_fragment_value = 11.0
+p2_wave = Array[ExtResource("2_xrgsd")]([SubResource("Resource_xrgsd"), SubResource("Resource_4d0b2")])
+p3_wave = Array[ExtResource("2_xrgsd")]([SubResource("Resource_qcf5e"), SubResource("Resource_g00ar"), SubResource("Resource_tj36y")])
+max_hp = 150
 move_speed = 40.0
 contact_damage = 2
 score_value = 500
@@ -296,7 +324,6 @@ texture_filter = 1
 scale = Vector2(0.55, 0.55)
 
 [node name="OutlineLegs" type="AnimatedSprite2D" parent="." unique_id=2136475281]
-visible = false
 z_index = -1
 texture_filter = 1
 position = Vector2(0, 35)
@@ -304,7 +331,6 @@ scale = Vector2(0.55, 0.55)
 sprite_frames = SubResource("SpriteFrames_outline_legs")
 
 [node name="Legs" type="AnimatedSprite2D" parent="." unique_id=2136475283]
-visible = false
 z_index = -1
 position = Vector2(0, 35)
 scale = Vector2(0.55, 0.55)

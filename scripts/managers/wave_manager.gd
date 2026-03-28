@@ -24,7 +24,8 @@ const CHALLENGE_COUNT_INCREMENT: int = 3
 const CHALLENGE_TYPE_UNLOCK_RATE: int = 1
 
 ## Converts a WaveData resource into the spawn queue format
-## that EnemySpawner expects: [{"type": String, "count": int, "delay": float}]
+## that EnemySpawner expects: [{"type", "count", "delay"}]
+## where delay is an absolute timestamp in seconds from wave start.
 func get_wave_data(wave_number: int) -> Array:
 	if is_endless_mode:
 		return _generate_challenge_wave(wave_number)
@@ -111,6 +112,15 @@ func get_post_wave_delay(wave_number: int) -> float:
 	var index := clampi(wave_number - 1, 0, waves.size() - 1)
 	return waves[index].post_wave_delay
 
+## Returns how much HP (in % of max HP) is restored when this wave is cleared.
+func get_post_wave_heal_percent(wave_number: int) -> float:
+	if is_endless_mode:
+		return 0.0
+	if waves.is_empty():
+		return 0.0
+	var index := clampi(wave_number - 1, 0, waves.size() - 1)
+	return waves[index].post_wave_heal_percent
+
 ## Generates a procedural wave for challenge/endless mode.
 ## Enemies scale up incrementally each wave. New enemy types unlock gradually.
 func _generate_challenge_wave(wave_number: int) -> Array:
@@ -130,8 +140,7 @@ func _generate_challenge_wave(wave_number: int) -> Array:
 	var per_type: int = total_enemies / available_types.size()
 	var remainder: int = total_enemies % available_types.size()
 
-	# First spawn group: immediate (delay 0)
-	# Subsequent groups: staggered delays for pacing
+	# Absolute timestamps from wave start.
 	for i in available_types.size():
 		var count: int = per_type + (1 if i < remainder else 0)
 		if count <= 0:

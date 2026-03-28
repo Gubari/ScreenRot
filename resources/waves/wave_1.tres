@@ -5,35 +5,36 @@
 
 [sub_resource type="Resource" id="sg1"]
 script = ExtResource("2_group")
-count = 10
+count = 3
 
 [sub_resource type="Resource" id="sg11"]
 script = ExtResource("2_group")
-enemy_type = "static_walker"
+count = 5
+delay_before_spawn = 3.0
 
 [sub_resource type="Resource" id="Resource_jvv86"]
 script = ExtResource("2_group")
-enemy_type = "bit_bug"
+enemy_type = "static_walker"
+count = 3
+delay_before_spawn = 4.0
 metadata/_custom_type_script = "uid://bilot01blr3po"
 
 [sub_resource type="Resource" id="Resource_oslit"]
 script = ExtResource("2_group")
-delay_before_spawn = 4.0
+count = 10
+delay_before_spawn = 13.0
 metadata/_custom_type_script = "uid://bilot01blr3po"
 
 [sub_resource type="Resource" id="Resource_dcgi8"]
 script = ExtResource("2_group")
 enemy_type = "static_walker"
-delay_before_spawn = 3.5
-metadata/_custom_type_script = "uid://bilot01blr3po"
-
-[sub_resource type="Resource" id="Resource_6q32f"]
-script = ExtResource("2_group")
-enemy_type = "bit_bug"
-delay_before_spawn = 4.5
+count = 5
+delay_before_spawn = 15.0
 metadata/_custom_type_script = "uid://bilot01blr3po"
 
 [resource]
 script = ExtResource("1_wave")
 wave_name = ""
-spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1"), SubResource("sg11"), SubResource("Resource_jvv86"), SubResource("Resource_oslit"), SubResource("Resource_dcgi8"), SubResource("Resource_6q32f")])
+spawn_groups = Array[ExtResource("2_group")]([SubResource("sg1"), SubResource("sg11"), SubResource("Resource_jvv86"), SubResource("Resource_oslit"), SubResource("Resource_dcgi8")])
+defrag_drop_rate = 1.5
+post_wave_heal_percent = 30.0

@@ -4,10 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://dwvldpohy4t63" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Enemies/enemies x3.png" id="2_egg_atlas"]
 [ext_resource type="Texture2D" uid="uid://dirytjfxwwy4d" path="res://assets/sprites/enemies/enemies_x3.png" id="3_ij31r"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_egg_death_0"]
-atlas = ExtResource("2_egg_atlas")
-region = Rect2(384, 3456, 96, 96)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_egg_death_1"]
 atlas = ExtResource("2_egg_atlas")
 region = Rect2(480, 3456, 96, 96)
@@ -55,9 +51,6 @@ region = Rect2(768, 3360, 96, 96)
 [sub_resource type="SpriteFrames" id="SpriteFrames_egg"]
 animations = [{
 "frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_egg_death_0")
-}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_egg_death_1")
 }, {
@@ -116,10 +109,8 @@ script = ExtResource("1_egg")
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1956229847]
 scale = Vector2(0.42, 0.42)
 sprite_frames = SubResource("SpriteFrames_egg")
-animation = &"spawn_idle"
+animation = &"spawn_death"
 autoplay = "spawn_idle"
-frame = 7
-frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1924828573]
 shape = SubResource("CircleShape2D_body")

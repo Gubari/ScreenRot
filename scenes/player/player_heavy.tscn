@@ -283,10 +283,10 @@ move_speed = 200.0
 fire_rate = 0.7
 bullet_damage = 4
 bullet_scene_path = "res://scenes/player/bullet_heavy.tscn"
-max_hp = 15
+max_hp = 30
 dash_speed = 1000.0
 dash_duration = 0.2
-dash_cooldown = 6.0
+dash_cooldown = 5.0
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=885965872]
 scale = Vector2(0.9, 0.9)

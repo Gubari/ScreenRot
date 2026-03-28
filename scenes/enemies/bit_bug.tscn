@@ -169,6 +169,7 @@ collision_mask = 3
 script = ExtResource("1_script")
 shoot_range = 330.0
 keep_distance = 250.0
+projectile_speed = 400.0
 retreat_clearance_px = 50.0
 max_hp = 2
 move_speed = 280.0

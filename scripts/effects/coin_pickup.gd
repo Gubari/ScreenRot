@@ -3,11 +3,13 @@ extends Area2D
 signal collected()
 
 @export var credit_value: int = 1
+@export var pickup_radius_multiplier: float = 1.35
 
 func _ready() -> void:
 	add_to_group("coin_pickups")
 	collision_layer = 0
 	collision_mask = 1  # detect player
+	_scale_pickup_radius()
 	# Register credits handler here: coins are added via call_deferred after enemy_killed,
 	# so GameManager._connect_coin_pickups() often runs before this node exists.
 	var game_root := get_tree().current_scene
@@ -23,3 +25,15 @@ func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		collected.emit()
 		queue_free()
+
+
+func _scale_pickup_radius() -> void:
+	var cs := get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if cs == null or cs.shape == null:
+		return
+	cs.shape = cs.shape.duplicate()
+	var shape := cs.shape
+	if shape is CircleShape2D:
+		(shape as CircleShape2D).radius *= pickup_radius_multiplier
+	elif shape is RectangleShape2D:
+		(shape as RectangleShape2D).size *= pickup_radius_multiplier
