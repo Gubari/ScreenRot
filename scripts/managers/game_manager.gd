@@ -468,8 +468,8 @@ func _apply_upgrade(upgrade_id: String) -> void:
 		"velocity_boost":
 			player.move_speed *= 1.20
 		"armor_plating":
-			player.max_hp += 1
-			player.current_hp += 1
+			player.max_hp += 5
+			player.current_hp += 5
 			_on_player_damaged(player.current_hp)
 		"double_shot":
 			player.upgrade_double_shot = true

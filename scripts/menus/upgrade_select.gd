@@ -7,18 +7,18 @@ const COLOR_HOVER := Color(0.85, 0.9, 1.0)
 
 const UPGRADE_POOL: Array = [
 	# Combat upgrades
-	{"id": "rapid_fire", "name": "Rapid Fire", "desc": "Fire rate +25%", "category": "combat"},
-	{"id": "heavy_rounds", "name": "Heavy Rounds", "desc": "Bullet damage +1", "category": "combat"},
-	{"id": "velocity_boost", "name": "Velocity Boost", "desc": "Move speed +20%", "category": "combat"},
-	{"id": "armor_plating", "name": "Armor Plating", "desc": "Max HP +1 i odmah heal", "category": "combat"},
-	{"id": "double_shot", "name": "Double Shot", "desc": "Ispaljuje 2 metka jedan za drugim", "category": "combat"},
+	{"id": "rapid_fire", "name": "Rapid Fire", "desc": "Fire rate increased by 25%", "category": "combat"},
+	{"id": "heavy_rounds", "name": "Heavy Rounds", "desc": "Bullet damage increased by 1", "category": "combat"},
+	{"id": "velocity_boost", "name": "Velocity Boost", "desc": "Move speed increased by 20%", "category": "combat"},
+	{"id": "armor_plating", "name": "Armor Plating", "desc": "Max HP & Current HP increased by 5", "category": "combat"},
+	{"id": "double_shot", "name": "Double Shot", "desc": "Shoots 2 bullets one after another", "category": "combat"},
 	# Debris / Defrag upgrades
-	{"id": "lucky_drops", "name": "Lucky Drops", "desc": "Defrag drop sansa +10%", "category": "defrag"},
-	{"id": "extended_pickup", "name": "Extended Pickup", "desc": "Pickup traje 8s umesto 5s", "category": "defrag"},
-	{"id": "strong_defrag", "name": "Strong Defrag", "desc": "Pickup cisti 50% umesto 35%", "category": "defrag"},
-	{"id": "clean_kill", "name": "Clean Kill", "desc": "15% sanse da kill ne ostavi debris", "category": "defrag"},
+	{"id": "lucky_drops", "name": "Lucky Drops", "desc": "Defrag drop chance increased by 10%", "category": "defrag"},
+	{"id": "extended_pickup", "name": "Extended Defrag Pickup", "desc": "Defrag stays on the floor for 3 more seconds", "category": "defrag"},
+	{"id": "strong_defrag", "name": "Stronger Defrag", "desc": "Defrag clears 15% more debris", "category": "defrag"},
+	{"id": "clean_kill", "name": "Clean Kill", "desc": "15% chance to leave no debris on kill", "category": "defrag"},
 	# Movement upgrade
-	{"id": "quick_dash", "name": "Quick Dash", "desc": "Dash cooldown -25%", "category": "combat"},
+	{"id": "quick_dash", "name": "Quick Dash", "desc": "Dash cooldown decreased by 25%", "category": "combat"},
 ]
 
 const CATEGORY_COLORS: Dictionary = {
