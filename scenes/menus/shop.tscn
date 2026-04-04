@@ -680,8 +680,8 @@ text = "SELECT"
 anchors_preset = 0
 offset_left = 674.0
 offset_top = 213.0
-offset_right = 674.0
-offset_bottom = 213.0
+offset_right = 770.0
+offset_bottom = 373.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="blue_small" unique_id=1241422748]
 texture_filter = 1

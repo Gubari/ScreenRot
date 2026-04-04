@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bm05uhvtbnnc4"]
 
 [ext_resource type="Script" uid="uid://d336lfbtvgar8" path="res://scripts/other_side/ai_player.gd" id="1_ai"]
-[ext_resource type="Texture2D" uid="uid://d3yeoqf8ejvdb" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players blue x3.png" id="2_spritesheet"]
+[ext_resource type="Texture2D" uid="uid://bne7qaer4ow1a" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players red x3.png" id="2_spritesheet"]
 [ext_resource type="Script" uid="uid://su8tg558lw1r" path="res://scripts/other_side/ai_screen_overlay.gd" id="3_overlay"]
 
 [sub_resource type="AtlasTexture" id="idle_0"]
@@ -55,36 +55,24 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_ai"]
 radius = 18.0
 
-[node name="AILight" type="CharacterBody2D"]
+[node name="AILight" type="CharacterBody2D" unique_id=2102797122]
 texture_filter = 1
-scale = Vector2(1.6, 1.6)
-collision_layer = 1
+scale = Vector2(1.5999995, 1.5999995)
 collision_mask = 18
 script = ExtResource("1_ai")
-ai_type = "light"
-max_hp = 8
-move_speed = 180.0
-fire_rate = 0.4
-bullet_damage = 1
-bullet_speed = 500.0
-has_dash = true
-dash_speed = 500.0
-dash_duration = 0.12
-dash_cooldown = 3.0
-emp_cooldown = 12.0
-emp_radius = 200.0
-emp_windup = 0.8
-has_shield = false
+overlay_frame_size = Vector2(1100, 600)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="."]
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=247858838]
 scale = Vector2(0.85, 0.85)
 sprite_frames = SubResource("SpriteFrames_ai")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1241897574]
 position = Vector2(0, 23)
 shape = SubResource("CircleShape2D_ai")
 
-[node name="AIScreenOverlay" type="Node2D" parent="."]
+[node name="AIScreenOverlay" type="Node2D" parent="." unique_id=178274786]
 script = ExtResource("3_overlay")
+border_thickness = 6.0
+border_color = Color(0, 0, 0, 1)
