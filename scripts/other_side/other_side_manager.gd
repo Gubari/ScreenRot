@@ -44,10 +44,16 @@ var _light_dead: bool = false
 var _heavy_dead: bool = false
 var _fight_ended: bool = false
 
+# Score / Credits (preneseni iz prethodne faze)
+var current_score: int = 0
+var current_credits: int = 0
+
 # ── Lifecycle ─────────────────────────────────────────────────────────────────
 
 func _ready() -> void:
 	add_to_group("other_side_manager")
+	current_score = SceneTransition.transfer_score
+	current_credits = SceneTransition.transfer_credits
 	_setup_scene()
 	_connect_signals()
 	_sync_hud_now()
@@ -73,6 +79,7 @@ func _update_hud_cooldowns() -> void:
 		hud.update_shrink_cooldown(player_boss.get_shrink_cooldown_percent())
 	if hud.has_method("update_summon_cooldown") and player_boss.has_method("get_summon_cooldown_percent"):
 		hud.update_summon_cooldown(player_boss.get_summon_cooldown_percent())
+
 
 func _setup_scene() -> void:
 	if dungeon_map and dungeon_map.has_method("generate"):
@@ -117,14 +124,10 @@ func _sync_hud_now() -> void:
 		if heavy_max <= 0:
 			heavy_max = 1
 		hud.update_ai_hp("heavy", heavy_hp, heavy_max)
-	if hud.has_method("update_screen_percent") and light_ai:
-		var l_overlay = light_ai.get_node_or_null("AIScreenOverlay")
-		if l_overlay and l_overlay.has_method("get_screen_percent"):
-			hud.update_screen_percent("light", l_overlay.get_screen_percent())
-	if hud.has_method("update_screen_percent") and heavy_ai:
-		var h_overlay = heavy_ai.get_node_or_null("AIScreenOverlay")
-		if h_overlay and h_overlay.has_method("get_screen_percent"):
-			hud.update_screen_percent("heavy", h_overlay.get_screen_percent())
+	if hud.has_method("update_score"):
+		hud.update_score(current_score)
+	if hud.has_method("update_credits"):
+		hud.update_credits(current_credits)
 
 # ── Signal connections ────────────────────────────────────────────────────────
 
@@ -222,19 +225,13 @@ func _on_fragment_auto_collected(_value: float) -> void:
 	pass
 
 
-func _on_fragment_collected(ai_type: String) -> void:
-	if hud and hud.has_method("update_screen_percent"):
-		var ai := light_ai if ai_type == "light" else heavy_ai
-		var overlay = ai.get_node_or_null("AIScreenOverlay")
-		if overlay:
-			hud.update_screen_percent(ai_type, overlay.get_screen_percent())
+func _on_fragment_collected(_ai_type: String) -> void:
+	pass
 
 
 func _on_emp_hit_boss() -> void:
 	if player_boss and player_boss.has_method("apply_emp_debuff"):
 		player_boss.apply_emp_debuff()
-	if hud and hud.has_method("flash_emp_warning"):
-		hud.flash_emp_warning()
 
 
 func _on_boss_damaged(current_hp: int, max_hp: int) -> void:
@@ -251,13 +248,14 @@ func _on_boss_died() -> void:
 	shrink_active = false
 	shrink_stopped.emit()
 	other_side_lost.emit()
+	SaveManager.update_high_score(current_score)
+	SaveManager.add_credits(current_credits)
 	if game_over_screen and game_over_screen.has_method("show_game_over"):
-		game_over_screen.show_game_over(0, 0, lose_title, lose_subtitle)
+		game_over_screen.show_game_over(current_score, current_credits, lose_title, lose_subtitle)
 
 
-func _on_phase_changed(phase: int) -> void:
-	if hud and hud.has_method("show_phase"):
-		hud.show_phase(phase)
+func _on_phase_changed(_phase: int) -> void:
+	pass
 
 
 func _on_ai_damaged(current_hp: int, max_hp: int, ai_type: String) -> void:
@@ -274,6 +272,10 @@ func _on_ai_died(ai_type: String) -> void:
 		_heavy_dead = true
 		if is_instance_valid(light_ai):
 			partner_died.emit("heavy")
+	if hud and hud.has_method("update_ai_hp"):
+		hud.update_ai_hp(ai_type, 0, 1)
+	_add_score(500)
+	_add_credits(10)
 	_check_win()
 
 
@@ -285,8 +287,10 @@ func _check_win() -> void:
 		shrink_active = false
 		shrink_stopped.emit()
 		other_side_won.emit()
+		SaveManager.update_high_score(current_score)
+		SaveManager.add_credits(current_credits)
 		if game_over_screen and game_over_screen.has_method("show_game_over"):
-			game_over_screen.show_game_over(0, 0, win_title, win_subtitle, true)
+			game_over_screen.show_game_over(current_score, current_credits, win_title, win_subtitle, true)
 
 # ── Summon wave ───────────────────────────────────────────────────────────────
 
@@ -296,3 +300,16 @@ func _on_wave_summoned() -> void:
 	var queue := [{"type": "pixel_grunt", "count": 4, "delay": 0.0}]
 	if enemy_spawner.has_method("add_spawning"):
 		enemy_spawner.add_spawning(queue)
+
+# ── Score / Credits ──────────────────────────────────────────────────────────
+
+func _add_score(amount: int) -> void:
+	current_score += amount
+	if hud and hud.has_method("update_score"):
+		hud.update_score(current_score)
+
+
+func _add_credits(amount: int) -> void:
+	current_credits += amount
+	if hud and hud.has_method("update_credits"):
+		hud.update_credits(current_credits)

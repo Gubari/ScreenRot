@@ -341,6 +341,8 @@ func _on_boss_defeated(_boss_id: String, _score: int) -> void:
 	# Sacuvati score i kredite pre tranzicije
 	SaveManager.add_credits(run_credits)
 	SaveManager.update_high_score(player.score)
+	SceneTransition.transfer_score = player.score
+	SceneTransition.transfer_credits = run_credits
 	await _show_portal_and_enter()
 
 
