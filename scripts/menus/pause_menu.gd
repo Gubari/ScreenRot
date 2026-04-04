@@ -126,6 +126,7 @@ func _on_settings_back() -> void:
 	main_panel.visible = true
 
 func _on_restart() -> void:
+	AudioManager.resume_music()
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 

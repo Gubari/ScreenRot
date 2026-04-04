@@ -12,6 +12,7 @@ collision_layer = 0
 script = ExtResource("1_defrag")
 lifetime = 10.0
 defrag_percent = 25.0
+pickup_visual_scale = Vector2(1.5, 1.5)
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1370503782]
 texture_filter = 1
@@ -20,6 +21,7 @@ region_enabled = true
 region_rect = Rect2(768, 768, 96, 96)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1068661625]
+position = Vector2(0, -8)
 shape = SubResource("CircleShape2D_defrag")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

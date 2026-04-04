@@ -5,10 +5,14 @@ signal collected()
 @export var lifetime: float = 5.0
 @export var defrag_percent: float = 35.0
 @export var pickup_radius_multiplier: float = 1.35
+## Uniform scale for sprite + collision (pulse animation stays relative to this).
+@export var pickup_visual_scale: Vector2 = Vector2(2, 2)
 
 var _lifetime_timer: float = 0.0
 
 func _ready() -> void:
+	scale = pickup_visual_scale
+	var pulse_base := scale
 	add_to_group("defrag_pickups")
 	collision_layer = 0
 	collision_mask = 1  # detect player
@@ -18,10 +22,10 @@ func _ready() -> void:
 	var gm := get_tree().get_first_node_in_group("game_manager")
 	if gm and gm.has_method("_on_defrag_pickup_collected"):
 		collected.connect(gm._on_defrag_pickup_collected)
-	# Pulse animation
+	# Pulse animation (relative to scene scale)
 	var tween = create_tween().set_loops()
-	tween.tween_property(self, "scale", Vector2(1.3, 1.3), 0.5).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(self, "scale", Vector2(0.9, 0.9), 0.5).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(self, "scale", pulse_base * 1.3, 0.5).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(self, "scale", pulse_base * 0.9, 0.5).set_trans(Tween.TRANS_SINE)
 
 func _process(delta: float) -> void:
 	_lifetime_timer -= delta
