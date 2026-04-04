@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://q4mu6qwafi5w"]
+[gd_scene format=3 uid="uid://bthkf8b345bjl"]
 
 [ext_resource type="Script" uid="uid://d336lfbtvgar8" path="res://scripts/other_side/ai_player.gd" id="1_ai"]
-[ext_resource type="Texture2D" uid="uid://cv1sjjwxqu1vv" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players grey x3.png" id="2_spritesheet"]
+[ext_resource type="Texture2D" uid="uid://bne7qaer4ow1a" path="res://assets/sprites/Tech Dungeon Roguelite - Asset Pack (v7)/Players/players red x3.png" id="2_spritesheet"]
 [ext_resource type="Script" uid="uid://su8tg558lw1r" path="res://scripts/other_side/ai_screen_overlay.gd" id="3_overlay"]
 
 [sub_resource type="AtlasTexture" id="idle_0"]
@@ -53,11 +53,11 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ai"]
-radius = 18.0
+radius = 22.0
 
-[node name="AIHeavy" type="CharacterBody2D" unique_id=442040084]
+[node name="AIHeavy" type="CharacterBody2D" unique_id=1994688433]
 texture_filter = 1
-scale = Vector2(1.6, 1.6)
+scale = Vector2(1.36, 1.36)
 collision_mask = 18
 script = ExtResource("1_ai")
 ai_type = "heavy"
@@ -66,22 +66,25 @@ move_speed = 100.0
 fire_rate = 0.7
 bullet_damage = 2
 bullet_speed = 400.0
+bullet_scene_path = "res://scenes/player/bullet_heavy.tscn"
 has_dash = false
 emp_cooldown = 15.0
 emp_radius = 180.0
 emp_windup = 1.0
+overlay_frame_size = Vector2(1100, 600)
 has_shield = true
 
-[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=247303531]
-scale = Vector2(0.85, 0.85)
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=634594455]
+scale = Vector2(0.9, 0.9)
 sprite_frames = SubResource("SpriteFrames_ai")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1267897427]
-position = Vector2(3.1249998, 16.25)
-scale = Vector2(1.0272881, -1.1560456)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1570887348]
+position = Vector2(3, 19)
 shape = SubResource("CircleShape2D_ai")
 
-[node name="AIScreenOverlay" type="Node2D" parent="." unique_id=1964972209]
+[node name="AIScreenOverlay" type="Node2D" parent="." unique_id=804995897]
 script = ExtResource("3_overlay")
+border_thickness = 6.0
+border_color = Color(0, 0, 0, 1)

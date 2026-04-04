@@ -21,6 +21,7 @@ signal wave_summoned()              # Shift pritisnut i cooldown prosao
 @export var move_speed: float = 130.0
 @export var bullet_speed: float = 600.0
 @export var bullet_damage: int = 2
+@export var camera_zoom: Vector2 = Vector2(1.0, 1.0)
 
 # Spread konfiguracija po fazi
 @export var p2_spread_count: int = 3
@@ -52,6 +53,7 @@ var current_hp: int
 var current_phase: int = 1
 var fire_timer: float = 0.0
 var fire_rate: float = 0.9
+var shoot_anim_timer: float = 0.0
 
 var shrink_cooldown_timer: float = 0.0
 var shrink_cooldown_max: float = 20.0
@@ -71,7 +73,12 @@ const EMP_SPEED_MULT: float = 0.7
 # ── Reference ─────────────────────────────────────────────────────────────────
 
 @onready var sprite: AnimatedSprite2D = $Sprite
+@onready var outline_sprite: AnimatedSprite2D = $Outline
+@onready var legs_sprite: AnimatedSprite2D = $Legs
+@onready var outline_legs_sprite: AnimatedSprite2D = $OutlineLegs
+@onready var camera: Camera2D = $Camera2D
 var bullet_scene: PackedScene = preload("res://scenes/enemies/boss_bullet.tscn")
+const OUTLINE_BASE_COLOR := Color(0, 0, 0, 0.75)
 
 # ── Lifecycle ─────────────────────────────────────────────────────────────────
 
@@ -80,6 +87,8 @@ func _ready() -> void:
 	add_to_group("player_boss")
 	fire_rate = p1_fire_rate
 	shrink_cooldown_max = p1_shrink_cooldown
+	if camera:
+		camera.zoom = camera_zoom
 
 
 func _physics_process(delta: float) -> void:
@@ -87,6 +96,7 @@ func _physics_process(delta: float) -> void:
 	_handle_movement()
 	_handle_rotation()
 	_handle_shooting(delta)
+	_update_animation_state(delta)
 	_handle_abilities()
 	_handle_invincibility(delta)
 	move_and_slide()
@@ -101,6 +111,7 @@ func _physics_process(delta: float) -> void:
 func _tick_timers(delta: float) -> void:
 	shrink_cooldown_timer = maxf(shrink_cooldown_timer - delta, 0.0)
 	summon_cooldown_timer = maxf(summon_cooldown_timer - delta, 0.0)
+	shoot_anim_timer = maxf(shoot_anim_timer - delta, 0.0)
 
 	if debuff_active:
 		debuff_timer -= delta
@@ -120,7 +131,15 @@ func _handle_movement() -> void:
 
 func _handle_rotation() -> void:
 	var mouse_pos := get_global_mouse_position()
-	sprite.flip_h = mouse_pos.x < global_position.x
+	var facing_left := mouse_pos.x < global_position.x
+	if sprite:
+		sprite.flip_h = facing_left
+	if outline_sprite:
+		outline_sprite.flip_h = facing_left
+	if legs_sprite:
+		legs_sprite.flip_h = facing_left
+	if outline_legs_sprite:
+		outline_legs_sprite.flip_h = facing_left
 
 # ── Pucanje ───────────────────────────────────────────────────────────────────
 
@@ -133,6 +152,7 @@ func _handle_shooting(delta: float) -> void:
 		_shoot()
 		var effective_rate := fire_rate * (EMP_FIRE_RATE_MULT if debuff_active else 1.0)
 		fire_timer = effective_rate
+		shoot_anim_timer = minf(effective_rate * 0.75, 0.18)
 
 
 func _shoot() -> void:
@@ -168,6 +188,40 @@ func _spawn_bullet(dir: Vector2) -> void:
 	# Bullet ne sme da pogodi bossa — dodati u bullet.gd collision ignore ako treba
 	get_tree().current_scene.add_child(bullet)
 
+func _update_animation_state(_delta: float) -> void:
+	if not sprite:
+		return
+	var moving := velocity.length_squared() > 1.0
+	var anim := &"idle"
+	if shoot_anim_timer > 0.0 and sprite.sprite_frames.has_animation("shoot"):
+		anim = &"shoot"
+	elif moving and sprite.sprite_frames.has_animation("run"):
+		anim = &"run"
+	_play_animation_set(anim, moving)
+
+func _play_animation_set(anim: StringName, moving: bool) -> void:
+	if sprite and sprite.sprite_frames.has_animation(anim):
+		if sprite.animation != anim or not sprite.is_playing():
+			sprite.play(anim)
+	if outline_sprite and outline_sprite.sprite_frames and outline_sprite.sprite_frames.has_animation(anim):
+		if outline_sprite.animation != anim or not outline_sprite.is_playing():
+			outline_sprite.play(anim)
+	var legs_anim: StringName = &"default"
+	if legs_sprite and legs_sprite.sprite_frames and legs_sprite.sprite_frames.has_animation(legs_anim):
+		if moving:
+			if not legs_sprite.is_playing():
+				legs_sprite.play(legs_anim)
+		else:
+			legs_sprite.stop()
+			legs_sprite.frame = 0
+	if outline_legs_sprite and outline_legs_sprite.sprite_frames and outline_legs_sprite.sprite_frames.has_animation(legs_anim):
+		if moving:
+			if not outline_legs_sprite.is_playing():
+				outline_legs_sprite.play(legs_anim)
+		else:
+			outline_legs_sprite.stop()
+			outline_legs_sprite.frame = 0
+
 # ── Abilities ─────────────────────────────────────────────────────────────────
 
 func _handle_abilities() -> void:
@@ -198,10 +252,10 @@ func summon_wave() -> void:
 func apply_emp_debuff() -> void:
 	debuff_active = true
 	debuff_timer = EMP_DEBUFF_DURATION
-	# Vizualni feedback: plavi flash
-	modulate = Color(0.4, 0.6, 1.0, 1.0)
+	# Vizualni feedback: plavi flash na svim slojevima.
+	_set_visual_modulate(Color(0.4, 0.6, 1.0, 1.0), Color(0.05, 0.2, 0.45, 0.85))
 	var tw := create_tween()
-	tw.tween_property(self, "modulate", Color.WHITE, 0.3)
+	_tween_visual_modulate(tw, Color.WHITE, OUTLINE_BASE_COLOR, 0.3)
 
 # ── Damage / Smrt ─────────────────────────────────────────────────────────────
 
@@ -219,10 +273,10 @@ func take_damage(amount: int) -> void:
 
 	invincible = true
 	invincible_timer = invincible_duration
-	# Crveni flash
-	modulate = Color(1.5, 0.3, 0.3, 1.0)
+	# Crveni flash na svim slojevima.
+	_set_visual_modulate(Color(1.5, 0.3, 0.3, 1.0), Color(0.25, 0.03, 0.03, 0.9))
 	var tw := create_tween()
-	tw.tween_property(self, "modulate", Color.WHITE, 0.15)
+	_tween_visual_modulate(tw, Color.WHITE, OUTLINE_BASE_COLOR, 0.15)
 	AudioManager.play_sfx("enemy_hit")
 
 
@@ -242,10 +296,10 @@ func _handle_invincibility(delta: float) -> void:
 		return
 	invincible_timer -= delta
 	# Treperi dok je invincible
-	sprite.visible = fmod(invincible_timer, 0.2) > 0.1
+	_set_visual_visible(fmod(invincible_timer, 0.2) > 0.1)
 	if invincible_timer <= 0.0:
 		invincible = false
-		sprite.visible = true
+		_set_visual_visible(true)
 
 # ── Faze ─────────────────────────────────────────────────────────────────────
 
@@ -287,3 +341,33 @@ func get_summon_cooldown_percent() -> float:
 	if summon_cooldown_max <= 0.0:
 		return 1.0
 	return 1.0 - (summon_cooldown_timer / summon_cooldown_max)
+
+func _set_visual_visible(v: bool) -> void:
+	if sprite:
+		sprite.visible = v
+	if outline_sprite:
+		outline_sprite.visible = v
+	if legs_sprite:
+		legs_sprite.visible = v
+	if outline_legs_sprite:
+		outline_legs_sprite.visible = v
+
+func _set_visual_modulate(main_color: Color, outline_color: Color) -> void:
+	if sprite:
+		sprite.modulate = main_color
+	if legs_sprite:
+		legs_sprite.modulate = main_color
+	if outline_sprite:
+		outline_sprite.modulate = outline_color
+	if outline_legs_sprite:
+		outline_legs_sprite.modulate = outline_color
+
+func _tween_visual_modulate(tw: Tween, main_color: Color, outline_color: Color, dur: float) -> void:
+	if sprite:
+		tw.parallel().tween_property(sprite, "modulate", main_color, dur)
+	if legs_sprite:
+		tw.parallel().tween_property(legs_sprite, "modulate", main_color, dur)
+	if outline_sprite:
+		tw.parallel().tween_property(outline_sprite, "modulate", outline_color, dur)
+	if outline_legs_sprite:
+		tw.parallel().tween_property(outline_legs_sprite, "modulate", outline_color, dur)
