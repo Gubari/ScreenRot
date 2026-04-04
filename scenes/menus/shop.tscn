@@ -51,6 +51,18 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stats_card"]
+bg_color = Color(0.04, 0.06, 0.12, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.7, 1, 0.45)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_hlia1"]
 atlas = ExtResource("4_p6j4a")
 region = Rect2(0, 96, 96, 96)
@@ -612,32 +624,163 @@ text = "CHARACTER SHOP"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="InfoLabel" type="Label" parent="UI" unique_id=1006395600]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = 516.0
-offset_top = 102.0
-offset_right = -568.0
-offset_bottom = 127.0
-grow_horizontal = 2
-scale = Vector2(1.191368, 1.191368)
-text = "Selected: Red Light"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="NPC" type="AnimatedSprite2D" parent="." unique_id=1019352266]
 texture_filter = 1
-position = Vector2(200, 359)
+position = Vector2(136.00002, 360.00003)
 scale = Vector2(2.6659172, 2.6678383)
 sprite_frames = SubResource("SpriteFrames_awhd1")
 autoplay = "default"
 
+[node name="CharacterStatsCard" type="Panel" parent="." unique_id=1973035447]
+z_index = 2
+layout_mode = 0
+offset_left = 274.0
+offset_top = 242.0
+offset_right = 466.0
+offset_bottom = 477.0
+scale = Vector2(1.2100028, 1.2100028)
+theme_override_styles/panel = SubResource("StyleBoxFlat_stats_card")
+
+[node name="Margin" type="MarginContainer" parent="CharacterStatsCard" unique_id=893684457]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 10.0
+offset_right = -12.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="CharacterStatsCard/Margin" unique_id=584809872]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="CharacterStatsCard/Margin/VBox" unique_id=1943340890]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 27
+text = "CHAR STATS"
+horizontal_alignment = 1
+
+[node name="SelectedName" type="Label" parent="CharacterStatsCard/Margin/VBox" unique_id=821371350]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.95, 0.9, 1)
+theme_override_font_sizes/font_size = 26
+text = "RED LIGHT"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Separator" type="ColorRect" parent="CharacterStatsCard/Margin/VBox" unique_id=1000736698]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0.3, 0.55, 0.9, 0.45)
+
+[node name="Stats" type="VBoxContainer" parent="CharacterStatsCard/Margin/VBox" unique_id=1994704383]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HPRow" type="HBoxContainer" parent="CharacterStatsCard/Margin/VBox/Stats" unique_id=65415677]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Name" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/HPRow" unique_id=1298976403]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.82, 0.96, 1)
+theme_override_font_sizes/font_size = 24
+text = "HP:"
+
+[node name="Value" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/HPRow" unique_id=660103883]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-"
+horizontal_alignment = 2
+
+[node name="DMGRow" type="HBoxContainer" parent="CharacterStatsCard/Margin/VBox/Stats" unique_id=1808918401]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Name" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/DMGRow" unique_id=1025770465]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.82, 0.96, 1)
+theme_override_font_sizes/font_size = 24
+text = "DMG:"
+
+[node name="Value" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/DMGRow" unique_id=1062806516]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-"
+horizontal_alignment = 2
+
+[node name="FireRateRow" type="HBoxContainer" parent="CharacterStatsCard/Margin/VBox/Stats" unique_id=1308553068]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Name" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/FireRateRow" unique_id=470367357]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.82, 0.96, 1)
+theme_override_font_sizes/font_size = 24
+text = "FIRE RATE:"
+
+[node name="Value" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/FireRateRow" unique_id=626859692]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-"
+horizontal_alignment = 2
+
+[node name="MoveSpeedRow" type="HBoxContainer" parent="CharacterStatsCard/Margin/VBox/Stats" unique_id=309226951]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Name" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/MoveSpeedRow" unique_id=828809291]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.82, 0.96, 1)
+theme_override_font_sizes/font_size = 24
+text = "MOVE SPEED:"
+
+[node name="Value" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/MoveSpeedRow" unique_id=2108844803]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-"
+horizontal_alignment = 2
+
+[node name="DashCooldownRow" type="HBoxContainer" parent="CharacterStatsCard/Margin/VBox/Stats" unique_id=818296211]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Name" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/DashCooldownRow" unique_id=671030822]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.82, 0.96, 1)
+theme_override_font_sizes/font_size = 24
+text = "DASH COOLDOWN:"
+
+[node name="Value" type="Label" parent="CharacterStatsCard/Margin/VBox/Stats/DashCooldownRow" unique_id=1585020715]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-"
+horizontal_alignment = 2
+
 [node name="red_small" type="Control" parent="." unique_id=1117685419]
 anchors_preset = 0
-offset_left = 481.0
+offset_left = 571.0
 offset_top = 213.0
-offset_right = 577.0
+offset_right = 667.0
 offset_bottom = 373.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="red_small" unique_id=1176468939]
@@ -678,9 +821,9 @@ text = "SELECT"
 
 [node name="blue_small" type="Control" parent="." unique_id=1108417390]
 anchors_preset = 0
-offset_left = 674.0
+offset_left = 764.0
 offset_top = 213.0
-offset_right = 770.0
+offset_right = 860.0
 offset_bottom = 373.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="blue_small" unique_id=1241422748]
@@ -722,9 +865,9 @@ text = "BUY"
 
 [node name="green_small" type="Control" parent="." unique_id=150199869]
 anchors_preset = 0
-offset_left = 866.0
+offset_left = 956.0
 offset_top = 213.0
-offset_right = 962.0
+offset_right = 1052.0
 offset_bottom = 373.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="green_small" unique_id=676116294]
@@ -766,9 +909,9 @@ text = "BUY"
 
 [node name="grey_small" type="Control" parent="." unique_id=924191764]
 anchors_preset = 0
-offset_left = 1059.0
+offset_left = 1149.0
 offset_top = 212.0
-offset_right = 1155.0
+offset_right = 1245.0
 offset_bottom = 372.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="grey_small" unique_id=1559783379]
@@ -809,9 +952,9 @@ text = "BUY"
 
 [node name="red_heavy" type="Control" parent="." unique_id=1570339831]
 anchors_preset = 0
-offset_left = 481.0
+offset_left = 571.0
 offset_top = 405.0
-offset_right = 577.0
+offset_right = 667.0
 offset_bottom = 565.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="red_heavy" unique_id=822454134]
@@ -853,9 +996,9 @@ text = "BUY"
 
 [node name="blue_heavy" type="Control" parent="." unique_id=1442419197]
 anchors_preset = 0
-offset_left = 674.0
+offset_left = 764.0
 offset_top = 405.0
-offset_right = 770.0
+offset_right = 860.0
 offset_bottom = 565.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="blue_heavy" unique_id=1197797304]
@@ -898,9 +1041,9 @@ text = "BUY"
 
 [node name="green_heavy" type="Control" parent="." unique_id=686844941]
 anchors_preset = 0
-offset_left = 866.0
+offset_left = 956.0
 offset_top = 405.0
-offset_right = 962.0
+offset_right = 1052.0
 offset_bottom = 565.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="green_heavy" unique_id=423921351]
@@ -943,9 +1086,9 @@ text = "BUY"
 
 [node name="grey_heavy" type="Control" parent="." unique_id=333458269]
 anchors_preset = 0
-offset_left = 1059.0
+offset_left = 1149.0
 offset_top = 405.0
-offset_right = 1155.0
+offset_right = 1245.0
 offset_bottom = 565.0
 
 [node name="Sprite" type="AnimatedSprite2D" parent="grey_heavy" unique_id=1076441247]
