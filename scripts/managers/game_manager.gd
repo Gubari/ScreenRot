@@ -576,6 +576,16 @@ func _debug_skip_wave() -> void:
 	if not wave_active or _skip_used:
 		return
 	_skip_used = true
+
+	# On boss wave, skip should behave like a real boss defeat and enter The Other Side.
+	if wave_manager.get_is_boss_wave(current_wave):
+		wave_active = false
+		gameplay_hud.show_wave(wave_manager.get_wave_name(current_wave) + " SKIPPED")
+		await get_tree().create_timer(0.2).timeout
+		_skip_used = false
+		await _on_boss_defeated("debug_skip", 0)
+		return
+
 	wave_active = false
 	enemy_spawner.interrupt_scheduled_spawns()
 	enemy_spawner.spawning = false

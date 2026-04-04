@@ -5,8 +5,9 @@ extends Node2D
 ## Dodati kao child node na ai_light.tscn i ai_heavy.tscn.
 
 ## Dimenzije viewport pravougaonika u pikselima (16:9 odnos).
-const FRAME_W: float = 192.0
-const FRAME_H: float = 128.0
+@export var frame_size: Vector2 = Vector2(1280.0, 720.0)
+@export var border_thickness: float = 5.0
+@export var border_color: Color = Color(0.0, 0.0, 0.0, 1.0)
 
 ## Minimalni screen_percent — nikad ne ide do nule.
 const MIN_PERCENT: float = 15.0
@@ -19,29 +20,33 @@ var shrink_active: bool = false
 
 
 func _draw() -> void:
+	var frame_w := frame_size.x
+	var frame_h := frame_size.y
 	var cover := (1.0 - screen_percent / 100.0) * 0.5
 
-	var bar_w := FRAME_W * cover
-	var bar_h := FRAME_H * cover
+	var bar_w := frame_w * cover
+	var bar_h := frame_h * cover
 
-	var left   := -FRAME_W * 0.5
-	var top    := -FRAME_H * 0.5
-	var right  :=  FRAME_W * 0.5
-	var bottom :=  FRAME_H * 0.5
+	var left   := -frame_w * 0.5
+	var top    := -frame_h * 0.5
+	var right  :=  frame_w * 0.5
+	var bottom :=  frame_h * 0.5
 
 	var col := _get_color()
 
 	# Gornja traka
-	draw_rect(Rect2(left, top, FRAME_W, bar_h), col)
+	draw_rect(Rect2(left, top, frame_w, bar_h), col)
 	# Donja traka
-	draw_rect(Rect2(left, bottom - bar_h, FRAME_W, bar_h), col)
+	draw_rect(Rect2(left, bottom - bar_h, frame_w, bar_h), col)
 	# Leva traka
-	draw_rect(Rect2(left, top, bar_w, FRAME_H), col)
+	draw_rect(Rect2(left, top, bar_w, frame_h), col)
 	# Desna traka
-	draw_rect(Rect2(right - bar_w, top, bar_w, FRAME_H), col)
+	draw_rect(Rect2(right - bar_w, top, bar_w, frame_h), col)
 
-	# Okvir (uvek vidljiv, tanak)
-	draw_rect(Rect2(left, top, FRAME_W, FRAME_H), _get_frame_color(), false, 1.5)
+	# Okvir (uvek vidljiv): crn i podesive debljine.
+	var thickness := maxf(border_thickness, 0.0)
+	if thickness > 0.0:
+		draw_rect(Rect2(left, top, frame_w, frame_h), border_color, false, thickness)
 
 
 func _get_color() -> Color:
@@ -55,15 +60,6 @@ func _get_color() -> Color:
 	else:
 		# crna → crvena tint
 		return Color(0.2, 0.0, 0.0, alpha)
-
-
-func _get_frame_color() -> Color:
-	if screen_percent > 80.0:
-		return Color(0.0, 1.0, 0.4, 0.6)   # zelena
-	elif screen_percent > 50.0:
-		return Color(1.0, 0.85, 0.0, 0.7)  # zuta
-	else:
-		return Color(1.0, 0.2, 0.1, 0.9)   # crvena
 
 
 ## Poziva other_side_manager svaki frame dok je shrink aktivan.

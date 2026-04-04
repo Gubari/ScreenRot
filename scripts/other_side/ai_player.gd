@@ -20,6 +20,7 @@ signal fragment_collected(ai_type: String)
 @export var fire_rate: float = 0.4
 @export var bullet_damage: int = 1
 @export var bullet_speed: float = 500.0
+@export var bullet_scene_path: String = "res://scenes/player/bullet.tscn"
 
 @export var has_dash: bool = true
 @export var dash_speed: float = 500.0
@@ -29,6 +30,7 @@ signal fragment_collected(ai_type: String)
 @export var emp_cooldown: float = 12.0
 @export var emp_radius: float = 200.0
 @export var emp_windup: float = 0.8
+@export var overlay_frame_size: Vector2 = Vector2(1280.0, 720.0)
 
 @export var has_shield: bool = false         # samo Heavy
 @export var shield_hp_threshold: float = 0.25
@@ -75,8 +77,8 @@ var overlay: Node2D = null
 var sprite: AnimatedSprite2D = null
 var _color_tween: Tween = null
 
-# bullet.tscn (laser) pogadja "enemies" grupu — boss je u "enemies" grupi
-var bullet_scene: PackedScene = preload("res://scenes/player/bullet.tscn")
+# Bullet scena je podesiva po AI varijanti (light/heavy).
+var bullet_scene: PackedScene
 
 # ── Lifecycle ─────────────────────────────────────────────────────────────────
 
@@ -85,6 +87,9 @@ func _ready() -> void:
 	_base_fire_rate = fire_rate
 	add_to_group("ai_players")
 	add_to_group("player")
+	bullet_scene = load(bullet_scene_path) as PackedScene
+	if bullet_scene == null:
+		bullet_scene = preload("res://scenes/player/bullet.tscn")
 
 	collision_layer = 1    # player layer — fragmenti (Area2D mask=1) detektuju AI
 	collision_mask = 18    # enemies (2) + terrain (5)
@@ -99,6 +104,13 @@ func _ready() -> void:
 	add_child(nav_agent)
 
 	overlay = get_node_or_null("AIScreenOverlay")
+	if overlay:
+		overlay.set("frame_size", overlay_frame_size)
+		# Keep overlay viewport size visually identical for light/heavy,
+		# independent of parent (AI) scene scale.
+		if absf(scale.x) > 0.0001 and absf(scale.y) > 0.0001:
+			overlay.scale = Vector2(1.0 / scale.x, 1.0 / scale.y)
+		overlay.queue_redraw()
 	sprite = get_node_or_null("Sprite") as AnimatedSprite2D
 
 	await get_tree().process_frame
@@ -299,6 +311,7 @@ func _shoot() -> void:
 	var dir := (boss.global_position - global_position).normalized()
 	bullet.global_position = global_position
 	bullet.direction = dir
+	bullet.rotation = dir.angle()
 	bullet.speed = bullet_speed
 	bullet.damage = bullet_damage
 	get_tree().current_scene.add_child(bullet)
