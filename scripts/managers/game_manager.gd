@@ -322,8 +322,6 @@ func _on_boss_defeated(_boss_id: String, _score: int) -> void:
 		_played_game_won = true
 	_active_boss = null
 	gameplay_hud.hide_boss_bar()
-	# Don't delay sound here; boss_defeated is emitted after the boss death animation.
-	# Delay (if any) should happen before showing the win screen UI.
 	_game_over_started = true
 	# Reset screen effects
 	if screen_closing:
@@ -340,7 +338,17 @@ func _on_boss_defeated(_boss_id: String, _score: int) -> void:
 	enemy_spawner.interrupt_scheduled_spawns()
 	for frag in get_tree().get_nodes_in_group("screen_fragments"):
 		frag.queue_free()
-	_on_all_waves_completed()
+	# Sacuvati score i kredite pre tranzicije
+	SaveManager.add_credits(run_credits)
+	SaveManager.update_high_score(player.score)
+	await _show_portal_and_enter()
+
+
+func _show_portal_and_enter() -> void:
+	# TODO: dodati debris portal animaciju (cestice koje se skupljaju u centar)
+	gameplay_hud.show_wave("The other side awaits...")
+	await get_tree().create_timer(3.0).timeout
+	SceneTransition.change_scene("res://scenes/other_side.tscn")
 
 func _update_boss_bar_color() -> void:
 	if not _active_boss or not is_instance_valid(_active_boss):
