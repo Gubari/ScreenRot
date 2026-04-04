@@ -5,13 +5,14 @@
 [ext_resource type="PackedScene" path="res://scenes/effects/screen_closing.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/menus/game_over.tscn" id="4"]
 [ext_resource type="Script" path="res://scripts/other_side/other_side_manager.gd" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/other_side/player_boss.tscn" id="6"]
 
 [node name="OtherSide" type="Node2D"]
 
 [node name="DungeonMap" parent="." instance=ExtResource("1")]
 position = Vector2(-225, -216)
 
-[node name="PlayerBoss" type="CharacterBody2D" parent="."]
+[node name="PlayerBoss" parent="." instance=ExtResource("6")]
 position = Vector2(640, 360)
 
 [node name="AILight" type="CharacterBody2D" parent="."]
