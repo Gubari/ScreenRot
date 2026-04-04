@@ -2,6 +2,10 @@ extends CanvasLayer
 
 var _overlay: ColorRect
 
+# Podaci koji se prenose izmedju scena (other side)
+var transfer_score: int = 0
+var transfer_credits: int = 0
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	layer = 200

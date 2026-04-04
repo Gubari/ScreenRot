@@ -28,10 +28,11 @@ func _ready() -> void:
 		{"label": resume_label, "text": "RESUME", "action": _on_resume},
 		{"label": settings_label, "text": "SETTINGS", "action": _on_settings},
 		{"label": restart_label, "text": "RESTART", "action": _on_restart},
-		{"label": main_menu_label, "text": "MAIN MENU", "action": _on_main_menu},
+		{"label": main_menu_label, "text": "ABANDON RUN", "color": Color.RED, "action": _on_main_menu},
 	]
 
 	for item in menu_items:
+		item.label.text = item.text
 		_setup_interactive_label(item.label)
 		item.label.mouse_entered.connect(_on_item_hover.bind(item))
 		item.label.mouse_exited.connect(_on_item_unhover.bind(item))
@@ -54,7 +55,8 @@ func _ready() -> void:
 func _setup_interactive_label(label: Label) -> void:
 	label.mouse_filter = Control.MOUSE_FILTER_STOP
 	label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	label.add_theme_color_override("font_color", COLOR_NORMAL)
+	if not label.has_theme_color_override("font_color"):
+		label.add_theme_color_override("font_color", COLOR_NORMAL)
 
 func _on_item_hover(item: Dictionary) -> void:
 	item.label.text = HOVER_PREFIX + item.text
@@ -62,7 +64,7 @@ func _on_item_hover(item: Dictionary) -> void:
 
 func _on_item_unhover(item: Dictionary) -> void:
 	item.label.text = item.text
-	item.label.add_theme_color_override("font_color", COLOR_NORMAL)
+	item.label.add_theme_color_override("font_color", item.get("color", COLOR_NORMAL))
 
 func _on_item_input(event: InputEvent, item: Dictionary) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -128,7 +130,7 @@ func _on_settings_back() -> void:
 func _on_restart() -> void:
 	AudioManager.resume_music()
 	get_tree().paused = false
-	get_tree().reload_current_scene()
+	SceneTransition.change_scene("res://scenes/game.tscn")
 
 func _on_main_menu() -> void:
 	get_tree().paused = false
