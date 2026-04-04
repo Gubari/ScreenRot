@@ -90,6 +90,10 @@ func _physics_process(delta: float) -> void:
 	_handle_abilities()
 	_handle_invincibility(delta)
 	move_and_slide()
+	var hud = get_tree().get_first_node_in_group("other_side_hud")
+	if hud:
+		hud.update_shrink_cooldown(get_shrink_cooldown_percent())
+		hud.update_summon_cooldown(get_summon_cooldown_percent())
 
 
 # ── Timeri ────────────────────────────────────────────────────────────────────
@@ -106,13 +110,17 @@ func _tick_timers(delta: float) -> void:
 # ── Kretanje ─────────────────────────────────────────────────────────────────
 
 func _handle_movement() -> void:
-	# TODO: implementirati WASD kretanje (pogledati player.gd handle_movement)
-	pass
+	var input_dir := Vector2(
+		Input.get_axis("move_left", "move_right"),
+		Input.get_axis("move_up", "move_down")
+	).normalized()
+	var effective_speed := move_speed * (EMP_SPEED_MULT if debuff_active else 1.0)
+	velocity = MovementFormula.velocity(input_dir, effective_speed)
 
 
 func _handle_rotation() -> void:
-	# TODO: flip sprite prema misu (pogledati player.gd handle_rotation)
-	pass
+	var mouse_pos := get_global_mouse_position()
+	sprite.flip_h = mouse_pos.x < global_position.x
 
 # ── Pucanje ───────────────────────────────────────────────────────────────────
 
@@ -128,10 +136,6 @@ func _handle_shooting(delta: float) -> void:
 
 
 func _shoot() -> void:
-	# TODO: implementirati pucanje po fazi
-	# Phase 1: _shoot_single()
-	# Phase 2: _shoot_spread(p2_spread_count, p2_spread_angle)
-	# Phase 3: _shoot_spread(p3_spread_count, p3_spread_angle)
 	match current_phase:
 		1: _shoot_single()
 		2: _shoot_spread(p2_spread_count, p2_spread_angle)
@@ -139,13 +143,20 @@ func _shoot() -> void:
 
 
 func _shoot_single() -> void:
-	# TODO: spawna jedan boss_bullet ka misu
-	pass
+	var dir := (get_global_mouse_position() - global_position).normalized()
+	_spawn_bullet(dir)
+	AudioManager.play_sfx("shoot")
 
 
 func _shoot_spread(count: int, spread_deg: float) -> void:
-	# TODO: spawna N boss_bullet u lepezi (pogledati boss_base.gd _shoot_spread)
-	pass
+	var base_dir := (get_global_mouse_position() - global_position).normalized()
+	var base_angle := base_dir.angle()
+	var half := deg_to_rad(spread_deg) / 2.0
+	for i in count:
+		var t := float(i) / float(count - 1) if count > 1 else 0.0
+		var angle := base_angle - half + t * half * 2.0
+		_spawn_bullet(Vector2(cos(angle), sin(angle)))
+	AudioManager.play_sfx("shoot")
 
 
 func _spawn_bullet(dir: Vector2) -> void:
@@ -216,9 +227,14 @@ func take_damage(amount: int) -> void:
 
 
 func die() -> void:
-	# TODO: death animacija, emitovati signal ka manageru
 	set_physics_process(false)
 	velocity = Vector2.ZERO
+	if sprite and sprite.sprite_frames and sprite.sprite_frames.has_animation("death"):
+		sprite.play("death")
+		await sprite.animation_finished
+	var mgr = get_tree().get_first_node_in_group("other_side_manager")
+	if mgr:
+		mgr._on_boss_died()
 
 
 func _handle_invincibility(delta: float) -> void:
