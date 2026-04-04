@@ -5,11 +5,11 @@
 [ext_resource type="PackedScene" path="res://scenes/effects/screen_closing.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://ce78ft6jgs5aa" path="res://scenes/menus/game_over.tscn" id="4"]
 [ext_resource type="Script" uid="uid://1w204rvnnunw" path="res://scripts/other_side/other_side_manager.gd" id="5"]
+[ext_resource type="PackedScene" uid="uid://8dmsalb62acv" path="res://scenes/other_side/player_boss.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://bm05uhvtbnnc4" path="res://scenes/other_side/ai_light.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://bthkf8b345bjl" path="res://scenes/other_side/ai_heavy.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/hud/other_side_hud.tscn" id="9"]
-[ext_resource type="PackedScene" uid="uid://c4pl4y3rb0ss1" path="res://scenes/other_side/player_boss.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://dom7chcv6feqq" path="res://scenes/menus/pause_menu.tscn" id="10"]
-[ext_resource type="PackedScene" path="res://scenes/other_side/ai_light.tscn" id="7"]
-[ext_resource type="PackedScene" uid="uid://q4mu6qwafi5w" path="res://scenes/other_side/ai_heavy.tscn" id="8"]
 
 [node name="OtherSide" type="Node2D" unique_id=1022208185]
 
@@ -18,6 +18,7 @@ position = Vector2(-9, -62)
 
 [node name="PlayerBoss" parent="." unique_id=1250006033 instance=ExtResource("6")]
 position = Vector2(640, 360)
+camera_zoom = Vector2(0.7, 0.7)
 
 [node name="AILight" parent="." unique_id=1132684720 instance=ExtResource("7")]
 position = Vector2(980, 360)
@@ -34,8 +35,7 @@ script = ExtResource("2")
 
 [node name="OtherSideHUD" parent="HUD" unique_id=265218178 instance=ExtResource("9")]
 
-[node name="PauseMenu" parent="." instance=ExtResource("10")]
-process_mode = 3
+[node name="PauseMenu" parent="." unique_id=514478002 instance=ExtResource("10")]
 
 [node name="GameOver" parent="." unique_id=1414814429 instance=ExtResource("4")]
 

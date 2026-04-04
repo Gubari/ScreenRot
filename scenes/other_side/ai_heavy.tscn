@@ -86,5 +86,4 @@ shape = SubResource("CircleShape2D_ai")
 
 [node name="AIScreenOverlay" type="Node2D" parent="." unique_id=804995897]
 script = ExtResource("3_overlay")
-border_thickness = 6.0
-border_color = Color(0, 0, 0, 1)
+border_thickness = 4.0

@@ -182,6 +182,7 @@ func _on_shrink_activated() -> void:
 	if shrink_active:
 		return
 	shrink_active = true
+	_set_ai_overlays_shrink_state(true)
 	shrink_started.emit(shrink_duration)
 
 	if is_instance_valid(light_ai):
@@ -191,6 +192,7 @@ func _on_shrink_activated() -> void:
 
 	await get_tree().create_timer(shrink_duration).timeout
 	shrink_active = false
+	_set_ai_overlays_shrink_state(false)
 	shrink_stopped.emit()
 
 
@@ -200,6 +202,21 @@ func _tick_ai_overlay(ai: CharacterBody2D, delta: float) -> void:
 	var overlay = ai.get_node_or_null("AIScreenOverlay")
 	if overlay and overlay.has_method("apply_shrink"):
 		overlay.apply_shrink(shrink_rate, delta)
+
+
+func _set_ai_overlays_shrink_state(active: bool) -> void:
+	for ai in [light_ai, heavy_ai]:
+		if not is_instance_valid(ai):
+			continue
+		var overlay = ai.get_node_or_null("AIScreenOverlay")
+		if not overlay:
+			continue
+		if active:
+			if overlay.has_method("begin_shrink_cycle"):
+				overlay.begin_shrink_cycle()
+		else:
+			if overlay.has_method("end_shrink_cycle"):
+				overlay.end_shrink_cycle()
 
 # ── Fragment spawn ────────────────────────────────────────────────────────────
 
@@ -287,6 +304,8 @@ func _check_win() -> void:
 		shrink_active = false
 		shrink_stopped.emit()
 		other_side_won.emit()
+		if not SaveManager.is_challenge_unlocked():
+			SaveManager.unlock_challenge()
 		SaveManager.update_high_score(current_score)
 		SaveManager.add_credits(current_credits)
 		if game_over_screen and game_over_screen.has_method("show_game_over"):

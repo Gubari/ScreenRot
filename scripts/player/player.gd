@@ -194,6 +194,7 @@ func handle_dash(delta: float) -> void:
 			is_dashing = false
 			invincible = false
 			_restore_enemy_collision_after_dash()
+			_push_out_from_blocking_tiles_after_dash()
 			sprite.visible = true
 
 	# Start dash
@@ -333,6 +334,19 @@ func _collect_pickups_along_path(from_pos: Vector2, to_pos: Vector2) -> void:
 			var c := _closest_point_on_segment(p, from_pos, to_pos)
 			if p.distance_squared_to(c) <= r2:
 				area.call("_on_body_entered", self)
+
+
+func _push_out_from_blocking_tiles_after_dash() -> void:
+	var scene := get_tree().current_scene
+	if not scene:
+		return
+	var dungeon := scene.get_node_or_null("DungeonMap")
+	if dungeon and dungeon.has_method("snap_to_walkable"):
+		# Push the player to the nearest valid walkable cell if dash ended in wall/prop collision.
+		# This keeps green river dash-through behavior while preventing getting stuck in arena edges.
+		var snapped: Vector2 = dungeon.snap_to_walkable(global_position, 8)
+		if snapped != global_position:
+			global_position = snapped
 
 
 func _closest_point_on_segment(point: Vector2, a: Vector2, b: Vector2) -> Vector2:
