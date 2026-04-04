@@ -47,10 +47,12 @@ func _ready() -> void:
 		var slot_node: Control = get_node_or_null(id)
 		if not slot_node:
 			continue
+		slot_node.mouse_filter = Control.MOUSE_FILTER_STOP
+		slot_node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		slot_node.gui_input.connect(_on_slot_gui_input.bind(id))
+		_set_slot_children_mouse_ignore(slot_node)
 		var btn: Button = slot_node.get_node("ActionButton")
 		btn.pressed.connect(_on_slot_pressed.bind(id))
-		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		btn.mouse_filter = Control.MOUSE_FILTER_STOP
 		var dark_bg := StyleBoxFlat.new()
 		dark_bg.bg_color = Color(0.03, 0.03, 0.06, 0.95)
 		dark_bg.set_corner_radius_all(4)
@@ -67,8 +69,30 @@ func _ready() -> void:
 		dark_bg_disabled.bg_color = Color(0.02, 0.02, 0.05, 0.95)
 		dark_bg_disabled.set_corner_radius_all(4)
 		btn.add_theme_stylebox_override("disabled", dark_bg_disabled)
-		slot_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_update_all()
+
+
+func _set_slot_children_mouse_ignore(root: Control) -> void:
+	for child in root.get_children():
+		if child is Control:
+			(child as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_set_slot_children_mouse_ignore(child as Control)
+
+
+func _on_slot_gui_input(event: InputEvent, id: String) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	var mb := event as InputEventMouseButton
+	if not mb.pressed or mb.button_index != MOUSE_BUTTON_LEFT:
+		return
+	var slot_node: Control = get_node_or_null(id)
+	if not slot_node:
+		return
+	var btn: Button = slot_node.get_node_or_null("ActionButton")
+	if btn and btn.disabled:
+		return
+	get_viewport().set_input_as_handled()
+	_on_slot_pressed(id)
 
 func _update_all() -> void:
 	credits_label.text = "Credits: " + str(SaveManager.get_credits())

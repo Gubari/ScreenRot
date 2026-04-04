@@ -42,14 +42,23 @@ func _ready() -> void:
 		# Each card gets its own shader material instance so we can tint independently
 		var card_bg: ColorRect = cards[i].get_node("CardBG")
 		card_bg.material = card_bg.material.duplicate()
+		# Ceo card je klikabilan/hoverabilan.
+		cards[i].mouse_filter = Control.MOUSE_FILTER_STOP
+		cards[i].mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		_set_card_children_mouse_ignore(cards[i])
 
 		var choose_label: Label = cards[i].get_node("VBox/ChooseLabel")
-		choose_label.mouse_filter = Control.MOUSE_FILTER_STOP
-		choose_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		choose_label.add_theme_color_override("font_color", COLOR_NORMAL)
-		choose_label.mouse_entered.connect(_on_card_hover.bind(i))
-		choose_label.mouse_exited.connect(_on_card_unhover.bind(i))
-		choose_label.gui_input.connect(_on_card_input.bind(i))
+		cards[i].mouse_entered.connect(_on_card_hover.bind(i))
+		cards[i].mouse_exited.connect(_on_card_unhover.bind(i))
+		cards[i].gui_input.connect(_on_card_input.bind(i))
+
+
+func _set_card_children_mouse_ignore(root: Control) -> void:
+	for child in root.get_children():
+		if child is Control:
+			(child as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_set_card_children_mouse_ignore(child as Control)
 
 func _on_card_hover(index: int) -> void:
 	var choose_label: Label = cards[index].get_node("VBox/ChooseLabel")
