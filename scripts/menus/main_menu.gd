@@ -16,6 +16,7 @@ const HOVER_PREFIX := "> "
 
 var menu_items: Array[Dictionary] = []
 var _challenge_locked: bool = false
+var _web_audio_prompt: ColorRect = null
 
 func _ready() -> void:
 	_challenge_locked = not SaveManager.is_challenge_unlocked()
@@ -51,6 +52,51 @@ func _ready() -> void:
 	_update_character_label()
 	CursorManager.set_menu_cursor()
 	AudioManager.play_music("menu")
+	if OS.has_feature("web") and not AudioManager.is_web_audio_unlocked():
+		_setup_web_audio_prompt()
+
+func _setup_web_audio_prompt() -> void:
+	_web_audio_prompt = ColorRect.new()
+	_web_audio_prompt.name = "WebAudioPrompt"
+	_web_audio_prompt.mouse_filter = Control.MOUSE_FILTER_STOP
+	_web_audio_prompt.color = Color(0.02, 0.03, 0.07, 0.86)
+	_web_audio_prompt.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_web_audio_prompt.z_index = 100
+	add_child(_web_audio_prompt)
+
+	var center := CenterContainer.new()
+	center.name = "Center"
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_web_audio_prompt.add_child(center)
+
+	var message := Label.new()
+	message.name = "Message"
+	message.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	message.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	message.theme_override_font_sizes.font_size = 56
+	message.theme_override_colors.font_color = Color(0.92, 0.96, 1.0, 1.0)
+	message.text = "CLICK TO START"
+	center.add_child(message)
+
+func _is_unlock_event(event: InputEvent) -> bool:
+	return event is InputEventMouseButton \
+			and event.pressed \
+			and event.button_index == MOUSE_BUTTON_LEFT
+
+func _input(event: InputEvent) -> void:
+	if _web_audio_prompt and _is_unlock_event(event):
+		get_viewport().set_input_as_handled()
+		_dismiss_web_audio_prompt()
+
+func _dismiss_web_audio_prompt() -> void:
+	if not _web_audio_prompt:
+		return
+	AudioManager.notify_user_gesture()
+	AudioManager.play_music("menu")
+	_web_audio_prompt.queue_free()
+	_web_audio_prompt = null
 
 func _on_item_hover(item: Dictionary) -> void:
 	if item.label == challenge_label and _challenge_locked:

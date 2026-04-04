@@ -10,8 +10,10 @@ radius = 14.0
 texture_filter = 1
 collision_layer = 0
 script = ExtResource("1_frag")
+pickup_visual_scale = Vector2(1.5, 1.5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1867454860]
+position = Vector2(0, -9)
 shape = SubResource("CircleShape2D_frag")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=960102368]
