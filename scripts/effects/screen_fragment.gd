@@ -23,6 +23,8 @@ func _ready() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		collected.emit(restore_value)
+		if body.has_method("_on_fragment_body_entered"):
+			body._on_fragment_body_entered(self)
 		queue_free()
 
 

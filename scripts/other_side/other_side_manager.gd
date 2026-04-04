@@ -60,8 +60,10 @@ func _process(delta: float) -> void:
 		_update_hud_cooldowns()
 		return
 	# Shrink AI overlaye svaki frame.
-	_tick_ai_overlay(light_ai, delta)
-	_tick_ai_overlay(heavy_ai, delta)
+	if is_instance_valid(light_ai):
+		_tick_ai_overlay(light_ai, delta)
+	if is_instance_valid(heavy_ai):
+		_tick_ai_overlay(heavy_ai, delta)
 	_update_hud_cooldowns()
 
 func _update_hud_cooldowns() -> void:
@@ -179,8 +181,10 @@ func _on_shrink_activated() -> void:
 	shrink_active = true
 	shrink_started.emit(shrink_duration)
 
-	_spawn_fragments_near(light_ai)
-	_spawn_fragments_near(heavy_ai)
+	if is_instance_valid(light_ai):
+		_spawn_fragments_near(light_ai)
+	if is_instance_valid(heavy_ai):
+		_spawn_fragments_near(heavy_ai)
 
 	await get_tree().create_timer(shrink_duration).timeout
 	shrink_active = false
